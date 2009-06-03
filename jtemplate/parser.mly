@@ -128,7 +128,7 @@ variable:                             ids                                     {
 																																									  id :: [] -> Name(id)
 																																									| _ -> CompoundName($1)
 																																							}
-;
+; 
 ids:                                  ID                                      { [$1] (*TODO array ref*)}
                                     | ID DOT ids                              { $1::$3 }
 ;

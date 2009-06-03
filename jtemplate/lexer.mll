@@ -11,7 +11,7 @@ let incr_linenum lexbuf =
 		}
 
 exception LexerException of string * int * int
-exception Eof
+exception Eof 
 
 let syntax_exception msg lexbuf=
 	raise (LexerException (msg, lexbuf.Lexing.lex_curr_p.Lexing.pos_lnum,
