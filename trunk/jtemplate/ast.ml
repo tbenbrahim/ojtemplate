@@ -27,7 +27,7 @@ and value =
 	| Map of (string*expression) list
 	| Expression of expression
 	| Variable of variable
-and variable= 
+and variable=  
 	  Name of string
 	|	CompoundName of string list
 and expression =

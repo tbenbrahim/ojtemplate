@@ -5,7 +5,7 @@ open Lexing
 open Ast_info
 
 let get_ast lexbuf=
-	try 
+	try  
 		Parser.program Lexer.main lexbuf
 	with
 		LexerException(msg, line, col) -> 
