@@ -1,5 +1,3 @@
 = Documents =
 
-  *[http://ojtemplate.googlecode.com/files/jtemplate_proposal.pdf Project Proposal]
-
-
+  *[http://ojtemplate.googlecode.com/files/jtemplate_proposal.pdf Project Proposal
