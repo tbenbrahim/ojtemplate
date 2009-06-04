@@ -6,6 +6,12 @@ struct
 	
 	(* may not need the exit functions, double check after implementing*)
 	
+	(****
+
+    TODO replace Map with HashTbl, Map is immutable!
+	
+	****)
+	
 	module StringMap = Map.Make (String)
 	
 	exception InconsistentSymbolTableStatePopLocal
