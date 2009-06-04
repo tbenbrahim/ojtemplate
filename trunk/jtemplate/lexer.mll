@@ -19,7 +19,7 @@ let syntax_exception msg lexbuf=
 
 let map_id name=
 	match name with
-		"foreach" -> FOREACH
+	  "foreach" -> FOREACH
 	| "in" -> IN
 	|	"while" -> WHILE
 	| "function" -> FUNCTION

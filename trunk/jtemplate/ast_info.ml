@@ -22,10 +22,7 @@ let compopname=function
 
 let rec statement_descriptionl level statement =
 	match statement with 
-	Ast.StatementBlock(stmts) -> 
-		(prefix level)^ "Statement Block\n" ^ 
-			(statement_list (level+1) stmts) 
-	|	Ast.Assignment(var,expr) -> (prefix level)^"Assignment\n" ^
+	  Ast.Assignment(var,expr) -> (prefix level)^"Assignment\n" ^
 	    (var_descriptionl (level+1) var) ^ (expr_descriptionl (level+1) expr)
 	| Ast.Declaration(var,expr) -> (prefix level)^"Declaration\n" ^
 	    (var_descriptionl (level+1) var) ^ (expr_descriptionl (level+1) expr)
@@ -51,18 +48,21 @@ let rec statement_descriptionl level statement =
 				) "" specs)
 	| Ast.If(expr,iflist,elselist) -> (prefix level)^"If/Else\n"^
 	  (expr_descriptionl (level+1) expr)^
-		(statement_descriptionl (level+1) iflist)^
-		(statement_descriptionl (level+1) elselist)
+		(statement_list (level+1) iflist)^
+		(statement_list (level+1) elselist)
 	| Ast.Return(expr) -> (prefix level)^"Return\n"^(expr_descriptionl (level+1) expr)
 	| Ast.ExpressionStatement(expr) -> expr_descriptionl level expr
-	| Ast.While(expr,stmt) -> (prefix level)^"While\n" ^
-	  (expr_descriptionl (level+1) expr) ^
-		(statement_descriptionl (level+1) stmt)
 	| Ast.ForEach(var,expr,stmt) -> (prefix level)^"ForEach\n" ^
 	    (var_descriptionl (level+1) var) ^ (expr_descriptionl (level+1) expr) ^
-			(statement_descriptionl (level+1) stmt)
+			(statement_list (level+1) stmt)
 	| Ast.Continue -> (prefix level)^"Continue\n"
 	| Ast.Break -> (prefix level)^"Break\n"
+	| Ast.For(stmt1, stmt2, stmt3, stmt_list) -> (prefix level)^"For\n"^ 
+	   (statement_descriptionl (level+1) stmt1) ^
+     (statement_descriptionl (level+1) stmt2) ^
+     (statement_descriptionl (level+1) stmt3) ^
+		 (statement_list (level+1) stmt_list)
+	| Ast.Noop -> (prefix level) ^ "Noop\n"
 and 
 var_descriptionl level var = 
 	match var with
