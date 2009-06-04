@@ -82,36 +82,39 @@ let get_env = function
 program:                              statements EOF                          { $1 }
                                     | EOF                                     { [] }
 ;
-statements:                           statement_list                          { $1 } 
-					 													| statement_block                         { $1 } 
-;
-statement_list:                       statement                               { [$1] }
-                                		| statement statements                    { $1::$2 }
+statements:                           statement                               { [$1] }
+                                    | statement statements                    { $1::$2 }
+                                    | statement_block                         { $1 } 
 ;
 statement_block:                      LBRACE statements RBRACE                { $2 } 
                                     | LBRACE RBRACE                           { [] }
 ;
-statement:                            variable EQUALS expression SEMICOLON    { Assignment($1,$3) }
-                                    | VAR variable EQUALS expression SEMICOLON
-																																							{ Declaration($2,$4) }
-																		| expression SEMICOLON                    { ExpressionStatement($1) }
-																		| CONTINUE SEMICOLON                      { Continue }
-																		| BREAK SEMICOLON                         { Break }
-																		| RETURN expression SEMICOLON             { Return($2) }
+/* for_target_statements can appear inside a for() statements */
+for_target_statement:                 variable EQUALS expression              { Assignment($1,$3) }
+                                    | VAR variable EQUALS expression          { Declaration($2,$4) }
+                                    | expression                              { ExpressionStatement($1) }
+                                    | /*nothing*/                             { Noop }
+;
+statement:                            for_target_statement SEMICOLON          { $1 }                            
+                                    | CONTINUE SEMICOLON                      { Continue }
+                                    | BREAK SEMICOLON                         { Break }
+                                    | RETURN expression SEMICOLON             { Return($2) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
-																		                                          { ForEach(Name($3),$5,$7) }
-																    | WHILE LPAREN statement RPAREN statement_block 
-																																							{ For(Noop,$3,Noop,$5) }
-                                    | FOR LPAREN statement SEMICOLON statement SEMICOLON statement RPAREN statement_block
-												                                                       { For($3,$5,$7,$9) }
-																	  | IF LPAREN expression RPAREN statement_block ELSE statement_block
-																		                                          { If($3,$5,$7) }
-																	  | IF LPAREN expression RPAREN statement_block
-																		                                          { If($3,$5,[]) }
-																	  | TEMPLATE ID LBRACE template_specs RBRACE
-																		                                          { TemplateDef(Name($2), $4) }
-																		| INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
-																		                                          { Instructions(Name($3),$5,$8) }
+                                                                              { ForEach(Name($3),$5,$7) }
+                                    | WHILE LPAREN statement RPAREN statement_block 
+                                                                              { For(Noop,$3,Noop,$5) }
+                                    | FOR LPAREN for_target_statement SEMICOLON 
+                                                 for_target_statement SEMICOLON 
+                                                 for_target_statement RPAREN statement_block
+                                                                              { For($3,$5,$7,$9) }
+                                    | IF LPAREN expression RPAREN statement_block ELSE statement_block
+                                                                              { If($3,$5,$7) }
+                                    | IF LPAREN expression RPAREN statement_block
+                                                                              { If($3,$5,[]) }
+                                    | TEMPLATE ID LBRACE template_specs RBRACE
+                                                                              { TemplateDef(Name($2), $4) }
+                                    | INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
+                                                                              { Instructions(Name($3),$5,$8) }
 ;
 expression:                           value                                   { Value($1) }
 																		| function_call                           { $1 }
@@ -172,6 +175,8 @@ instruction_spec:                     label repl_condition COLON replacement_lis
 repl_condition:                       ONCE                                    { Once }
                           					| WHEN LPAREN expression RPAREN           { When($3) }
 																		| FOREACH LPAREN ID IN expression RPAREN  { Loop(Name($3),$5) }
+																		| FOREACH LPAREN ID IN expression RPAREN WHEN LPAREN expression RPAREN
+																		                                          { CondLoop($9,Name($3),$5) }  
 ;
 replacement:                          ID EQUALS expression                    { ($1,$3) }
 ;
