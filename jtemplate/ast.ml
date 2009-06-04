@@ -36,15 +36,15 @@ and expression =
 	| FunctionCall of variable*expression list
 	| Value of value
 and statement =
-	  StatementBlock of statement list
 	| Assignment of variable*expression
 	| Declaration of variable*expression
-	| ForEach of variable*expression*statement
-	| While of expression*statement
+	| ForEach of variable*expression*(statement list)
+	| For of statement*statement*statement*(statement list)
 	| ExpressionStatement of expression
 	| Break
 	| Continue
+	| Noop
 	| Return of expression
-	| If of expression*statement*statement
+	| If of expression*(statement list)*(statement list)
 	| TemplateDef of variable*(template_spec list)
 	| Instructions of variable*(variable list)*(replacement_spec list)

@@ -22,5 +22,5 @@ let parse filename =
 
 let _ = let _=Parsing.set_trace false in
   let ast=parse "c:\\test.jtp" in
-		AstInfo.print_ast ast
+		List.fold_left (fun acc el-> AstInfo.print_ast el) () ast
 		
