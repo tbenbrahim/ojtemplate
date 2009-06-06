@@ -1,105 +1,65 @@
+open Stringmap
+
 module SymbolTable =
 struct
 	
-	(* a symbol table. may not be the most efficient, but should get me      *)
-	(* started                                                               *)
+	(** Implementation of a symbol table. This implementation takes
+      advantage of the immutable properties of maps to implement
+			nested blocks, sacrificing space for ease of implementation
+			
+			Usage:
+			The initial symbol table is created by calling SymbolTable.initialize
+			scopes are entered and exited by creating copies of the symbol table:
+			
+			let old_symbol_table=current_symbol_table in
+			let current_symbol_table=SymbolTable.new_scope
+			in process_nested_block 
+			in let current_symbol_table=old_symbol_table
+			 
+	@author tbenbrahim
+	*)
 	
-	(* may not need the exit functions, double check after implementing*)
-	
-	(****
-
-    TODO replace Map with HashTbl, Map is immutable!
-	
-	****)
-	
-	module StringMap = Map.Make (String)
-	
-	exception InconsistentSymbolTableStatePopLocal
-	exception InconsistentSymbolTableStatePopBlock
+	(** This exception indicates a jtemplate error where access was made to an
+	undefined variable *)
 	exception ReferenceToUndefinedVariable of string
 	
-	(* TODO look at syntactic sugar for map and array to avoid having to     *)
-	(* convert other ast values                                              *)
+	(** type definition for the four scalar values (int, float, string, bool)
+	for a function definition, and for maps. Arrays are syntactic sugar
+	for maps, for example foo.bar[1] is equivalent to foo.bar.1
+	Map values are implemented as a recursive structure of Maps. To
+	resolved foo.bar.1, foo is looked up in the symbol table. It must be
+	a MapValue. In the MapValue hashtable, bar is looked up. It must be also
+	be a MapValue. Finally, the last component is looked up in the hashtable
+	and it can be of any type. *)
 	type variable_value =
 			IntegerValue of int
 		| FloatValue of float
 		| StringValue of string
 		| BooleanValue of bool
 		| FunctionValue of Ast.variable_name list * Ast.statement list
-		| ArrayValue of variable_value array
 		| MapValue of variable_value StringMap.t
 	
+	(** Definition for a symbol table. *)
 	type symbol_table ={
-		local_scope_stack: symbol_table list; (* stack of local scopes *)
-		parent_table: symbol_table option; (* reference to block scope parent *)
-		values: variable_value StringMap.t; (* variable values for this scope *)
+		values: variable_value StringMap.t (* variable values for this scope *)
 	}
 	
+	(** creates a new empty symbol table. Called only at the start of a program,
+	creating other symbol tables is accomplished by entering a new scope.
+	@return an empty symbol table.
+	*)
 	let initialize =
-		{ local_scope_stack =[];
-			parent_table = None;
-			values = StringMap.empty }
+			{ values = StringMap.empty } 
 	
-	let enter_local_scope symbol_table =
-		(* add old symbol table to local scope stack *)
-		{ local_scope_stack = symbol_table:: symbol_table.local_scope_stack;
-			(* parent block scope stays the same *)
-			parent_table = symbol_table.parent_table;
-			(* new empty symbol table for the local scope *)
-			values = StringMap.empty }
-	
-	let exit_local_scope symbol_table =
-		(* pop the old local scope *)
-		match symbol_table.local_scope_stack with
-			[]-> raise InconsistentSymbolTableStatePopLocal
-		| old_scope:: tl -> old_scope
-	
-	let enter_block_scope symbol_table =
-		(* no change to local scope stack *)
-		{ local_scope_stack = symbol_table.local_scope_stack;
-			(* point parent to old table *)
-			parent_table = Some symbol_table;
-			(* new empty symbol table for the local scope *)
-			values = StringMap.empty }
-	
-	let exit_block_scope symbol_table =
-		match symbol_table.parent_table with
-			None -> raise InconsistentSymbolTableStatePopBlock
-		| Some table -> table
+	(** creates a new symbol table for a nested scope. *)
+	let new_scope symbol_table =
+		{
+			values=symbol_table.values
+		}
 	
 	let fullname = function
 			Ast.CompoundName(lst) ->
 				List.fold_left(fun acc el -> acc^"."^el) "" lst
 		| Ast.Name(name) -> name
 	
-	let rec initialize_map_value map name value varname =
-		match name with
-			hd::[] -> StringMap.add hd value map
-		| [] -> raise (ReferenceToUndefinedVariable varname)
-		| hd:: tl -> try let variable = StringMap.find hd map in match variable with
-						MapValue(newmap) -> initialize_map_value newmap tl value varname
-					| _ -> raise (ReferenceToUndefinedVariable varname)
-				with Not_found -> raise (ReferenceToUndefinedVariable varname)
-	
-	let initialize_variable symbol_table name value =
-		match name with
-			Ast.Name(varname) -> StringMap.add varname value symbol_table.values
-		| Ast.CompoundName(varname) -> initialize_map_value symbol_table.values varname value (fullname name)
-	
-	let rec assign_map_value map name value varname =
-		match name with
-			hd::[] -> let _=StringMap.find hd map in StringMap.add hd value map
-		| [] -> raise (ReferenceToUndefinedVariable varname)
-		| hd:: tl -> let variable = StringMap.find hd map in match variable with
-						MapValue(newmap) -> initialize_map_value newmap tl value varname
-					| _ -> raise (ReferenceToUndefinedVariable varname)
-		
-	
-	let assign_variable symbol_table name value =
-		try
-			match name with
-				Ast.Name(varname) ->
-					let _ = StringMap.find varname symbol_table.values in StringMap.add varname value symbol_table.values
-			| Ast.CompoundName(varname) -> assign_map_value symbol_table.values varname value (fullname name)
-		with Not_found -> raise (ReferenceToUndefinedVariable (fullname name))
 end
