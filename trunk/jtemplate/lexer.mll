@@ -1,6 +1,7 @@
 {
 open Ast
 open Parser
+open Error
 
 (* from http://plus.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial.pdf , p.9 *)
 let incr_linenum lexbuf =
@@ -11,7 +12,6 @@ let incr_linenum lexbuf =
 		}
 
 exception LexerException of string * int * int
-exception Eof 
 
 let syntax_exception msg lexbuf=
 	raise (LexerException (msg, lexbuf.Lexing.lex_curr_p.Lexing.pos_lnum,

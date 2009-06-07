@@ -2,6 +2,7 @@ module SymbolTable =
 struct
 	
 	open Stringmap
+	open RuntimeError
 	
 	(** Implementation of a symbol table. This implementation takes
 	advantage of the immutable properties of maps to implement
@@ -37,14 +38,6 @@ struct
 	]}
 	@author tbenbrahim
 	*)
-	
-	(** This exception indicates a jtemplate error where access was made to an
-	undefined variable *)
-	exception ReferenceToUndefinedVariable of string
-	exception ReferenceToUndefinedMapVariable of string * string
-	exception NotAMap of string * string
-	exception TypeMismatchInAssignment of string * string * string
-	exception TypeMismatchInMapAssignment of string * string * string * string
 	
 	(** internal exception to indicate assignment to something that should be a
 	map but is not, rethrown as AssignmentToNonMap of string *)
