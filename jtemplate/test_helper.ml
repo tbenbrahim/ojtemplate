@@ -1,3 +1,4 @@
+open Unix
 
 let assertEqual a b = a = b
 
@@ -9,16 +10,13 @@ let assertRaises e expr =
 	with
 		ex -> e = ex
 
-(* type unit_test = string * (unit -> bool) type test_suite = string *     *)
-(* (unit_test list)                                                        *)
-
 let run_test utest =
 	let (name, func) = utest in
 	let result = (
 			try
-				func()
+				func() 
 			with
-				e -> false
+			| e -> print_string ("\tuncaught exception " ^ (Printexc.to_string e)^" thrown in "^name^"\n"); false
 		)
 	in match result with
 		true -> print_string ("\t" ^ name ^ ": PASS\n"); 1
