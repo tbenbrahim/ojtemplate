@@ -99,6 +99,7 @@ statement:                            for_target_statement SEMICOLON          { 
                                     | CONTINUE SEMICOLON                      { Continue }
                                     | BREAK SEMICOLON                         { Break }
                                     | RETURN expression SEMICOLON             { Return($2) }
+																		| RETURN SEMICOLON                        { Return(Value(Void)) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
                                                                               { ForEach(Name($3),$5,$7) }
                                     | WHILE LPAREN statement RPAREN statement_block 

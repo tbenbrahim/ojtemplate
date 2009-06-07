@@ -41,6 +41,8 @@ type replacement =
   | Map of (string * expression) list
   | Expression of expression
   | Variable of variable_name
+	| Void
+	| NaN
 
   and variable_name =
   | Name of string | CompoundName of string list
