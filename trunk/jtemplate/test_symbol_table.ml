@@ -1,7 +1,7 @@
 module TestSymbolTable =
 struct
 	open Test_helper
-	open Symbol_table 
+	open Symbol_table
 	open Stringmap
 	open RuntimeError
 	open Ast
@@ -17,12 +17,7 @@ struct
 						let s = SymbolTable.initialize in
 						let s = SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s in
 						let s = SymbolTable.declare (Ast.Name("b")) (IntegerValue(2)) s in
-						match SymbolTable.get_value (Ast.Name("a")) s with
-							IntegerValue(1) -> (
-									match SymbolTable.get_value (Ast.Name("b")) s with
-										IntegerValue(2) -> true
-									| _ -> false)
-						| _ -> false
+						SymbolTable.get_value (Ast.Name("a")) s = IntegerValue(1)
 			);
 			("compound declaration a={}, a.b={}, a.b.c=1", fun () ->
 						let s = SymbolTable.initialize in
@@ -37,9 +32,7 @@ struct
 						let s = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (MapValue(StringMap.empty)) s in
 						let name = Ast.CompoundName(["a";"b";"c"]) in
 						let s = SymbolTable.declare name (IntegerValue(1)) s in
-						(match SymbolTable.get_value name s with
-							|	IntegerValue(1) -> true
-							| _ -> false)
+						SymbolTable.get_value name s = IntegerValue(1)
 			);
 			("multiple declaration to map preserves values a={}, a.b={}, a.b.c=1, a.b.d=2", fun () ->
 						let s = SymbolTable.initialize in
@@ -49,12 +42,7 @@ struct
 						let name2 = Ast.CompoundName(["a";"b";"d"]) in
 						let s = SymbolTable.declare name1 (IntegerValue(1)) s in
 						let s = SymbolTable.declare name2 (IntegerValue(2)) s in
-						match SymbolTable.get_value name1 s with
-							IntegerValue(1) -> (
-									match SymbolTable.get_value name2 s with
-										IntegerValue(2) -> true
-									| _ -> false)
-						| _ -> false
+						SymbolTable.get_value name1 s = IntegerValue(1) && SymbolTable.get_value name2 s = IntegerValue(2)
 			);
 			("a=1,a.b=2 should throw NotAMap(\"a\" \"a.b\")", fun () ->
 						let s = SymbolTable.initialize in
@@ -160,17 +148,13 @@ struct
 						let s = SymbolTable.initialize in
 						let s = SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s in
 						let s = SymbolTable.declare (Ast.Name("a")) (IntegerValue(2)) s in
-						(match SymbolTable.get_value (Ast.Name("a")) s with
-							| IntegerValue(2) -> true
-							| _ -> false)
+						SymbolTable.get_value (Ast.Name("a")) s = IntegerValue(2)
 			);
 			("visibility of a in nested scope : a=1 { a=1? } ", fun () ->
 						let s = SymbolTable.initialize in
 						let s = SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s in
 						let s = SymbolTable.push_scope s in
-						(match SymbolTable.get_value (Ast.Name("a")) s with
-							| IntegerValue(1) -> true
-							| _ -> false)
+						SymbolTable.get_value (Ast.Name("a")) s = IntegerValue(1)
 			);
 			
 			("visibility of map in nested scope : a={}, a.b=1 { a.b=1? }", fun () ->
@@ -178,9 +162,7 @@ struct
 						let s = SymbolTable.declare (Ast.Name("a")) (MapValue(StringMap.empty)) s in
 						let s = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (IntegerValue(1)) s in
 						let s = SymbolTable.push_scope s in
-						match SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s with
-						| IntegerValue(1) -> true
-						| _ -> false
+						SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s = IntegerValue(1)
 			);
 			
 			("adding key to map in nested scope : a={} { a.b=1 } should throw ReferenceToUndefinedMapVariable(\"a\",\"a.b\")", fun () ->
@@ -201,9 +183,7 @@ struct
 						let s = SymbolTable.push_scope s in
 						let s = SymbolTable.push_scope s in
 						let s = SymbolTable.assign (Ast.CompoundName(["a";"b"])) (IntegerValue(2)) s in
-						match SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s with
-						| IntegerValue(2) -> true
-						| _ -> false
+						SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s = IntegerValue(2)
 			);
 			
 			("assigning key value to map in nested scope: a={},a.b=1 { { a.b=2 }} a.b=2?", fun () ->
@@ -215,9 +195,7 @@ struct
 						let s = SymbolTable.assign (Ast.CompoundName(["a";"b"])) (IntegerValue(2)) s in
 						let s = SymbolTable.pop_scope s in
 						let s = SymbolTable.pop_scope s in
-						match SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s with
-						| IntegerValue(2) -> true
-						| _ -> false
+						SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s = IntegerValue(2)
 			);
 			
 			("redeclaration of a in nested scope : a=1 { a=2 } a=1? ", fun () ->
@@ -226,9 +204,7 @@ struct
 						let s = SymbolTable.push_scope s in
 						let s = SymbolTable.declare (Ast.Name("a")) (IntegerValue(2)) s in
 						let s = SymbolTable.pop_scope s in
-						(match SymbolTable.get_value (Ast.Name("a")) s with
-							| IntegerValue(1) -> true
-							| _ -> false)
+						SymbolTable.get_value (Ast.Name("a")) s = IntegerValue(1)
 			);
 			
 			("assignment of a in nested scope : a=1 { a=2 } a=2? ", fun () ->
@@ -237,9 +213,7 @@ struct
 						let s = SymbolTable.push_scope s in
 						let s = SymbolTable.assign (Ast.Name("a")) (IntegerValue(2)) s in
 						let s = SymbolTable.pop_scope s in
-						(match SymbolTable.get_value (Ast.Name("a")) s with
-							| IntegerValue(2) -> true
-							| _ -> false)
+						SymbolTable.get_value (Ast.Name("a")) s = IntegerValue(2)
 			);
 			
 			("function call symbol table: a=1 { b=2;x=function(){}; x(); } a, b and x are in scope of x() ", fun() ->
@@ -250,16 +224,11 @@ struct
 						let s = SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], None)) s in
 						match SymbolTable.get_value (Ast.Name("x")) s with
 						| FunctionValue(_, _, Some functionScope) ->
-								(match SymbolTable.get_value (Ast.Name("b")) functionScope with
-									| IntegerValue(2) -> true
-									| _ -> false
-								) &&
+								SymbolTable.get_value (Ast.Name("b")) functionScope = IntegerValue(2)
+								&& SymbolTable.get_value (Ast.Name("a")) functionScope = IntegerValue(1)
+								&&
 								(match SymbolTable.get_value (Ast.Name("x")) functionScope with
 									| FunctionValue(_, _, _) -> true
-									| _ -> false
-								) &&
-								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
-									| IntegerValue(1) -> true
 									| _ -> false
 								)
 						| _ -> false
@@ -282,10 +251,7 @@ struct
 									| FunctionValue(_, _, _) -> true
 									| _ -> false
 								) &&
-								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
-									| IntegerValue(1) -> true
-									| _ -> false
-								)
+								SymbolTable.get_value (Ast.Name("a")) functionScope = IntegerValue(1)
 						| _ -> false
 			);
 			
@@ -307,10 +273,7 @@ struct
 									| FunctionValue(_, _, _) -> true
 									| _ -> false
 								) &&
-								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
-									| IntegerValue(1) -> true
-									| _ -> false
-								)
+								SymbolTable.get_value (Ast.Name("a")) functionScope = IntegerValue(1)
 						| _ -> false
 			);
 			
@@ -330,10 +293,7 @@ struct
 									| FunctionValue(_, _, _) -> true
 									| _ -> false
 								) &&
-								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
-									| IntegerValue(1) -> true
-									| _ -> false
-								)
+								SymbolTable.get_value (Ast.Name("a")) functionScope = IntegerValue(1)
 						| _ -> false
 			);
 			
