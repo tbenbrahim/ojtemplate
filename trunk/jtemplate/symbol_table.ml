@@ -10,13 +10,13 @@ struct
 	
 	Usage:
 	The initial symbol table is created by calling SymbolTable.initialize
-	scopes are entered and exited by creating copies of the symbol table:
+	scopes are entered and exited thusly:
 	
 	let symbol_table = SymbolTable.push_scope symbol_table
-	in process_nested_block
+	in process_nested_block symbol_table
 	in let symbol_table = SymbolTable.pop_scope symbol_table
 	
-	function calls get the same scope as the scope they are declare in. Example:
+	function calls get the same scope as the scope the function is declared in. Example:
 	[{
 	var b = 1;
 	var x = function() {
@@ -66,6 +66,8 @@ struct
 		| BooleanValue of bool
 		| FunctionValue of Ast.variable_name list * Ast.statement list * symbol_table option
 		| MapValue of variable_value StringMap.t
+		| Void
+		| NaN
 	and
 	(** Definition for a symbol table. *)
 	symbol_table ={
@@ -94,9 +96,11 @@ struct
 		| IntegerValue(i) -> string_of_int i
 		| FloatValue(f) -> string_of_float f
 		| BooleanValue(b) -> string_of_bool b
-		| StringValue(s) -> "'" ^ s ^ "'"
+		| StringValue(s) -> s
 		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
-		| MapValue(map) -> "{}"
+		| MapValue(map) -> "{}" (* TODO recurse *)
+		| Void -> "void"
+		| NaN -> "NaN"
 	
 	let string_of_symbol_type = function
 		| IntegerValue(_) -> "integer"
@@ -105,6 +109,8 @@ struct
 		| StringValue(_) -> "string"
 		| FunctionValue(_, _, _) -> "function"
 		| MapValue(_) -> "map"
+		| Void -> "void"
+		| NaN -> "NaN"
 	
 	let rec print_symbol_map map prefix =
 		let _ = (StringMap.mapi (fun key var -> print_string (prefix^key^"="^(string_of_symbol_value var)^"\n");
