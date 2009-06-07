@@ -91,10 +91,22 @@ struct
 				MapValue(make_map str_expr_list StringMap.empty symbol_table)
 		| ArrayExpr(expr_list) ->
 				MapValue(make_array expr_list StringMap.empty symbol_table)
-	  | VariableExpr(variable) -> SymbolTable.get_value variable symbol_table
+		| VariableExpr(variable) -> SymbolTable.get_value variable symbol_table
 		| Value(value) -> value
 	and
-	interpret_ast ast symbol_table =
-		match ast with
-			Declaration(varname, expression) ->	()
+	interpret_statement statement symbol_table =
+		match statement with
+		| Assignment(varname, expression) ->
+				SymbolTable.assign varname
+					(evaluate_expression expression symbol_table) symbol_table
+		| Declaration(varname, expression) ->
+				SymbolTable.declare varname
+					(evaluate_expression expression symbol_table) symbol_table
+		| ExpressionStatement expression ->
+				let _ = evaluate_expression expression symbol_table in symbol_table
+		| Noop -> symbol_table
+		| For (preloop, cond, loop, stmtlist) ->
+			  let symbol_table=SymbolTable.push_scope symbol_table in
+				let symbol_table = interpret_statement preloop symbol_table in
+				SymbolTable.pop_scope symbol_table
 end

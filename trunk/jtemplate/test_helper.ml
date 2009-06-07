@@ -1,5 +1,3 @@
-open Unix
-
 let assertEqual a b = a = b
 
 let assertNotEqual a b = a <> b
