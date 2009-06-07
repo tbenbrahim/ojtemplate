@@ -1,7 +1,6 @@
 {
 open Ast
 open Parser
-open Error
 
 (* from http://plus.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial.pdf , p.9 *)
 let incr_linenum lexbuf =
