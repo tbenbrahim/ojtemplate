@@ -3,6 +3,7 @@ struct
 	open Test_helper
 	open Symbol_table
 	open Stringmap
+	open RuntimeError
 	
 	let test_suite = ("Symbol Table",[
 			("simple declaration a=1, b=2", fun () ->
@@ -61,7 +62,7 @@ struct
 							let _ = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (SymbolTable.IntegerValue(2)) s in
 							false
 						with
-						| SymbolTable.NotAMap ("a", "a.b") -> true
+						| NotAMap ("a", "a.b") -> true
 						| _ -> false
 			);
 			("a={},a.b=2, a.b.c=1 should throw NotAMap(\"b\" \"a.b.c\")", fun () ->
@@ -72,7 +73,7 @@ struct
 							let _ = SymbolTable.declare (Ast.CompoundName(["a";"b";"c"])) (SymbolTable.IntegerValue(1)) s in
 							false
 						with
-						| SymbolTable.NotAMap ("b", "a.b.c") -> true
+						| NotAMap ("b", "a.b.c") -> true
 						| _ -> false
 			);
 			("a.b=1 should throw ReferenceToUndefinedMapVariable(\"a\",\"a.b\") ", fun() ->
@@ -81,7 +82,7 @@ struct
 							let _ = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (SymbolTable.IntegerValue(1)) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedMapVariable ("a", "a.b") -> true
+						| ReferenceToUndefinedMapVariable ("a", "a.b") -> true
 						| _ -> false
 			);
 			("a={} a.b.c=1 should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b.c\") ", fun() ->
@@ -91,7 +92,7 @@ struct
 							let _ = SymbolTable.declare (Ast.CompoundName(["a";"b";"c"])) (SymbolTable.IntegerValue(1)) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedMapVariable ("b", "a.b.c") -> true
+						| ReferenceToUndefinedMapVariable ("b", "a.b.c") -> true
 						| _ -> false
 			);
 			("reference to undeclared a should throw ReferenceToUndefinedVariable(\"a\") ", fun() ->
@@ -100,7 +101,7 @@ struct
 							let _ = SymbolTable.get_value (Ast.Name("a")) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedVariable ("a") -> true
+						| ReferenceToUndefinedVariable ("a") -> true
 						| _ -> false
 			);
 			("reference to undeclared a.b should throw ReferenceToUndefinedMapVariable(\"a\",\"a.b\") ", fun() ->
@@ -109,7 +110,7 @@ struct
 							let _ = SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedMapVariable ("a", "a.b") -> true
+						| ReferenceToUndefinedMapVariable ("a", "a.b") -> true
 						| _ -> false
 			);
 			("reference to undeclared a.b when a={} should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b\") ", fun() ->
@@ -119,7 +120,7 @@ struct
 							let _ = SymbolTable.get_value (Ast.CompoundName(["a";"b"])) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedMapVariable ("b", "a.b") -> true
+						| ReferenceToUndefinedMapVariable ("b", "a.b") -> true
 						| _ -> false
 			);
 			("reference to undeclared a.b.c when a={},a.b={} should throw ReferenceToUndefinedMapVariable(\"c\",\"a.b.c\") ", fun() ->
@@ -130,7 +131,7 @@ struct
 							let _ = SymbolTable.get_value (Ast.CompoundName(["a";"b";"c"])) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedMapVariable ("c", "a.b.c") -> true
+						| ReferenceToUndefinedMapVariable ("c", "a.b.c") -> true
 						| _ -> false
 			);
 			("reference to undeclared a.b.c when a={} should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b.c\") ", fun() ->
@@ -140,7 +141,7 @@ struct
 							let _ = SymbolTable.get_value (Ast.CompoundName(["a";"b";"c"])) s in
 							false
 						with
-						| SymbolTable.ReferenceToUndefinedMapVariable ("b", "a.b.c") -> true
+						| ReferenceToUndefinedMapVariable ("b", "a.b.c") -> true
 						| _ -> false
 			);
 			("reference to undeclared a.b.c when a={},a.b=1 should throw NotAMap(\"b\",\"a.b.c\") ", fun() ->
@@ -151,7 +152,7 @@ struct
 							let _ = SymbolTable.get_value (Ast.CompoundName(["a";"b";"c"])) s in
 							false
 						with
-						| SymbolTable.NotAMap ("b", "a.b.c") -> true
+						| NotAMap ("b", "a.b.c") -> true
 						| _ -> false
 			);
 			("redeclaration of a: a=1, a=2 ", fun () ->
@@ -189,7 +190,7 @@ struct
 							let _ = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (SymbolTable.IntegerValue(1)) s in
 							false
 						with
-							SymbolTable.ReferenceToUndefinedMapVariable("a","a.b") -> true
+							ReferenceToUndefinedMapVariable("a","a.b") -> true
 			);
 			
 			("assigning key value to map in nested scope: a={},a.b=1 { { a.b=2 a.b=2?}}", fun () ->
@@ -273,7 +274,7 @@ struct
 						| SymbolTable.FunctionValue(_, _, Some functionScope) ->
 								(try let _ = SymbolTable.get_value (Ast.Name("b")) functionScope in false
 								with
-								| SymbolTable.ReferenceToUndefinedVariable("b") -> true
+								| ReferenceToUndefinedVariable("b") -> true
 								| _ -> false
 								) &&
 								(match SymbolTable.get_value (Ast.Name("x")) functionScope with
@@ -298,7 +299,7 @@ struct
 						| SymbolTable.FunctionValue(_, _, Some functionScope) ->
 								(try let _ = SymbolTable.get_value (Ast.Name("b")) functionScope in false
 								with
-								| SymbolTable.ReferenceToUndefinedVariable("b") -> true
+								| ReferenceToUndefinedVariable("b") -> true
 								| _ -> false
 								) &&
 								(match SymbolTable.get_value (Ast.Name("x")) functionScope with
@@ -349,7 +350,7 @@ struct
 							let _ = SymbolTable.assign (Ast.Name("a")) (SymbolTable.StringValue("1")) s in
 							false
 						with
-							SymbolTable.TypeMismatchInAssignment("a","integer","string") -> true
+							TypeMismatchInAssignment("a","integer","string") -> true
 						| _ -> false
 			);
 			
@@ -369,7 +370,7 @@ struct
 							let _ = SymbolTable.assign (Ast.CompoundName(["a";"b"])) (SymbolTable.StringValue("1")) s in
 							false
 						with
-							SymbolTable.TypeMismatchInMapAssignment("b","a.b","integer","string") -> true
+							TypeMismatchInMapAssignment("b","a.b","integer","string") -> true
 						| _ -> false
 			);
 			
