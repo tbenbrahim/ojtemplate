@@ -3,6 +3,7 @@ struct
 	
 	open Stringmap
 	open RuntimeError
+	open Ast
 	
 	(** Implementation of a symbol table. This implementation takes
 	advantage of the immutable properties of maps to implement
@@ -51,31 +52,7 @@ struct
 	(** internal exception to indicate illegal reassignment of value of different type *)
 	exception ETypeMismatchInAssignment of string * string * string (* name , current_type, new_type *)
 	
-	(** type definition for the four scalar values (int, float, string, bool)
-	for a function definition, and for maps. Arrays are syntactic sugar
-	for maps, for example foo.bar[1] is equivalent to foo.bar.1
-	Map values are implemented as a recursive structure of Maps. To
-	resolved foo.bar.1, foo is looked up in the symbol table. It must be
-	a MapValue. In the MapValue hashtable, bar is looked up. It must be also
-	be a MapValue. Finally, the last component is looked up in the hashtable
-	and it can be of any type. *)
-	type variable_value =
-			IntegerValue of int
-		| FloatValue of float
-		| StringValue of string
-		| BooleanValue of bool
-		| FunctionValue of Ast.variable_name list * Ast.statement list * symbol_table option
-		| MapValue of variable_value StringMap.t
-		| Void
-		| NaN
-	and
-	(** Definition for a symbol table. *)
-	symbol_table ={
-		values: variable_value StringMap.t; (* variable values for this scope *)
-		parent_table: symbol_table option
-	}
-	
-	(**
+		(**
 	returns the printable name of a variable name
 	@param name an Ast.variable_name type
 	@return a string specifying the variable name

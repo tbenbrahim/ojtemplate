@@ -1,5 +1,5 @@
 %{
-
+	
 open Ast
 
 exception ParseException of string
@@ -117,7 +117,7 @@ statement:                            for_target_statement SEMICOLON          { 
                                     | INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
                                                                               { Instructions(Name($3),$5,$8) }
 ;
-expression:                           value                                   { Value($1) }
+expression:                           value                                   { $1 }
 																		| function_call                           { $1 }
 																		| LPAREN expression RPAREN                { $2 }
 																		| expression PLUS expression              { BinaryOp($1,Plus,$3) }
@@ -138,19 +138,18 @@ variable:                             ids                                     {
 ids:                                  ID                                      { [$1] (*TODO array ref*)}
                                     | ID DOT ids                              { $1::$3 }
 ;
-value:                                INT                                     { Integer($1) }
-																		| REAL                                    { Float($1) }
-																		| STRING                                  { String($1) }
-																		| BOOLEAN                                 { Boolean($1) }
+value:                                INT                                     { Value(IntegerValue($1)) }
+																		| REAL                                    { Value(FloatValue($1)) }
+																		| STRING                                  { Value(StringValue($1)) }
+																		| BOOLEAN                                 { Value(BooleanValue($1)) }
 																		| FUNCTION LPAREN arglist RPAREN statement_block 
-																		                               						{ Function($3,$5) }
-																		| FUNCTION LPAREN RPAREN statement_block
-																		                               						{ Function([],$4) }
-																	  | LBRACKET RBRACKET                       { Array([]) }
-																		| LBRACKET expr_list RBRACKET             { Array($2) }
-																		| LBRACE RBRACE                           { Map([]) }
-																		| LBRACE prop_list RBRACE                 { Map($2) }
-																		| variable                                { Variable($1) }
+																		                               						{ Value(FunctionValue($3,$5,None)) }
+																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4,None)) }
+																	  | LBRACKET RBRACKET                       { ArrayExpr([]) }
+																		| LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
+																		| LBRACE RBRACE                           { MapExpr([]) }
+																		| LBRACE prop_list RBRACE                 { MapExpr($2) }
+																		| variable                                { VariableExpr($1) }
 ;
 arglist:                              ID                                      { [Name($1)] }
 																		| ID COMMA arglist                        { Name($1)::$3 }

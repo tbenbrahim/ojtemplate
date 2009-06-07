@@ -1,6 +1,5 @@
 open Lexer
 open Parser
-open Ast
 open Lexing
 open Ast_info
 open Symbol_table

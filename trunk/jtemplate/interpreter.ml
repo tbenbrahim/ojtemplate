@@ -1,8 +1,8 @@
 module Interpreter =
 struct
 	open Ast
-	open Symbol_table
 	open Stringmap
+	open Symbol_table
 	
 	exception EIncompatibleTypes of string * string (* type1, type2 *)
 	exception EInvalidCast of string * string (* value, typename *)
@@ -28,13 +28,13 @@ struct
 	
 	let cast_to_integer value =
 		match value with
-		| SymbolTable.IntegerValue(i) -> i
+		| IntegerValue(i) -> i
 		| _ -> raise (EInvalidCast (SymbolTable.string_of_symbol_value value,"integer"))
 	
 	let cast_to_float value =
 		match value with
-		| SymbolTable.FloatValue(f) -> f
-		| SymbolTable.IntegerValue(i) -> float_of_int i
+		| FloatValue(f) -> f
+		| IntegerValue(i) -> float_of_int i
 		| _ -> raise (EInvalidCast (SymbolTable.string_of_symbol_value value,"float"))
 	
 	let rec make_map str_expr_list map symbol_table =
@@ -51,7 +51,7 @@ struct
 							(StringMap.add (string_of_int index) (evaluate_expression expr symbol_table) map,
 								index + 1)
 				) (map, 0) expr_list in
-		StringMap.add "length" (SymbolTable.IntegerValue(length)) map
+		StringMap.add "length" (IntegerValue(length)) map
 	and
 	evaluate_expression expr symbol_table =
 		match expr with
@@ -61,47 +61,38 @@ struct
 				(match casting_type value1 value2 with
 					| StringCast ->
 							(match operator with
-								| Plus -> SymbolTable.StringValue((cast_to_string value1) ^ (cast_to_string value2))
+								| Plus -> StringValue((cast_to_string value1) ^ (cast_to_string value2))
 								| _ -> raise (EInvalidOperation (operator,"string"))
 							)
 					| FloatCast -> (match operator with
-								| Plus -> SymbolTable.FloatValue( (cast_to_float value1) +. (cast_to_float value2))
-								| Minus -> SymbolTable.FloatValue( (cast_to_float value1) -. (cast_to_float value2))
-								| Times -> SymbolTable.FloatValue( (cast_to_float value1) *. (cast_to_float value2))
+								| Plus -> FloatValue( (cast_to_float value1) +. (cast_to_float value2))
+								| Minus -> FloatValue( (cast_to_float value1) -. (cast_to_float value2))
+								| Times -> FloatValue( (cast_to_float value1) *. (cast_to_float value2))
 								| Divide -> let divisor = cast_to_float value2 in
-										if divisor <> 0.0 then SymbolTable.FloatValue( (cast_to_float value1) /. divisor)
-										else SymbolTable.NaN
+										if divisor <> 0.0 then FloatValue( (cast_to_float value1) /. divisor)
+										else NaN
 								| Modulo -> raise (EInvalidOperation (operator,"float"))
 							)
 					| IntegerCast -> (match operator with
-								| Plus -> SymbolTable.IntegerValue( (cast_to_integer value1) + (cast_to_integer value2))
-								| Minus -> SymbolTable.IntegerValue( (cast_to_integer value1) - (cast_to_integer value2))
-								| Times -> SymbolTable.IntegerValue( (cast_to_integer value1) * (cast_to_integer value2))
+								| Plus -> IntegerValue( (cast_to_integer value1) + (cast_to_integer value2))
+								| Minus -> IntegerValue( (cast_to_integer value1) - (cast_to_integer value2))
+								| Times -> IntegerValue( (cast_to_integer value1) * (cast_to_integer value2))
 								| Divide -> let divisor = cast_to_integer value2 in
-										if divisor <> 0 then SymbolTable.IntegerValue( (cast_to_integer value1) / divisor)
-										else SymbolTable.NaN
+										if divisor <> 0 then IntegerValue( (cast_to_integer value1) / divisor)
+										else NaN
 								| Modulo -> let divisor = cast_to_integer value2 in
-										if divisor <> 0 then SymbolTable.IntegerValue( (cast_to_integer value1) mod divisor)
-										else SymbolTable.NaN
+										if divisor <> 0 then IntegerValue( (cast_to_integer value1) mod divisor)
+										else NaN
 							)
 				)
-		| CompOp (expr1, comparator, expr2) -> SymbolTable.Void
-		| FunctionCall(variable, exprs) -> SymbolTable.Void
-		| Value(value) -> (match value with
-					| Integer(i) -> SymbolTable.IntegerValue(i)
-					| Float(f) -> SymbolTable.FloatValue(f)
-					| String(s) -> SymbolTable.StringValue(s)
-					| Boolean(b) -> SymbolTable.BooleanValue(b)
-					| Function(varlist, stmtlist) -> SymbolTable.FunctionValue(varlist, stmtlist, None)
-					| Map(str_expr_list) ->
-							SymbolTable.MapValue(make_map str_expr_list StringMap.empty symbol_table)
-					| Array(expr_list) ->
-							SymbolTable.MapValue(make_array expr_list StringMap.empty symbol_table)
-					| Expression(expr) -> evaluate_expression expr symbol_table
-					| Variable(variable) -> SymbolTable.get_value variable symbol_table
-					| Void -> SymbolTable.Void
-					| NaN -> SymbolTable.NaN
-				)
+		| CompOp (expr1, comparator, expr2) -> Void
+		| FunctionCall(variable, exprs) -> Void
+		| MapExpr(str_expr_list) ->
+				MapValue(make_map str_expr_list StringMap.empty symbol_table)
+		| ArrayExpr(expr_list) ->
+				MapValue(make_array expr_list StringMap.empty symbol_table)
+	  | VariableExpr(variable) -> SymbolTable.get_value variable symbol_table
+		| Value(value) -> value
 	and
 	interpret_ast ast symbol_table =
 		match ast with
