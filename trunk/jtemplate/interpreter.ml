@@ -99,6 +99,8 @@ struct
 							SymbolTable.MapValue(make_array expr_list StringMap.empty symbol_table)
 					| Expression(expr) -> evaluate_expression expr symbol_table
 					| Variable(variable) -> SymbolTable.get_value variable symbol_table
+					| Void -> SymbolTable.Void
+					| NaN -> SymbolTable.NaN
 				)
 	and
 	interpret_ast ast symbol_table =
