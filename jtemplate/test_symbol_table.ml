@@ -363,7 +363,7 @@ struct
 						true
 			);
 			
-			("reassignment to different type: a={b:1}, a.b='1'  should fail with TypeMismatchInMapAssignment(\"a\",\"a.b\",\"integer\",\"string\")", fun() ->
+			("reassignment to different type: a={b:1}, a.b='1'  should fail with TypeMismatchInMapAssignment(\"b\",\"a.b\",\"integer\",\"string\")", fun() ->
 						let s = SymbolTable.initialize in
 						let s = SymbolTable.declare (Ast.Name("a")) (MapValue(StringMap.empty)) s in
 						let s = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (IntegerValue(1)) s in
