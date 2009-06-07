@@ -1,14 +1,10 @@
 open Lexer
-
 open Parser
-
 open Ast
-
 open Lexing
-
 open Ast_info
-
 open Symbol_table
+open Interpreter
 
 let get_ast lexbuf =
 	try Parser.program Lexer.main lexbuf
