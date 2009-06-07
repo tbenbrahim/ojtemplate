@@ -43,6 +43,8 @@ struct
 	exception ReferenceToUndefinedVariable of string
 	exception ReferenceToUndefinedMapVariable of string * string
 	exception NotAMap of string * string
+	exception TypeMismatchInAssignment of string * string * string
+	exception TypeMismatchInMapAssignment of string * string * string * string
 	
 	(** internal exception to indicate assignment to something that should be a
 	map but is not, rethrown as AssignmentToNonMap of string *)
@@ -53,6 +55,8 @@ struct
 	exception ENotFound of string
 	(** internal exception to indicate trying to exit top level scope *)
 	exception ECannotPopTopmostScope
+	(** internal exception to indicate illegal reassignment of value of different type *)
+	exception ETypeMismatchInAssignment of string * string * string (* name , current_type, new_type *)
 	
 	(** type definition for the four scalar values (int, float, string, bool)
 	for a function definition, and for maps. Arrays are syntactic sugar
@@ -67,8 +71,14 @@ struct
 		| FloatValue of float
 		| StringValue of string
 		| BooleanValue of bool
-		| FunctionValue of Ast.variable_name list * Ast.statement list
+		| FunctionValue of Ast.variable_name list * Ast.statement list * symbol_table option
 		| MapValue of variable_value StringMap.t
+	and
+	(** Definition for a symbol table. *)
+	symbol_table ={
+		values: variable_value StringMap.t; (* variable values for this scope *)
+		parent_table: symbol_table option
+	}
 	
 	(**
 	returns the printable name of a variable name
@@ -92,28 +102,30 @@ struct
 		| FloatValue(f) -> string_of_float f
 		| BooleanValue(b) -> string_of_bool b
 		| StringValue(s) -> "'" ^ s ^ "'"
-		| FunctionValue(args, _) -> "function"^(string_of_args args)
+		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
 		| MapValue(map) -> "{}"
 	
-	(** Definition for a symbol table. *)
-	type symbol_table ={
-		values: variable_value StringMap.t; (* variable values for this scope *)
-		parent_table: symbol_table option
-	}
+	let string_of_symbol_type = function
+		| IntegerValue(_) -> "integer"
+		| FloatValue(_) -> "float"
+		| BooleanValue(_) -> "boolean"
+		| StringValue(_) -> "string"
+		| FunctionValue(_, _, _) -> "function"
+		| MapValue(_) -> "map"
 	
 	let rec print_symbol_map map prefix =
-        let _ = (StringMap.mapi (fun key var -> print_string (prefix^key^"="^(string_of_symbol_value var)^"\n");
-                                (match var with
-                                    | MapValue(map) -> let _ = print_symbol_map map (prefix^key^".") in ()
-                                    | _ -> ()
-                                )) map) in ()
-    
-    let rec print_symbol_table symbol_table =
-        print_string "SYMBOL TABLE:\n";
-        print_symbol_map symbol_table.values "";
-        match symbol_table.parent_table with
-        | None -> ()
-        | Some table -> (print_string "PARENT "; print_symbol_table table)
+		let _ = (StringMap.mapi (fun key var -> print_string (prefix^key^"="^(string_of_symbol_value var)^"\n");
+								(match var with
+									| MapValue(map) -> let _ = print_symbol_map map (prefix^key^".") in ()
+									| _ -> ()
+								)) map) in ()
+	
+	let rec print_symbol_table symbol_table =
+		print_string "SYMBOL TABLE:\n";
+		print_symbol_map symbol_table.values "";
+		match symbol_table.parent_table with
+		| None -> ()
+		| Some table -> (print_string "PARENT "; print_symbol_table table)
 	
 	(** creates a new empty symbol table. Called only at the start of a program,
 	creating other symbol tables is accomplished by entering a new scope.
@@ -147,7 +159,12 @@ struct
 						MapValue(map) ->
 							if assignment then
 								try
-									let _ = StringMap.find lastelem map in MapValue(StringMap.add lastelem value map)
+									let old_value_type = string_of_symbol_type (StringMap.find lastelem map) in
+									let new_value_type = string_of_symbol_type value in
+									if new_value_type = old_value_type then
+										MapValue(StringMap.add lastelem value map)
+									else
+										raise (ETypeMismatchInAssignment(lastelem, old_value_type, new_value_type))
 								with
 								| Not_found -> raise (ENotFound lastelem)
 							else
@@ -168,8 +185,12 @@ struct
 					| Ast.Name(varname) -> (
 								if assignment then( (* it is an assignment we must find the declaration *)
 									try (* it is in the current scope *)
-										let _ = StringMap.find varname table.values in 
-										{ values = StringMap.add varname value table.values; parent_table = table.parent_table }
+										let old_value_type = string_of_symbol_type (StringMap.find varname table.values) in
+										let new_value_type = string_of_symbol_type value in
+										if new_value_type = old_value_type then
+											{ values = StringMap.add varname value table.values; parent_table = table.parent_table }
+										else
+											raise ( TypeMismatchInAssignment(varname, old_value_type, new_value_type))
 									with
 										Not_found ->  (* it may be in a parent scope *)
 											{ values = table.values; parent_table = Some (resolve_replace assignment name table.parent_table value) }
@@ -191,6 +212,7 @@ struct
 												| Not_found -> { values = table.values; parent_table = Some (resolve_replace assignment name table.parent_table value) }
 												| ENotAMap(comp) -> raise (NotAMap(comp, fullname name))
 												| ENotFound(comp) -> raise (ReferenceToUndefinedMapVariable(comp, fullname name))
+												| ETypeMismatchInAssignment(comp, old_type, new_type) -> raise (TypeMismatchInMapAssignment(comp, fullname name, old_type, new_type))
 											)
 											else( (*it is a declaration, always use current scope *)
 												try
@@ -237,13 +259,19 @@ struct
 						match name with
 							Ast.Name(varname) ->
 								(try
-									StringMap.find varname table.values
+									let value = StringMap.find varname table.values in
+									match value with
+									| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, symbol_table)
+									| _ -> value
 								with
 									Not_found -> resolve name table.parent_table)
 						| Ast.CompoundName(lst) ->
 								(match lst with
 									| el:: tl -> (try
-												get_map_value el (StringMap.find el table.values) tl
+												let value = get_map_value el (StringMap.find el table.values) tl in
+												match value with
+												| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, symbol_table)
+												| _ -> value
 											with
 												Not_found -> resolve name table.parent_table)
 									| _ -> raise EUnexpectedCompoundName
@@ -257,8 +285,6 @@ struct
 	let declare name value symbol_table = resolve_replace false name (Some symbol_table) value
 	
 	let assign name value symbol_table = resolve_replace true name (Some symbol_table) value
-	
-	
 	
 	(**
 	retrieve a name's value from a symbol table

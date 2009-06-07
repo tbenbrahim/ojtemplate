@@ -240,6 +240,139 @@ struct
 							| _ -> false)
 			);
 			
+			("function call symbol table: a=1 { b=2;x=function(){}; x(); } a, b and x are in scope of x() ", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.IntegerValue(1)) s in
+						let s = SymbolTable.push_scope s in
+						let s = SymbolTable.declare (Ast.Name("b")) (SymbolTable.IntegerValue(2)) s in
+						let s = SymbolTable.declare (Ast.Name("x")) (SymbolTable.FunctionValue([],[], None)) s in
+						match SymbolTable.get_value (Ast.Name("x")) s with
+						| SymbolTable.FunctionValue(_, _, Some functionScope) ->
+								(match SymbolTable.get_value (Ast.Name("b")) functionScope with
+									| SymbolTable.IntegerValue(2) -> true
+									| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("x")) functionScope with
+									| SymbolTable.FunctionValue(_, _, _) -> true
+									| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
+									| SymbolTable.IntegerValue(1) -> true
+									| _ -> false
+								)
+						| _ -> false
+			);
+			
+			("function call symbol table: a=1;x=function(){} { b=2; x(); } a and x are in scope of x(),b is not ", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.IntegerValue(1)) s in
+						let s = SymbolTable.declare (Ast.Name("x")) (SymbolTable.FunctionValue([],[], None)) s in
+						let s = SymbolTable.push_scope s in
+						let s = SymbolTable.declare (Ast.Name("b")) (SymbolTable.IntegerValue(2)) s in
+						match SymbolTable.get_value (Ast.Name("x")) s with
+						| SymbolTable.FunctionValue(_, _, Some functionScope) ->
+								(try let _ = SymbolTable.get_value (Ast.Name("b")) functionScope in false
+								with
+								| SymbolTable.ReferenceToUndefinedVariable("b") -> true
+								| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("x")) functionScope with
+									| SymbolTable.FunctionValue(_, _, _) -> true
+									| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
+									| SymbolTable.IntegerValue(1) -> true
+									| _ -> false
+								)
+						| _ -> false
+			);
+			
+			("function call symbol table: a=1;x=function(){} { b=2; } x(); a and x are in scope of x(),b is not ", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.IntegerValue(1)) s in
+						let s = SymbolTable.declare (Ast.Name("x")) (SymbolTable.FunctionValue([],[], None)) s in
+						let s = SymbolTable.push_scope s in
+						let s = SymbolTable.declare (Ast.Name("b")) (SymbolTable.IntegerValue(2)) s in
+						let s = SymbolTable.pop_scope s in
+						match SymbolTable.get_value (Ast.Name("x")) s with
+						| SymbolTable.FunctionValue(_, _, Some functionScope) ->
+								(try let _ = SymbolTable.get_value (Ast.Name("b")) functionScope in false
+								with
+								| SymbolTable.ReferenceToUndefinedVariable("b") -> true
+								| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("x")) functionScope with
+									| SymbolTable.FunctionValue(_, _, _) -> true
+									| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
+									| SymbolTable.IntegerValue(1) -> true
+									| _ -> false
+								)
+						| _ -> false
+			);
+			
+			("map function call symbol table: a=1 { b={}; b.x=function(){}; b.x(); } a, b and b.x are in scope of b.x() ", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.IntegerValue(1)) s in
+						let s = SymbolTable.push_scope s in
+						let s = SymbolTable.declare (Ast.Name("b")) (SymbolTable.MapValue(StringMap.empty)) s in
+						let s = SymbolTable.declare (Ast.CompoundName(["b";"x"])) (SymbolTable.FunctionValue([],[], None)) s in
+						match SymbolTable.get_value (Ast.CompoundName(["b";"x"])) s with
+						| SymbolTable.FunctionValue(_, _, Some functionScope) ->
+								(match SymbolTable.get_value (Ast.Name("b")) functionScope with
+									| SymbolTable.MapValue(_) -> true
+									| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.CompoundName(["b";"x"])) functionScope with
+									| SymbolTable.FunctionValue(_, _, _) -> true
+									| _ -> false
+								) &&
+								(match SymbolTable.get_value (Ast.Name("a")) functionScope with
+									| SymbolTable.IntegerValue(1) -> true
+									| _ -> false
+								)
+						| _ -> false
+			);
+			
+			("redeclaration to different type: a=1, a='1' ", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.IntegerValue(1)) s in
+						let _ = SymbolTable.declare (Ast.Name("a")) (SymbolTable.StringValue("1")) s in
+						true
+			);
+			
+			("reassignment to different type: a=1, a='1' should fail with TypeMismatchInAssignment(\"a\",\"integer\",\"string\")", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.IntegerValue(1)) s in
+						try
+							let _ = SymbolTable.assign (Ast.Name("a")) (SymbolTable.StringValue("1")) s in
+							false
+						with
+							SymbolTable.TypeMismatchInAssignment("a","integer","string") -> true
+						| _ -> false
+			);
+			
+			("map redeclaration to different type: a={b:1}, a.b='1' ", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.MapValue(StringMap.empty)) s in
+						let s = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (SymbolTable.IntegerValue(1)) s in
+						let _ = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (SymbolTable.StringValue("1")) s in
+						true
+			);
+			
+			("reassignment to different type: a={b:1}, a.b='1'  should fail with TypeMismatchInMapAssignment(\"a\",\"a.b\",\"integer\",\"string\")", fun() ->
+						let s = SymbolTable.initialize in
+						let s = SymbolTable.declare (Ast.Name("a")) (SymbolTable.MapValue(StringMap.empty)) s in
+						let s = SymbolTable.declare (Ast.CompoundName(["a";"b"])) (SymbolTable.IntegerValue(1)) s in
+						try
+							let _ = SymbolTable.assign (Ast.CompoundName(["a";"b"])) (SymbolTable.StringValue("1")) s in
+							false
+						with
+							SymbolTable.TypeMismatchInMapAssignment("b","a.b","integer","string") -> true
+						| _ -> false
+			);
+			
 			])
 	
 end
