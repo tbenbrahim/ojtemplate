@@ -220,9 +220,9 @@ struct
 						SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s ;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Ast.Name("b")) (IntegerValue(2)) s;
-						SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], None)) s;
+						SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], SymbolTable.dummy_table)) s;
 						match SymbolTable.get_value (Ast.Name("x")) s with
-						| FunctionValue(_, _, Some functionScope) ->
+						| FunctionValue(_, _, functionScope) ->
 								SymbolTable.get_value (Ast.Name("b")) functionScope = IntegerValue(2)
 								&& SymbolTable.get_value (Ast.Name("a")) functionScope = IntegerValue(1)
 								&&
@@ -236,11 +236,11 @@ struct
 			("function call symbol table: a=1;x=function(){} { b=2; x(); } a and x are in scope of x(),b is not ", fun() ->
 						let s = SymbolTable.initialize() in
 						SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s ;
-						SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], None)) s ;
+						SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], SymbolTable.dummy_table)) s ;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Ast.Name("b")) (IntegerValue(2)) s;
 						match SymbolTable.get_value (Ast.Name("x")) s with
-						| FunctionValue(_, _, Some functionScope) ->
+						| FunctionValue(_, _, functionScope) ->
 								(try let _ = SymbolTable.get_value (Ast.Name("b")) functionScope in false
 								with
 								| ReferenceToUndefinedVariable("b") -> true
@@ -257,12 +257,12 @@ struct
 			("function call symbol table: a=1;x=function(){} { b=2; } x(); a and x are in scope of x(),b is not ", fun() ->
 						let s = SymbolTable.initialize() in
 						SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s;
-						SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], None)) s;
+						SymbolTable.declare (Ast.Name("x")) (FunctionValue([],[], SymbolTable.dummy_table)) s;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Ast.Name("b")) (IntegerValue(2)) s;
 						let s = SymbolTable.pop_scope s in
 						match SymbolTable.get_value (Ast.Name("x")) s with
-						| FunctionValue(_, _, Some functionScope) ->
+						| FunctionValue(_, _, functionScope) ->
 								(try let _ = SymbolTable.get_value (Ast.Name("b")) functionScope in false
 								with
 								| ReferenceToUndefinedVariable("b") -> true
@@ -281,9 +281,9 @@ struct
 						SymbolTable.declare (Ast.Name("a")) (IntegerValue(1)) s;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Ast.Name("b")) (MapValue(Hashtbl.create 10)) s;
-						SymbolTable.declare (Ast.CompoundName(["b";"x"])) (FunctionValue([],[], None)) s;
+						SymbolTable.declare (Ast.CompoundName(["b";"x"])) (FunctionValue([],[], SymbolTable.dummy_table)) s;
 						match SymbolTable.get_value (Ast.CompoundName(["b";"x"])) s with
-						| FunctionValue(_, _, Some functionScope) ->
+						| FunctionValue(_, _, functionScope) ->
 								(match SymbolTable.get_value (Ast.Name("b")) functionScope with
 									| MapValue(_) -> true
 									| _ -> false

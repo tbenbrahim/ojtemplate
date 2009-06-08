@@ -1,6 +1,7 @@
 %{
 	
 open Ast
+open Symbol_table
 
 exception ParseException of string
 
@@ -143,8 +144,8 @@ value:                                INT                                     { 
 																		| STRING                                  { Value(StringValue($1)) }
 																		| BOOLEAN                                 { Value(BooleanValue($1)) }
 																		| FUNCTION LPAREN arglist RPAREN statement_block 
-																		                               						{ Value(FunctionValue($3,$5,None)) }
-																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4,None)) }
+																		                               						{ Value(FunctionValue($3,$5,SymbolTable.dummy_table)) }
+																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4,SymbolTable.dummy_table)) }
 																	  | LBRACKET RBRACKET                       { ArrayExpr([]) }
 																		| LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
 																		| LBRACE RBRACE                           { MapExpr([]) }

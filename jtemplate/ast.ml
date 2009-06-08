@@ -45,7 +45,7 @@ and variable_value =
 	| FloatValue of float
 	| StringValue of string
 	| BooleanValue of bool
-	| FunctionValue of variable_name list * statement list * symbol_table option
+	| FunctionValue of variable_name list * statement list * symbol_table
 	| MapValue of (string,variable_value) Hashtbl.t
 	| Void
 	| NaN
