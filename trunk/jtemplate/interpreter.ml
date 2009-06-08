@@ -172,7 +172,13 @@ struct
 				with
 					CFBreak -> ()
 				)
-		| If(_, _, _) -> ()
+		| If(condexpr, if_stmts, else_stmts) ->
+				(try (match (evaluate_expression condexpr symbol_table) with
+						| BooleanValue(true) -> interpret_statements if_stmts (SymbolTable.push_scope symbol_table)
+						| BooleanValue(false) -> interpret_statements else_stmts (SymbolTable.push_scope symbol_table)
+						| value -> raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
+					)with
+				| CFBreak -> ())
 		| ForEach (_, _, _) -> ()
 		| Instructions(_, _, _) -> ()
 		| TemplateDef(_, _) -> ()
