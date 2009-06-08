@@ -4,9 +4,7 @@ struct
 	open RuntimeError
 	open Ast
 	
-	(** Implementation of a symbol table. This implementation takes
-	advantage of the immutable properties of maps to implement
-	nested blocks, sacrificing space and speed for ease of implementation
+	(** Implementation of a symbol table. 
 	
 	Usage:
 	The initial symbol table is created by calling SymbolTable.initialize
