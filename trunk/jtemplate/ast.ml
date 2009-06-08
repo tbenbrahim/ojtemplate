@@ -1,5 +1,3 @@
-open Stringmap
-
 type operator = | Plus | Minus | Times | Divide | Modulo
 
 type comparator =
@@ -48,13 +46,15 @@ and variable_value =
 	| StringValue of string
 	| BooleanValue of bool
 	| FunctionValue of variable_name list * statement list * symbol_table option
-	| MapValue of variable_value StringMap.t
+	| MapValue of (string,variable_value) Hashtbl.t
 	| Void
 	| NaN
 and
-(** Definition for a symbol table. *)
+(** 
+Definition for a symbol table.
+*)
 symbol_table ={
-	values: variable_value StringMap.t; (* variable values for this scope *)
+	values: (string,variable_value) Hashtbl.t; (* variable values for this scope *)
 	parent_table: symbol_table option
 }
 
@@ -74,7 +74,7 @@ and statement =
 	| Assignment of variable_name * expression
 	| Declaration of variable_name * expression
 	| ForEach of variable_name * expression * statement list
-	| For of statement * statement * statement * statement list
+	| For of statement * expression * statement * statement list
 	| ExpressionStatement of expression
 	| Break
 	| Continue

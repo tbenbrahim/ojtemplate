@@ -127,11 +127,11 @@ struct
 							(statement_list (level + 1) stmt))))
 		| Ast.Continue -> (prefix level) ^ "Continue\n"
 		| Ast.Break -> (prefix level) ^ "Break\n"
-		| Ast.For (stmt1, stmt2, stmt3, stmt_list) ->
+		| Ast.For (stmt1, expr, stmt3, stmt_list) ->
 				(prefix level) ^
 				("For\n" ^
 					((statement_descriptionl (level + 1) stmt1) ^
-						((statement_descriptionl (level + 1) stmt2) ^
+						((expr_descriptionl (level + 1) expr) ^
 							((statement_descriptionl (level + 1) stmt3) ^
 								(statement_list (level + 1) stmt_list)))))
 		| Ast.Noop -> (prefix level) ^ "Noop\n"
