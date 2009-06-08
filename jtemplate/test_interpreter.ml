@@ -276,7 +276,40 @@ struct
 								Ast.CompOp(Ast.VariableExpr(Name("i")), Ast.LessThan, Ast.Value(IntegerValue(10000))),
 								Ast.Assignment(Name("i"), Ast.BinaryOp(Ast.VariableExpr(Name("i")), Ast.Plus, Ast.Value(IntegerValue(1)))),
 								[
-								    Ast.Assignment(Name("a"),Ast.BinaryOp(Ast.VariableExpr(Name("a")),Ast.Plus,Ast.Value(IntegerValue(2))));
+								Ast.Assignment(Name("a"), Ast.BinaryOp(Ast.VariableExpr(Name("a")), Ast.Plus, Ast.Value(IntegerValue(2))));
+								])
+							] in
+						Interpreter.interpret_statements stmts s;
+						SymbolTable.get_value (Name("a")) s = IntegerValue(20000) &&
+						SymbolTable.is_undefined (Name("i")) s
+			);
+			("for loop with break: var a=0;for(var i=0;i<10000-;i=i+1){a=a+2;break} a=2? i not in scope?", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Ast.Declaration(Name("a"), Value(IntegerValue(0)));
+							Ast.For(Ast.Declaration(Name("i"), Ast.Value(IntegerValue(0))),
+								Ast.CompOp(Ast.VariableExpr(Name("i")), Ast.LessThan, Ast.Value(IntegerValue(10000))),
+								Ast.Assignment(Name("i"), Ast.BinaryOp(Ast.VariableExpr(Name("i")), Ast.Plus, Ast.Value(IntegerValue(1)))),
+								[
+								Ast.Assignment(Name("a"), Ast.BinaryOp(Ast.VariableExpr(Name("a")), Ast.Plus, Ast.Value(IntegerValue(2))));
+								Ast.Break;
+								])
+							] in
+						Interpreter.interpret_statements stmts s;
+						SymbolTable.get_value (Name("a")) s = IntegerValue(2) &&
+						SymbolTable.is_undefined (Name("i")) s
+			);
+			("for loop with continue: var a=0;for(var i=0;i<10000-;i=i+1){a=a+2;continue;a=a+2} a=20000? i not in scope?", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Ast.Declaration(Name("a"), Value(IntegerValue(0)));
+							Ast.For(Ast.Declaration(Name("i"), Ast.Value(IntegerValue(0))),
+								Ast.CompOp(Ast.VariableExpr(Name("i")), Ast.LessThan, Ast.Value(IntegerValue(10000))),
+								Ast.Assignment(Name("i"), Ast.BinaryOp(Ast.VariableExpr(Name("i")), Ast.Plus, Ast.Value(IntegerValue(1)))),
+								[
+								Ast.Assignment(Name("a"), Ast.BinaryOp(Ast.VariableExpr(Name("a")), Ast.Plus, Ast.Value(IntegerValue(2))));
+								Ast.Continue;
+								Ast.Assignment(Name("a"), Ast.BinaryOp(Ast.VariableExpr(Name("a")), Ast.Plus, Ast.Value(IntegerValue(2))));
 								])
 							] in
 						Interpreter.interpret_statements stmts s;
