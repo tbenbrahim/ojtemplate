@@ -8,6 +8,8 @@ struct
 	exception EInvalidOperation of Ast.operator * string  (* operator, typename *)
 	exception EInvalidComparaison of Ast.comparator * string (* comparator, typename *)
 	exception EMismatchedTypeInCompare of string * string (* type1, type2 *)
+	exception ENotAFunction of string (* variable name *)
+	exception ENoScopeInFunctionCall
 	
 	(* control flow exceptions *)
 	exception CFReturn of variable_value
@@ -133,7 +135,15 @@ struct
 						| _ ->	raise (EMismatchedTypeInCompare(SymbolTable.string_of_symbol_type value1,
 											SymbolTable.string_of_symbol_type value2))
 				)
-		| FunctionCall(variable, exprs) -> Void
+		| FunctionCall(variable, exprs) ->
+				(match SymbolTable.get_value variable symbol_table with
+					| FunctionValue(arglist, stmts, scope) -> (* TODO must handle arguments *)
+							(try 
+								interpret_statements stmts (SymbolTable.push_scope scope); Void
+							with
+							| CFReturn value -> value)
+					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
+				)
 		| MapExpr(str_expr_list) ->
 				MapValue(make_map str_expr_list symbol_table)
 		| ArrayExpr(expr_list) ->

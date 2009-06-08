@@ -14,7 +14,7 @@ struct
 	in process_nested_block symbol_table
 	in let symbol_table = SymbolTable.pop_scope symbol_table
 	
-	function calls get the same scope as the scope the function is declared in. Example:
+	function calls get the same scope as the scope the function is declared in (static scoping). Example:
 	[{
 	var b = 1;
 	var x = function() {
@@ -25,10 +25,11 @@ struct
 	....var d = 2;
 	....var w = function() {
 	....};
+	....w();// a, b, c, d, w, x, y, z are in scope
 	..}
-	..w();// a, b, c, d, w, x, y, z are in scope
 	..y();// a, b, x, y, z are in scope
 	..z();// b, x, z are in scope
+	..x();// b, x ,z are in scope
 	};
 	var z = function() {
 	};
@@ -118,7 +119,9 @@ struct
 	*)
 	let initialize () =
 		{ values = Hashtbl.create 10 ; parent_table = None }
-	
+		
+	let dummy_table =initialize() (* used in AST as placeholder in function declarations *)
+		
 	(** creates a new symbol table for a nested scope. *)
 	let push_scope symbol_table =
 		{ values = Hashtbl.create 10 ; parent_table = Some symbol_table	}
@@ -243,7 +246,7 @@ struct
 								(try
 									let value = Hashtbl.find table.values varname in
 									match value with
-									| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, symbol_table)
+									| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, table)
 									| _ -> value
 								with
 									Not_found -> resolve name table.parent_table)
@@ -252,7 +255,7 @@ struct
 									| el:: tl -> (try
 												let value = get_map_value el (Hashtbl.find table.values el) tl in
 												match value with
-												| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, symbol_table)
+												| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, table)
 												| _ -> value
 											with
 												Not_found -> resolve name table.parent_table)

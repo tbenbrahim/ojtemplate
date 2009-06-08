@@ -334,6 +334,20 @@ struct
 						SymbolTable.get_value (Name("a")) s = IntegerValue(10000) &&
 						SymbolTable.is_undefined (Name("i")) s
 			);
+			("static scoping test: var x=2;var f=function(){return x;};\n\t\tvar g=function(){var x=1;return f();} var y=g();y=2?", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Ast.Declaration(Name("x"), Value(IntegerValue(2)));
+							Ast.Declaration(Name("f"), Value(FunctionValue([],
+										[Return(VariableExpr(Name("x")))], SymbolTable.dummy_table)));
+							Ast.Declaration(Name("g"), Value(FunctionValue([],[
+										Ast.Declaration(Name("x"), Value(IntegerValue(1)));
+										Return(FunctionCall(Name("f"),[]));], SymbolTable.dummy_table)));
+							Ast.Declaration(Name("y"), FunctionCall(Name("g"),[]));
+							] in
+						Interpreter.interpret_statements stmts s;
+						SymbolTable.get_value (Name("y")) s = IntegerValue(2)
+			);
 			
 			])
 	
