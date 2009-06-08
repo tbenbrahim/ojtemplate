@@ -102,10 +102,10 @@ statement:                            for_target_statement SEMICOLON          { 
 																		| RETURN SEMICOLON                        { Return(Value(Void)) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
                                                                               { ForEach(Name($3),$5,$7) }
-                                    | WHILE LPAREN statement RPAREN statement_block 
+                                    | WHILE LPAREN expression RPAREN statement_block 
                                                                               { For(Noop,$3,Noop,$5) }
                                     | FOR LPAREN for_target_statement SEMICOLON 
-                                                 for_target_statement SEMICOLON 
+                                                 expression SEMICOLON 
                                                  for_target_statement RPAREN statement_block
                                                                               { For($3,$5,$7,$9) }
                                     | IF LPAREN expression RPAREN statement_block ELSE statement_block
