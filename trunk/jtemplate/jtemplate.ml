@@ -6,7 +6,9 @@ open Symbol_table
 open Interpreter
 open Library_builtin
 open Library_string
+open Library_io
 open Library_helper
+
 
 let get_ast lexbuf =
 	try Parser.program Lexer.main lexbuf
