@@ -72,7 +72,7 @@ let get_env = function
 %token OR
 
 %start program
-%type <Ast.statement list> program
+%type <Ast.statement> program
 
 %left COMPOP
 %left PLUS MINUS
@@ -80,14 +80,14 @@ let get_env = function
 
 
 %%
-program:                              statements EOF                          { $1 }
-                                    | EOF                                     { [] }
+program:                              statements EOF                          { StatementBlock($1) }
+                                    | EOF                                     { StatementBlock([]) }
 ;
 statements:                           statement                               { [$1] }
                                     | statement statements                    { $1::$2 }
                                     | statement_block                         { $1 } 
 ;
-statement_block:                      LBRACE statements RBRACE                { $2 } 
+statement_block:                      LBRACE statements RBRACE                { [StatementBlock($2)] } 
                                     | LBRACE RBRACE                           { [] }
 ;
 /* for_target_statements can appear inside a for() statements */

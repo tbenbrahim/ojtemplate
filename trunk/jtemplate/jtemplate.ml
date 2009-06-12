@@ -4,6 +4,9 @@ open Lexing
 open Ast_info
 open Symbol_table
 open Interpreter
+open Library_builtin
+open Library_string
+open Library_helper
 
 let get_ast lexbuf =
 	try Parser.program Lexer.main lexbuf
@@ -25,6 +28,9 @@ let parse filename =
 	in get_ast lexbuf
 
 let _ =
+	let symbol_table = SymbolTable.initialize () in
+	register_library BuiltinLibrary.exported symbol_table;
+	register_library StringLibrary.exported symbol_table;
 	let _ = Parsing.set_trace false in
 	let ast = parse "c:\\test.jtp"
-	in List.fold_left (fun acc el -> AstInfo.print_ast el) () ast
+	in AstInfo.print_ast ast

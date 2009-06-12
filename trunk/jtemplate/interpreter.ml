@@ -121,25 +121,26 @@ struct
 				let type2 = SymbolTable.value_type value2 in
 				(if type1 = type2 then
 						match type1 with
-						| SymbolTable.IntegerType -> compare_same_type value1 comparator value2
-						| SymbolTable.StringType -> compare_same_type value1 comparator value2
-						| SymbolTable.FloatType -> compare_same_type value1 comparator value2
-						| SymbolTable.BooleanType -> restricted_compare value1 comparator value2
-						| SymbolTable.MapType -> restricted_compare value1 comparator value2
-						| SymbolTable.FunctionType -> restricted_compare value1 comparator value2
-						| SymbolTable.VoidType -> restricted_compare value1 comparator value2
-						| SymbolTable.NaNType -> restricted_compare value1 comparator value2
+						| SymbolTable.IntegerType | SymbolTable.StringType | SymbolTable.FloatType -> compare_same_type value1 comparator value2
+						| SymbolTable.BooleanType | SymbolTable.MapType | SymbolTable.FunctionType
+						| SymbolTable.LibraryCallType | SymbolTable.VoidType | SymbolTable.NaNType -> restricted_compare value1 comparator value2
 					else
 						match casting_type value1 value2 with
 						| FloatCast -> compare_same_type (FloatValue(cast_to_float value1)) comparator (FloatValue(cast_to_float value2))
 						| _ ->	raise (EMismatchedTypeInCompare(SymbolTable.string_of_symbol_type value1,
 											SymbolTable.string_of_symbol_type value2))
 				)
-		| FunctionCall(variable, exprs) ->
+		| FunctionCall(variable, exprlist) ->
+				let value_list = evaluate_exprs exprlist symbol_table in
 				(match SymbolTable.get_value variable symbol_table with
-					| FunctionValue(arglist, stmts, scope) -> (* TODO must handle arguments *)
-							(try 
-								interpret_statements stmts (SymbolTable.push_scope scope); Void
+					| FunctionValue(arglist, stmts, scope) ->
+							(try
+								interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list); Void
+							with
+							| CFReturn value -> value)
+					| LibraryFunction(arglist, code, scope) ->
+							(try
+								code (SymbolTable.new_function_call_scope variable scope arglist value_list); Void
 							with
 							| CFReturn value -> value)
 					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
@@ -150,6 +151,9 @@ struct
 				MapValue(make_array expr_list symbol_table)
 		| VariableExpr(variable) -> SymbolTable.get_value variable symbol_table
 		| Value(value) -> value
+	and
+	evaluate_exprs exprlist symbol_table =
+		List.map (fun expr -> evaluate_expression expr symbol_table ) exprlist
 	and
 	interpret_statement statement symbol_table =
 		match statement with
@@ -189,6 +193,7 @@ struct
 						| value -> raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
 					)with
 				| CFBreak -> ())
+		| StatementBlock(_) -> ()
 		| ForEach (_, _, _) -> ()
 		| Instructions(_, _, _) -> ()
 		| TemplateDef(_, _) -> ()
