@@ -1,4 +1,4 @@
-type operator = | Plus | Minus | Times | Divide | Modulo
+type operator = | Plus | Minus | Times | Divide | Modulo | And | Or
 
 type comparator =
 	| LessThan
@@ -8,8 +8,6 @@ type comparator =
 	| GreaterThan
 	| NotEqual
 
-(* type value_type= StringType | IntegerType | FloatType | BooleanType |   *)
-(* FunctionType | ArrayType | MapType                                      *)
 type label = | Label of string
 
 type text = string
@@ -60,7 +58,10 @@ symbol_table ={
 }
 
 and variable_name =
-	| Name of string | CompoundName of (string list)
+	| Name of string 
+	| CompoundName of string list 
+	| EvaluatedName of variable_name list 
+	| ArrayIndex of string*expression 
 	
 and expression =
 	| BinaryOp of expression * operator * expression

@@ -9,7 +9,6 @@ open Library_string
 open Library_io
 open Library_helper
 
-
 let get_ast lexbuf =
 	try Parser.program Lexer.main lexbuf
 	with
@@ -33,6 +32,10 @@ let _ =
 	let symbol_table = SymbolTable.initialize () in
 	register_library BuiltinLibrary.exported symbol_table;
 	register_library StringLibrary.exported symbol_table;
+	register_library IOLibrary.exported symbol_table;
 	let _ = Parsing.set_trace false in
-	let ast = parse "c:\\test.jtp"
-	in AstInfo.print_ast ast
+	let ast = parse "..\\samples\\functional.jtp"
+	in 
+	AstInfo.print_ast ast;
+	Interpreter.interpret_statement ast symbol_table
+	

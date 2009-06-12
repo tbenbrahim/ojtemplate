@@ -13,6 +13,8 @@ struct
 		| Ast.Divide -> "/"
 		| Ast.Times -> "*"
 		| Ast.Modulo -> "%"
+		| Ast.And -> "&&"
+		| Ast.Or -> "||"
 	
 	let compopname =
 		function
@@ -26,8 +28,8 @@ struct
 	let rec statement_descriptionl level statement =
 		match statement with
 		| Ast.StatementBlock(stmts) ->
-			List.fold_left(fun pre stmt->pre^(statement_descriptionl (level+1) stmt))
-			((prefix level) ^"Statement block\n") stmts
+				List.fold_left(fun pre stmt -> pre^(statement_descriptionl (level + 1) stmt))
+					((prefix level) ^"Statement block\n") stmts
 		| Ast.Assignment (var, expr) ->
 				(prefix level) ^
 				("Assignment\n" ^
@@ -147,7 +149,13 @@ struct
 				("MapReference " ^
 					((List.fold_left (fun acc el -> el ^ ("." ^ acc)) "" name_list)
 						^ "\n"))
-	
+		| Ast.ArrayIndex(name, expr) ->
+				(prefix level) ^
+				"ArrayIndex " ^name^"[]\n"^
+				(expr_descriptionl (level + 1) expr)
+		| Ast.EvaluatedName(lst) ->
+				(prefix level) ^"EvaluatedName\n"^
+				(List.fold_left (fun acc el -> acc ^ (var_descriptionl (level+1) el)) "" lst)
 	and expr_descriptionl level expr =
 		match expr with
 		| Ast.BinaryOp (op1, op, op2) ->
@@ -167,16 +175,15 @@ struct
 		| Ast.Value value -> value_descriptionl level value
 		| Ast.FunctionCall (var, expr_list) ->
 				(prefix level) ^
-				("FunctionCall " ^
-					((var_descriptionl 0 var) ^
+				("FunctionCall\n" ^
+					((var_descriptionl (level+1) var) ^
 						(expression_list (level + 1) expr_list)))
 		| Ast.MapExpr v ->
 				(prefix level) ^ ("Map\n" ^ ((property_list (level + 1) v) ^ "\n"))
 		| Ast.ArrayExpr v ->
 				(prefix level) ^ ("Array\n" ^ (expression_list (level + 1) v))
 		| Ast.VariableExpr v -> var_descriptionl level v
-	(* | Ast.Expression expr -> expr_descriptionl level expr *)
-	
+		
 	and value_descriptionl level value =
 		match value with
 		| Ast.IntegerValue v ->
@@ -188,6 +195,7 @@ struct
 								(fun acc el -> (var_descriptionl (level + 1) el) ^ acc) ""
 								arglist)
 						^ (statement_list (level + 1) stmts)))
+		| Ast.LibraryFunction(_, _, _) -> "" (* never in ast *)
 		| Ast.BooleanValue v ->
 				(prefix level) ^ ("Boolean " ^ ((string_of_bool v) ^ "\n"))
 		| Ast.StringValue v -> (prefix level) ^ ("String " ^ (v ^ "\n"))
