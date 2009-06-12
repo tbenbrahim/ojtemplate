@@ -8,7 +8,7 @@ struct
 	open Library_string
 	open Interpreter
 	
-	let test_suite = ("String library",[
+	let test_suite = ("String Library",[
 			("toUppercase()", fun () ->
 						let symbol_table = SymbolTable.initialize () in
 						register_library StringLibrary.exported symbol_table;

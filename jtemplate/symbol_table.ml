@@ -59,8 +59,9 @@ struct
 			Ast.CompoundName(lst) ->
 				(match lst with
 					| el:: lst -> List.fold_left(fun acc el -> acc^"."^el) el lst
-					| [] -> "")
+					| [] -> "") 
 		| Ast.Name(name) -> name
+		| Ast.ArrayIndex(_,_) | Ast.EvaluatedName(_) -> "unresolved name" (* will never get these *)
 	
 	let string_of_args args =
 		match args with
@@ -245,7 +246,8 @@ struct
 		| Some table -> (
 					try
 						match name with
-							Ast.Name(varname) ->
+						| Ast.EvaluatedName(_) | Ast.ArrayIndex(_, _) -> raise (ENotFound ("unresolved name")) (* will never get these two *)
+						| Ast.Name(varname) ->
 								(try
 									let value = Hashtbl.find table.values varname in
 									match value with

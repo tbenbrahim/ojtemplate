@@ -16,7 +16,7 @@ struct
 	exception CFBreak
 	exception CFContinue
 	
-	type cast_type = IntegerCast | FloatCast | StringCast
+	type cast_type = | IntegerCast | FloatCast | StringCast | BoolCast
 	
 	let casting_type value1 value2 =
 		let type1 = SymbolTable.value_type value1 in
@@ -28,6 +28,8 @@ struct
 			FloatCast
 		else if type1 = SymbolTable.IntegerType && type2 = SymbolTable.IntegerType then
 			IntegerCast
+		else if type1 = SymbolTable.BooleanType && type2 = SymbolTable.BooleanType then
+			BoolCast
 		else
 			raise (EIncompatibleTypes(SymbolTable.string_of_symbol_type value1,
 						SymbolTable.string_of_symbol_type value2))
@@ -82,12 +84,34 @@ struct
 			| _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
 		)
 	and
+	resolve_variable_name varname symbol_table =
+		match varname with
+		| Name(_) | CompoundName(_) -> varname
+		| ArrayIndex(_, _) | EvaluatedName(_) ->
+				let rec resolve variable =
+					match variable with
+					| ArrayIndex(name, expr) ->
+							[name; cast_to_string(evaluate_expression expr symbol_table)]
+					| Name(name) -> [name]
+					| CompoundName(lst) -> lst
+					| EvaluatedName(lst) ->
+							List.fold_left (fun acc el -> List.append acc (resolve el)) [] lst
+				in CompoundName(resolve varname)
+	and
 	evaluate_expression expr symbol_table =
 		match expr with
 		| BinaryOp(expr1 , operator , expr2) ->
 				let value1 = evaluate_expression expr1 symbol_table in
 				let value2 = evaluate_expression expr2 symbol_table in
 				(match casting_type value1 value2 with
+					| BoolCast ->
+							(let BooleanValue(b1) = value1 in
+								let BooleanValue(b2) = value2 in
+								(match operator with
+									| And -> BooleanValue(b1 && b2)
+									| Or -> BooleanValue(b1 || b2)
+									| _ -> raise (EInvalidOperation (operator,"boolean"))
+								))
 					| StringCast ->
 							(match operator with
 								| Plus -> StringValue((cast_to_string value1) ^ (cast_to_string value2))
@@ -100,7 +124,7 @@ struct
 								| Divide -> let divisor = cast_to_float value2 in
 										if divisor <> 0.0 then FloatValue( (cast_to_float value1) /. divisor)
 										else NaN
-								| Modulo -> raise (EInvalidOperation (operator,"float"))
+								| _ -> raise (EInvalidOperation (operator,"float"))
 							)
 					| IntegerCast -> (match operator with
 								| Plus -> IntegerValue( (cast_to_integer value1) + (cast_to_integer value2))
@@ -112,6 +136,7 @@ struct
 								| Modulo -> let divisor = cast_to_integer value2 in
 										if divisor <> 0 then IntegerValue( (cast_to_integer value1) mod divisor)
 										else NaN
+								| _ -> raise (EInvalidOperation (operator,"integer"))
 							)
 				)
 		| CompOp (expr1, comparator, expr2) ->
@@ -132,7 +157,7 @@ struct
 				)
 		| FunctionCall(variable, exprlist) ->
 				let value_list = evaluate_exprs exprlist symbol_table in
-				(match SymbolTable.get_value variable symbol_table with
+				(match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
 					| FunctionValue(arglist, stmts, scope) ->
 							(try
 								interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list); Void
@@ -149,7 +174,8 @@ struct
 				MapValue(make_map str_expr_list symbol_table)
 		| ArrayExpr(expr_list) ->
 				MapValue(make_array expr_list symbol_table)
-		| VariableExpr(variable) -> SymbolTable.get_value variable symbol_table
+		| VariableExpr(variable) ->
+				SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table
 		| Value(value) -> value
 	and
 	evaluate_exprs exprlist symbol_table =
@@ -158,10 +184,10 @@ struct
 	interpret_statement statement symbol_table =
 		match statement with
 		| Assignment(varname, expression) ->
-				SymbolTable.assign varname
+				SymbolTable.assign (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
 		| Declaration(varname, expression) ->
-				SymbolTable.declare varname
+				SymbolTable.declare (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
 		| ExpressionStatement expression ->
 				let _ = evaluate_expression expression symbol_table in ()
@@ -193,12 +219,11 @@ struct
 						| value -> raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
 					)with
 				| CFBreak -> ())
-		| StatementBlock(_) -> ()
+		| StatementBlock(statements) -> interpret_statements statements symbol_table
 		| ForEach (_, _, _) -> ()
 		| Instructions(_, _, _) -> ()
 		| TemplateDef(_, _) -> ()
-		| Return expression ->
-				raise (CFReturn(evaluate_expression expression symbol_table))
+		| Return expression -> raise (CFReturn(evaluate_expression expression symbol_table))
 		| Continue ->	raise CFContinue
 		| Break -> raise CFBreak
 	and

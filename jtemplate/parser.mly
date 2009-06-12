@@ -74,6 +74,7 @@ let get_env = function
 %start program
 %type <Ast.statement> program
 
+%left AND OR
 %left COMPOP
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
@@ -126,18 +127,23 @@ expression:                           value                                   { 
 																		| expression TIMES expression             { BinaryOp($1,Times,$3) }
 																		| expression DIVIDE expression            { BinaryOp($1,Divide,$3) }
 																		| expression MODULO expression            { BinaryOp($1,Modulo,$3) }
+                                    | expression AND expression               { BinaryOp($1,And,$3) }
+                                    | expression OR expression                { BinaryOp($1,Or,$3) }
 																		| expression COMPOP expression            { CompOp($1,$2,$3) }
 ;
 function_call:                        variable LPAREN expr_list RPAREN        { FunctionCall($1,$3) }
 ;
 variable:                             ids                                     {
 																																								 match $1 with
-																																									  id :: [] -> Name(id)
-																																									| _ -> CompoundName($1)
+																																									  Name(id) :: [] -> Name(id)
+																																									| _ -> EvaluatedName($1)
 																																							}
-; 
-ids:                                  ID                                      { [$1] (*TODO array ref*)}
-                                    | ID DOT ids                              { $1::$3 }
+;
+array_index:                          ID LBRACKET expression RBRACKET         { ArrayIndex($1,$3) }
+;
+ids:                                  ID                                      { [Name($1)] (*TODO array ref*)}
+                                    | array_index                             { [$1] }
+                                    | ID DOT ids                              { Name($1)::$3 }
 ;
 value:                                INT                                     { Value(IntegerValue($1)) }
 																		| REAL                                    { Value(FloatValue($1)) }
