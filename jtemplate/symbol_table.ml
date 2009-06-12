@@ -4,7 +4,7 @@ struct
 	open RuntimeError
 	open Ast
 	
-	(** Implementation of a symbol table. 
+	(** Implementation of a symbol table.
 	
 	Usage:
 	The initial symbol table is created by calling SymbolTable.initialize
@@ -29,7 +29,7 @@ struct
 	..}
 	..y();// a, b, x, y, z are in scope
 	..z();// b, x, z are in scope
-	..x();// b, x ,z are in scope
+	..x();// b, x , z are in scope
 	};
 	var z = function() {
 	};
@@ -73,6 +73,7 @@ struct
 		| BooleanValue(b) -> string_of_bool b
 		| StringValue(s) -> s
 		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
+		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
 		| MapValue(map) -> "{}" (* TODO recurse *)
 		| Void -> "void"
 		| NaN -> "NaN"
@@ -83,11 +84,12 @@ struct
 		| BooleanValue(_) -> "boolean"
 		| StringValue(_) -> "string"
 		| FunctionValue(_, _, _) -> "function"
+		| LibraryFunction(_, _, _) -> "library call"
 		| MapValue(_) -> "map"
 		| Void -> "void"
 		| NaN -> "NaN"
 	
-	type valuetype = IntegerType | FloatType | BooleanType | StringType | FunctionType | MapType | VoidType | NaNType
+	type valuetype = IntegerType | FloatType | BooleanType | StringType | FunctionType | LibraryCallType | MapType | VoidType | NaNType
 	
 	let value_type = function
 		| IntegerValue(_) -> IntegerType
@@ -95,6 +97,7 @@ struct
 		| BooleanValue(_) -> BooleanType
 		| StringValue(_) -> StringType
 		| FunctionValue(_, _, _) -> FunctionType
+		| LibraryFunction(_, _, _) -> LibraryCallType
 		| MapValue(_) -> MapType
 		| Void -> VoidType
 		| NaN -> NaNType
@@ -119,9 +122,9 @@ struct
 	*)
 	let initialize () =
 		{ values = Hashtbl.create 10 ; parent_table = None }
-		
-	let dummy_table =initialize() (* used in AST as placeholder in function declarations *)
-		
+	
+	let dummy_table = initialize() (* used in AST as placeholder in function declarations *)
+	
 	(** creates a new symbol table for a nested scope. *)
 	let push_scope symbol_table =
 		{ values = Hashtbl.create 10 ; parent_table = Some symbol_table	}
@@ -288,7 +291,22 @@ struct
 			let _ = get_value name symbol_table in true
 		with
 			_ -> false
-			
+	
 	let is_undefined name symbol_table = not (is_defined name symbol_table)
+	
+	let rec put_args_in_scope arglist vallist symbol_table =
+		match arglist with
+		| [] -> ()
+		| hd:: tl ->
+				let _ = declare hd (List.hd vallist) symbol_table in
+				put_args_in_scope tl (List.tl vallist) symbol_table
+	
+	let new_function_call_scope name scope arglist vallist =
+		if List.length arglist = List.length vallist then
+			let scope =
+				push_scope scope in
+			put_args_in_scope arglist vallist scope; scope
+		else
+			raise (MismatchedCallArgs((fullname name), List.length arglist, List.length vallist))
 	
 end

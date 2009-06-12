@@ -25,6 +25,9 @@ struct
 	
 	let rec statement_descriptionl level statement =
 		match statement with
+		| Ast.StatementBlock(stmts) ->
+			List.fold_left(fun pre stmt->pre^(statement_descriptionl (level+1) stmt))
+			((prefix level) ^"Statement block\n") stmts
 		| Ast.Assignment (var, expr) ->
 				(prefix level) ^
 				("Assignment\n" ^
@@ -138,8 +141,8 @@ struct
 	
 	and var_descriptionl level var =
 		match var with
-		| Ast.Name name -> (prefix level) ^ ("Variable " ^ (name ^ "\n"))
-		| Ast.CompoundName name_list ->
+		| Ast.Name(name) -> (prefix level) ^ ("Variable " ^ (name ^ "\n"))
+		| Ast.CompoundName (name_list) ->
 				(prefix level) ^
 				("MapReference " ^
 					((List.fold_left (fun acc el -> el ^ ("." ^ acc)) "" name_list)

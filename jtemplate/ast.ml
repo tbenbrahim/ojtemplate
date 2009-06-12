@@ -12,7 +12,7 @@ type comparator =
 (* FunctionType | ArrayType | MapType                                      *)
 type label = | Label of string
 
-type text = string 
+type text = string
 
 type replacement =
 	(text * expression)
@@ -46,21 +46,22 @@ and variable_value =
 	| StringValue of string
 	| BooleanValue of bool
 	| FunctionValue of variable_name list * statement list * symbol_table
-	| MapValue of (string,variable_value) Hashtbl.t
+	| LibraryFunction of variable_name list * (symbol_table -> unit) * symbol_table
+	| MapValue of (string, variable_value) Hashtbl.t
 	| Void
 	| NaN
 and
-(** 
+(**
 Definition for a symbol table.
 *)
 symbol_table ={
-	values: (string,variable_value) Hashtbl.t; (* variable values for this scope *)
+	values: (string, variable_value) Hashtbl.t; (* variable values for this scope *)
 	parent_table: symbol_table option
 }
 
 and variable_name =
-	| Name of string | CompoundName of string list
-
+	| Name of string | CompoundName of (string list)
+	
 and expression =
 	| BinaryOp of expression * operator * expression
 	| CompOp of expression * comparator * expression
@@ -82,5 +83,6 @@ and statement =
 	| Return of expression
 	| If of expression * statement list * statement list
 	| TemplateDef of variable_name * template_spec list
-	| Instructions of variable_name * variable_name list
-	* replacement_spec list
+	| Instructions of variable_name * variable_name list * replacement_spec list
+	| StatementBlock of statement list
+
