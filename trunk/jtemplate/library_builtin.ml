@@ -94,6 +94,7 @@ struct
 		);
 		(["Date";"now"],[], fun stbl ->
 					let t = (localtime (time())) in
+					(* FIX: below is not 100% reliable *)
 					let gmt_offset = (localtime (time())).tm_hour - (gmtime (time())).tm_hour in
 					let h = Hashtbl.create 10 in
 					Hashtbl.add h "second" (IntegerValue(t.tm_sec));
