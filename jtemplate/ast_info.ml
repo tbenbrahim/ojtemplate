@@ -191,9 +191,9 @@ struct
 				(prefix level) ^ ("Integer " ^ ((string_of_int v) ^ "\n"))
 		| Ast.FunctionValue (arglist, stmts, _) ->
 				(prefix level) ^
-				("Function\n" ^
+				("Function " ^
 					((List.fold_left
-								(fun acc el -> el^ "," ^ acc) "" arglist)
+								(fun acc el -> acc ^ el ^ "," ) "" arglist) ^ "\n"
 						^ (statement_list (level + 1) stmts)))
 		| Ast.LibraryFunction(_, _, _) -> "" (* never in ast *)
 		| Ast.BooleanValue v ->
