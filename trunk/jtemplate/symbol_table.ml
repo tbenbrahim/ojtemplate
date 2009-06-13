@@ -370,6 +370,7 @@ struct
 		match arr with
 		| MapValue(h, ArraySubtype) -> (
 					match Hashtbl.find h "length" with
+					| IntegerValue(0) ->[]
 					| IntegerValue(len) ->
 							let rec loop lst ind =
 								(let lst = (Hashtbl.find h (string_of_int ind)):: lst in
