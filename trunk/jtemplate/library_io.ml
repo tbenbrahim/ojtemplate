@@ -23,13 +23,17 @@ struct
 				| End_of_file -> ("", true)
 			) in
 		[
-		(["print"],["value"], fun (stbl) ->
-					let value = SymbolTable.get_value (Name("value")) stbl in
-					print_string (Interpreter.cast_to_string value)
+		(["print"],["[value"], fun (stbl) ->
+					let _ = List.map (fun el -> print_string (Interpreter.cast_to_string el))
+							(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in ()
 		);
-		(["println"],["value"], fun (stbl) ->
-					let value = SymbolTable.get_value (Name("value")) stbl in
-					print_string (Interpreter.cast_to_string value); print_newline()
+		(["println"],["[value"], fun (stbl) ->
+					let _ = List.map (fun el -> print_string (Interpreter.cast_to_string el))
+							(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in
+					print_newline()
+		);
+		(["readln"],[], fun (stbl) ->
+					raise (Interpreter.CFReturn(StringValue(read_line())))
 		);
 		(["File";"openForWriting"],["handle"; "filename"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
@@ -66,26 +70,27 @@ struct
 					with
 					| Sys_error msg -> raise (LibraryError ("System error on closeFile:" ^ msg ))
 		);
-		(["File";"write"],["handle"; "string"], fun stbl ->
+		(["File";"write"],["handle"; "[value"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
-					let data = Interpreter.cast_to_string (SymbolTable.get_value (Name("string")) stbl) in
 					let (c, filename) = get_descriptor handle "write" in
 					match c with
 					| OutChannel(ch) ->
 							( try
-								output_string ch data
+								let _ = List.map (fun el -> output_string ch (Interpreter.cast_to_string el))
+										(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in ()
 							with
 							| _ -> raise (LibraryError ("error writing file "^filename^" in write")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
-		(["File";"writeln"],["handle"; "data"], fun stbl ->
+		(["File";"writeln"],["handle"; "[value"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
-					let data = Interpreter.cast_to_string (SymbolTable.get_value (Name("data")) stbl) in
 					let (c, filename) = get_descriptor handle "writeln" in
 					match c with
 					| OutChannel(ch) ->
 							(try
-								output_string ch (data ^ "\n")
+								let _ = List.map (fun el -> output_string ch (Interpreter.cast_to_string el))
+										(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in
+								output_string ch ( "\n")
 							with
 							| _ -> raise (LibraryError ("error writing file "^filename^" in writeln")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))

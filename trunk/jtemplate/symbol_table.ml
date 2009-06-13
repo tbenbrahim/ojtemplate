@@ -58,6 +58,8 @@ struct
 	
 	exception EInvalidArrayIndex of string  (*key, map*)
 	
+	exception EUnexpected
+	
 	(**
 	returns the printable name of a variable name
 	@param name an Ast.variable_name type
@@ -363,5 +365,18 @@ struct
 		with
 		| EMismatchedArgsInCall -> raise (MismatchedCallArgs(fullname name))
 		| EVarArgsMustbeLast -> raise (VarArgsMustbeLast(fullname name))
+	
+	let list_of_array arr =
+		match arr with
+		| MapValue(h, ArraySubtype) -> (
+					match Hashtbl.find h "length" with
+					| IntegerValue(len) ->
+							let rec loop lst ind =
+								(let lst = (Hashtbl.find h (string_of_int ind)):: lst in
+									if ind = 0 then lst else (loop lst (ind - 1)))
+							in loop [] (len - 1)
+					| _ -> raise EUnexpected
+				)
+		| _ -> raise EUnexpected
 	
 end
