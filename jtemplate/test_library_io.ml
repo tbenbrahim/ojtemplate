@@ -9,7 +9,7 @@ struct
 	open Interpreter
 	
 	let test_suite = ("I/O library",[
-			("print(data)", fun () ->
+			("print(data...)", fun () ->
 						let symbol_table = SymbolTable.initialize () in
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
@@ -19,7 +19,7 @@ struct
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						true
 			);
-			("println(data)", fun () ->
+			("println(data...)", fun () ->
 						let symbol_table = SymbolTable.initialize () in
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
