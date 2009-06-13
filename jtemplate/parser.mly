@@ -28,49 +28,14 @@ let get_env = function
 %token <float> REAL
 %token <bool> BOOLEAN
 %token <string> TEXT
-
-%token FOREACH
-%token WHILE
-%token IF
-%token FOR
-%token ELSE
-%token TEMPLATE
-%token INSTRUCTIONS
-%token FUNCTION
-%token CONTINUE
-%token BREAK
-%token RETURN
-%token IN
-%token ONCE
-%token WHEN
-%token VAR
-
-%token EOF
-%token LBRACE
-%token RBRACE
-%token LPAREN
-%token RPAREN
-%token LBRACKET
-%token RBRACKET
-%token COMMA
-%token SEMICOLON
-%token COLON
-%token DOTDOTDOT
-%token DOT
-
-%token EQUALS
-%token NOT
-%token QUESTION
-
 %token <Ast.comparator> COMPOP
-%token PLUS
-%token MINUS
-%token TIMES
-%token DIVIDE
-%token MODULO
 
-%token AND
-%token OR
+%token FOREACH WHILE IF  FOR ELSE TEMPLATE INSTRUCTIONS FUNCTION CONTINUE BREAK
+%token RETURN IN ONCE WHEN VAR EOF LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
+%token COMMA SEMICOLON COLON DOTDOTDOT DOT EQUALS NOT QUESTION PLUS MINUS TIMES
+%token DIVIDE MODULO AND OR VOID NAN
+
+
 
 %start program
 %type <Ast.statement> program
@@ -150,6 +115,8 @@ value:                                INT                                     { 
 																		| REAL                                    { Value(FloatValue($1)) }
 																		| STRING                                  { Value(StringValue($1)) }
 																		| BOOLEAN                                 { Value(BooleanValue($1)) }
+																		| VOID                                    { Value(Void) }
+																		| NAN                                     { Value(NaN) }
 																		| FUNCTION LPAREN arglist RPAREN statement_block 
 																		                               						{ Value(FunctionValue($3,$5,SymbolTable.dummy_table)) }
 																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4,SymbolTable.dummy_table)) }

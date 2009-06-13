@@ -35,6 +35,8 @@ let map_id name=
 	| "var" -> VAR
 	| "true" -> BOOLEAN(true)
 	| "false" -> BOOLEAN(false)
+	| "Void"  -> VOID
+	| "NaN" -> NAN 
 	|	_ ->  ID(name)
 		
 }
