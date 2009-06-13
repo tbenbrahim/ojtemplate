@@ -52,6 +52,10 @@ struct
 	
 	exception EUnexpectedName
 	
+	exception EMismatchedArgsInCall
+	
+	exception EVarArgsMustbeLast
+	
 	exception EInvalidArrayIndex of string  (*key, map*)
 	
 	(**
@@ -325,19 +329,39 @@ struct
 	
 	let is_undefined name symbol_table = not (is_defined name symbol_table)
 	
-	let rec put_args_in_scope arglist vallist symbol_table =
-		match arglist with
-		| [] -> ()
-		| hd:: tl ->
-				let _ = declare (Name(hd)) (List.hd vallist) symbol_table in
-				put_args_in_scope tl (List.tl vallist) symbol_table
+	let rec add_vals_to_arr arr values cnt =
+		match values with
+		| [] -> cnt
+		| el:: rest_vals -> Hashtbl.add arr (string_of_int cnt) el; add_vals_to_arr arr rest_vals (cnt + 1)
+	
+	let rec put_args_in_scope args vals scope =
+		match args with
+		| [] -> if vals != [] then raise EMismatchedArgsInCall else ()
+		| last::[] -> (* only place where vararg is allowed *)
+				if last.[0]='[' then
+					let h = (Hashtbl.create 10) in
+					Hashtbl.add h "length" (IntegerValue(add_vals_to_arr h vals 0));
+					declare (Name(String.sub last 1 ((String.length last) - 1))) (MapValue(h, ArraySubtype)) scope
+				else(
+					if vals =[] then raise EMismatchedArgsInCall (* ran out of values *)
+					else declare (Name last) (List.hd vals) scope; put_args_in_scope [] (List.tl vals) scope
+				)
+		| el:: rest_args ->
+				if el.[0]='[' then
+					raise EVarArgsMustbeLast
+				else(
+					if vals =[] then raise EMismatchedArgsInCall (* ran out of values *)
+					else(
+						declare (Name el) (List.hd vals) scope;
+						put_args_in_scope rest_args (List.tl vals) scope
+					))
 	
 	let new_function_call_scope name scope arglist vallist =
-		if List.length arglist = List.length vallist then
-			let scope =
-				push_scope scope in
+		let scope =	push_scope scope in
+		try
 			put_args_in_scope arglist vallist scope; scope
-		else
-			raise (MismatchedCallArgs((fullname name), List.length arglist, List.length vallist))
+		with
+		| EMismatchedArgsInCall -> raise (MismatchedCallArgs(fullname name))
+		| EVarArgsMustbeLast -> raise (VarArgsMustbeLast(fullname name))
 	
 end

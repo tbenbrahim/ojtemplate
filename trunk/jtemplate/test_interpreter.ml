@@ -387,10 +387,10 @@ struct
 							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1))]));
 							] in
 						try
-							Interpreter.interpret_statements stmts s; false;
+							Interpreter.interpret_statements stmts s; false
 						with
-						| MismatchedCallArgs("f", 2, 1) -> true
-						| _ -> false
+						| MismatchedCallArgs("f") -> true
+						| e -> raise e
 				
 			);
 			("function call with too many arguments should throw MismatchedCallArgs", fun() ->
@@ -405,11 +405,64 @@ struct
 									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]));
 							] in
 						try
-							Interpreter.interpret_statements stmts s; false;
+							Interpreter.interpret_statements stmts s; false
 						with
-						| MismatchedCallArgs("f", 2, 3) -> true
-						| _ -> false
+						| MismatchedCallArgs("f") -> true
+						| e -> raise e
 				
+			);
+			("call function with vararg", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Declaration(Name("a"), Value(IntegerValue(0)));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("f"), Value(FunctionValue(["x";"[y"],
+										[ Assignment(Name("a"), VariableExpr(Name("x")));
+										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+							Ast.ExpressionStatement(FunctionCall(Name("f"),
+									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]));
+							] in
+						Interpreter.interpret_statements stmts s;
+						IntegerValue(1) = SymbolTable.get_value (Name "a") s &&
+						IntegerValue(2) = SymbolTable.get_value (CompoundName(["b";"0"])) s &&
+						IntegerValue(3) = SymbolTable.get_value (CompoundName(["b";"1"])) s &&
+						match SymbolTable.get_value (Name "b") s with
+						| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(2)
+						| _ -> false
+			);
+			("call function with vararg, fewer values than formal arguments", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Declaration(Name("a"), Value(IntegerValue(0)));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("f"), Value(FunctionValue(["x";"[y"],
+										[ Assignment(Name("a"), VariableExpr(Name("x")));
+										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+							Ast.ExpressionStatement(FunctionCall(Name("f"),
+									[Value(IntegerValue(1))]));
+							] in
+						Interpreter.interpret_statements stmts s;
+						IntegerValue(1) = SymbolTable.get_value (Name "a") s &&
+						match SymbolTable.get_value (Name "b") s with
+						| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(0)
+						| _ -> false
+			);
+			("function with vararg not in last position should throw VarArgsMustbeLast", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Declaration(Name("a"), Value(IntegerValue(0)));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("f"), Value(FunctionValue(["[x";"y"],
+										[ Assignment(Name("a"), VariableExpr(Name("x")));
+										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+							Ast.ExpressionStatement(FunctionCall(Name("f"),
+									[Value(IntegerValue(1))]));
+							] in
+						try
+							Interpreter.interpret_statements stmts s; false
+						with
+						| VarArgsMustbeLast _ -> true
+						| e -> raise e
 			);
 			
 			])
