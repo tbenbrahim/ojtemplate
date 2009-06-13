@@ -99,7 +99,7 @@ struct
 					Hashtbl.add h "second" (IntegerValue(t.tm_sec));
 					Hashtbl.add h "minute" (IntegerValue(t.tm_min));
 					Hashtbl.add h "hour" (IntegerValue(t.tm_hour));
-					Hashtbl.add h "day" (IntegerValue(t.tm_mday));
+					Hashtbl.add h "dayOfMonth" (IntegerValue(t.tm_mday));
 					Hashtbl.add h "month" (IntegerValue(t.tm_mon+1));
 					Hashtbl.add h "year" (IntegerValue(1900+t.tm_year));
 					Hashtbl.add h "dayOfWeek" (IntegerValue(t.tm_wday)); (* Sunday 0 *)
