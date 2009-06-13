@@ -5,7 +5,8 @@ open Ast
 
 module BuiltinLibrary =
 struct
-	let exported =[
+	let exported =
+		Random.self_init();[
 		(["Array";"push"],["array"; "value"], fun stbl ->
 					let array = SymbolTable.get_value (Name("array")) stbl in
 					let value = SymbolTable.get_value (Name("value")) stbl in
@@ -69,6 +70,15 @@ struct
 					let value = Interpreter.cast_to_string (SymbolTable.get_value (Name("value")) stbl) in
 					let result = try IntegerValue(int_of_string value) with Failure _ -> Void in
 					raise (Interpreter.CFReturn result)
+		);
+		(["Integer";"random"],["upperBound"], fun stbl ->
+					let upperBound =
+						(try
+							Interpreter.cast_to_integer(SymbolTable.get_value (Name("upperBound")) stbl)
+						with
+						| _ -> raise (LibraryError("upperBound must an integer in call to Integer.random")))
+					in
+					raise (Interpreter.CFReturn(IntegerValue(Random.int upperBound)))
 		);
 		(["Float";"parse"],["value"], fun stbl ->
 					let value = Interpreter.cast_to_string (SymbolTable.get_value (Name("value")) stbl) in
