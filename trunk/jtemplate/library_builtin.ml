@@ -41,6 +41,20 @@ struct
 								| _ -> raise (LibraryError "First parameter is not an array in call to Array.pop"))
 					| _ -> raise (LibraryError "First parameter is not an array in call to Array.pop")
 		);
+		(["Map";"remove"],["map";"key"], fun stbl ->
+					let map = SymbolTable.get_value (Name("map")) stbl in
+					let key = Interpreter.cast_to_string(SymbolTable.get_value (Name("key")) stbl) in
+					match map with
+					| MapValue(hashtbl, MapSubtype) -> Hashtbl.remove hashtbl key
+					| _ -> raise (LibraryError "First parameter is not a map in call to Map.keys")
+		);
+		(["Map";"contains"],["map";"key"], fun stbl ->
+					let map = SymbolTable.get_value (Name("map")) stbl in
+					let key = Interpreter.cast_to_string(SymbolTable.get_value (Name("key")) stbl) in
+					match map with
+					| MapValue(hashtbl, MapSubtype) -> raise (Interpreter.CFReturn(BooleanValue(Hashtbl.mem hashtbl key)))
+					| _ -> raise (LibraryError "First parameter is not a map in call to Map.keys")
+		);
 		(["Map";"keys"],["map"], fun stbl ->
 					let map = SymbolTable.get_value (Name("map")) stbl in
 					let result = Hashtbl.create 10 in
