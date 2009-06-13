@@ -18,6 +18,13 @@ struct
 						Interpreter.evaluate_expression (BinaryOp(v1, Divide, v2)) s = IntegerValue(3) &&
 						Interpreter.evaluate_expression (BinaryOp(v1, Modulo, v2)) s = IntegerValue(1)
 			);
+			("integer division/modulo by 0 should return NaN", fun() ->
+						let v1 = Value(IntegerValue(7)) in
+						let v2 = Value(IntegerValue(0)) in
+						let s = SymbolTable.initialize() in
+						Interpreter.evaluate_expression (BinaryOp(v1, Divide, v2)) s = NaN &&
+						Interpreter.evaluate_expression (BinaryOp(v1, Modulo, v2)) s = NaN
+			);
 			("integer comparaison", fun() ->
 						let v1 = Value(IntegerValue(7)) in
 						let v2 = Value(IntegerValue(2)) in
@@ -40,6 +47,12 @@ struct
 						Interpreter.evaluate_expression (BinaryOp(v1, Minus, v2)) s = FloatValue(2.0) &&
 						Interpreter.evaluate_expression (BinaryOp(v1, Times, v2)) s = FloatValue(1.25) &&
 						Interpreter.evaluate_expression (BinaryOp(v1, Divide, v2)) s = FloatValue(5.0)
+			);
+			("floating point division by 0 should return NaN", fun() ->
+						let v1 = Value(FloatValue(2.5)) in
+						let v2 = Value(FloatValue(0.)) in
+						let s = SymbolTable.initialize() in
+						Interpreter.evaluate_expression (BinaryOp(v1, Divide, v2)) s = NaN
 			);
 			("floating point comparaison", fun() ->
 						let v1 = Value(FloatValue(7.1)) in
