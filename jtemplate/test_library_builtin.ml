@@ -97,6 +97,33 @@ struct
 						| LibraryError _ -> true
 						| _ -> false
 			);
+			("Map.remove()", fun() ->
+						let symbol_table = SymbolTable.initialize () in
+						register_library BuiltinLibrary.exported symbol_table;
+						let stmts =[
+							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
+							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map")); Value(StringValue("1"))]));
+							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map")); Value(StringValue("3"))]));
+							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]));
+							] in
+						Interpreter.interpret_statements stmts symbol_table;
+						StringValue("2") = SymbolTable.get_value (CompoundName(["arr";"0"])) symbol_table &&
+						(match SymbolTable.get_value (Name("arr")) symbol_table with
+							| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(1)
+							| _ -> false)
+			);
+			("Map.contains()", fun() ->
+						let symbol_table = SymbolTable.initialize () in
+						register_library BuiltinLibrary.exported symbol_table;
+						let stmts =[
+							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
+							Declaration(Name("shouldBeTrue"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("1"))]));
+							Declaration(Name("shouldBeFalse"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("X"))]));
+							] in
+						Interpreter.interpret_statements stmts symbol_table;
+						BooleanValue(true) = SymbolTable.get_value (Name("shouldBeTrue")) symbol_table &&
+						BooleanValue(false) = SymbolTable.get_value (Name("shouldBeFalse")) symbol_table
+			);
 			("Map.keys()", fun() ->
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
@@ -118,6 +145,32 @@ struct
 						let stmts =[
 							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
 							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]));
+							] in
+						try
+							Interpreter.interpret_statements stmts symbol_table; false
+						with
+						| LibraryError _ -> true
+						| _ -> false
+			);
+			("Map.contains() call on non map throws LibraryException", fun() ->
+						let symbol_table = SymbolTable.initialize () in
+						register_library BuiltinLibrary.exported symbol_table;
+						let stmts =[
+							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
+							Declaration(Name("x"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("x"))]));
+							] in
+						try
+							Interpreter.interpret_statements stmts symbol_table; false
+						with
+						| LibraryError _ -> true
+						| _ -> false
+			);
+			("Map.remove() call on non map throws LibraryException", fun() ->
+						let symbol_table = SymbolTable.initialize () in
+						register_library BuiltinLibrary.exported symbol_table;
+						let stmts =[
+							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
+							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map"));Value(StringValue("1"))]));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
