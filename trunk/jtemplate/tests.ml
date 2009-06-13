@@ -4,6 +4,7 @@ open Test_symbol_table
 open Test_interpreter
 open Test_library_string
 open Test_library_io
+open Test_library_builtin
 
 let _= run_test_suites  [
 	TestTestFramework.test_suite;
@@ -11,6 +12,7 @@ let _= run_test_suites  [
 	TestInterpreter.test_suite;
 	TestStringLibrary.test_suite;
 	TestIOLibrary.test_suite;
+	TestBuiltinLibrary.test_suite;
 ]
 
 

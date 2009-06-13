@@ -62,6 +62,7 @@ rule main =	parse
 | ">=" {COMPOP(GreaterThanEqual)}
 | "==" {COMPOP(Equal)}
 | "!=" {COMPOP(NotEqual)}
+| "..." {DOTDOTDOT}
 | '=' {EQUALS} 
 | '.' {DOT}
 | '{' {LBRACE}

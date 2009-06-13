@@ -55,6 +55,7 @@ let get_env = function
 %token COMMA
 %token SEMICOLON
 %token COLON
+%token DOTDOTDOT
 %token DOT
 
 %token EQUALS
@@ -158,8 +159,9 @@ value:                                INT                                     { 
 																		| LBRACE prop_list RBRACE                 { MapExpr($2) }
 																		| variable                                { VariableExpr($1) }
 ;
-arglist:                              ID                                      { [Name($1)] }
-																		| ID COMMA arglist                        { Name($1)::$3 }
+arglist:                              ID                                      { [$1] }
+                                    | ID DOTDOTDOT                            { ["["^$1] }
+																		| ID COMMA arglist                        { $1::$3 }
 ;
 expr_list:
                                       expression                              { [$1] }

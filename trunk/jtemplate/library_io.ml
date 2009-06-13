@@ -23,15 +23,15 @@ struct
 				| End_of_file -> ("", true)
 			) in
 		[
-		("print",[Name("value")], fun (stbl) ->
+		(["print"],["value"], fun (stbl) ->
 					let value = SymbolTable.get_value (Name("value")) stbl in
 					print_string (Interpreter.cast_to_string value)
 		);
-		("println",[Name("value")], fun (stbl) ->
+		(["println"],["value"], fun (stbl) ->
 					let value = SymbolTable.get_value (Name("value")) stbl in
 					print_string (Interpreter.cast_to_string value); print_newline()
 		);
-		("openFileForWriting",[Name("handle"); Name("filename")], fun stbl ->
+		(["File";"openForWriting"],["handle"; "filename"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
 					try
@@ -43,7 +43,7 @@ struct
 					with
 					| _ -> raise (LibraryError ("error opening file "^filename^" in openFileForWriting"))
 		);
-		("openFileForReading",[Name("handle"); Name("filename")], fun stbl ->
+		(["File";"openForReading"],["handle"; "filename"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
 					try
@@ -55,7 +55,7 @@ struct
 					with
 					| _ -> raise (LibraryError ("error opening file "^filename^" in openFileForReading"))
 		);
-		("closeFile",[Name("handle")], fun stbl ->
+		(["File";"close"],["handle"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let (c, _ ) = get_descriptor handle "closeFile" in
 					try
@@ -66,7 +66,7 @@ struct
 					with
 					| Sys_error msg -> raise (LibraryError ("System error on closeFile:" ^ msg ))
 		);
-		("write",[Name("handle"); Name("string")], fun stbl ->
+		(["File";"write"],["handle"; "string"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let data = Interpreter.cast_to_string (SymbolTable.get_value (Name("string")) stbl) in
 					let (c, filename) = get_descriptor handle "write" in
@@ -78,7 +78,7 @@ struct
 							| _ -> raise (LibraryError ("error writing file "^filename^" in write")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
-		("writeln",[Name("handle"); Name("data")], fun stbl ->
+		(["File";"writeln"],["handle"; "data"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let data = Interpreter.cast_to_string (SymbolTable.get_value (Name("data")) stbl) in
 					let (c, filename) = get_descriptor handle "writeln" in
@@ -90,7 +90,7 @@ struct
 							| _ -> raise (LibraryError ("error writing file "^filename^" in writeln")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
-		("readln",[Name("handle")], fun stbl ->
+		(["File";"readln"],["handle"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let (c, filename) = get_descriptor handle "readln" in
 					match c with
@@ -103,39 +103,14 @@ struct
 							| _ -> raise (LibraryError ("error reading file "^filename^" in readln")));
 							raise (Interpreter.CFReturn(StringValue(data)))
 		);
-		("eof",[Name("handle")], fun stbl ->
+		(["File";"eof"],["handle"], fun stbl ->
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let (c, filename) = get_descriptor handle "eof" in
 					match c with
 					| OutChannel(ch) -> raise (LibraryError ("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
 					| InChannel(ch, (_, eof)) -> raise (Interpreter.CFReturn(BooleanValue(eof)))
 		);
-		("writeFile",[Name("filename"); Name("data")], fun stbl ->
-					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
-					let data = Interpreter.cast_to_string (SymbolTable.get_value (Name("data")) stbl) in
-					try
-						let ch = open_out filename in
-						output_string ch data;
-						close_out ch
-					with
-					| _ -> raise (LibraryError ("error writing file "^filename^" in writeFile"))
-		);
-		("readFile",[Name("filename")], fun stbl ->
-					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
-					let data =
-						try
-							let ch = open_in filename in
-							let rec loop data =
-								(try
-									loop (data ^ (input_line ch) ^ "\n")
-								with
-								| End_of_file -> close_in ch; data) in
-							loop ""
-						with
-						| _ -> raise (LibraryError ("error reading file "^filename^" in readFile")) in
-					raise (Interpreter.CFReturn (StringValue(data)))
-		);
-		("fileExists",[Name("filename")], fun stbl ->
+		(["File";"exists"],["filename"], fun stbl ->
 					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
 					(try
 						close_in (open_in filename)
