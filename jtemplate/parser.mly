@@ -120,7 +120,6 @@ value:                                INT                                     { 
 																		| FUNCTION LPAREN arglist RPAREN statement_block 
 																		                               						{ Value(FunctionValue($3,$5,SymbolTable.dummy_table)) }
 																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4,SymbolTable.dummy_table)) }
-																	  | LBRACKET RBRACKET                       { ArrayExpr([]) }
 																		| LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
 																		| LBRACE RBRACE                           { MapExpr([]) }
 																		| LBRACE prop_list RBRACE                 { MapExpr($2) }
@@ -133,6 +132,7 @@ arglist:                              ID                                      { 
 expr_list:
                                       expression                              { [$1] }
 																	  | expression COMMA expr_list              { $1::$3 }
+																		| /*nothing*/                             { [] }
 ;
 label:
                                       ID                                      { Label($1) }
