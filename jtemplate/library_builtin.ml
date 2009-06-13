@@ -2,6 +2,7 @@ open Interpreter
 open RuntimeError
 open Symbol_table
 open Ast
+open Unix
 
 module BuiltinLibrary =
 struct
@@ -90,6 +91,22 @@ struct
 					| FloatValue(f) -> raise (Interpreter.CFReturn (IntegerValue(int_of_float(
 													let (frac, _) = modf f in (if frac >= 0.5 then ceil f else floor f)))))
 					| _ -> raise (LibraryError("parameter is not a float in call to Float.round"))
+		);
+		(["Date";"now"],[], fun stbl ->
+					let t = (localtime (time())) in
+					let gmt_offset = (localtime (time())).tm_hour - (gmtime (time())).tm_hour in
+					let h = Hashtbl.create 10 in
+					Hashtbl.add h "second" (IntegerValue(t.tm_sec));
+					Hashtbl.add h "minute" (IntegerValue(t.tm_min));
+					Hashtbl.add h "hour" (IntegerValue(t.tm_hour));
+					Hashtbl.add h "day" (IntegerValue(t.tm_mday));
+					Hashtbl.add h "month" (IntegerValue(t.tm_mon+1));
+					Hashtbl.add h "year" (IntegerValue(1900+t.tm_year));
+					Hashtbl.add h "dayOfWeek" (IntegerValue(t.tm_wday)); (* Sunday 0 *)
+					Hashtbl.add h "dayOfYear" (IntegerValue(t.tm_yday));
+					Hashtbl.add h "dst" (BooleanValue(t.tm_isdst));
+					Hashtbl.add h "gmtOffset" (IntegerValue(gmt_offset));
+					raise(Interpreter.CFReturn(MapValue(h, MapSubtype)))
 		);
 		(["typeof"],["value"], fun stbl ->
 					raise (Interpreter.CFReturn(StringValue(
