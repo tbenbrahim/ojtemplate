@@ -45,8 +45,7 @@ struct
 				("Instructions\n" ^
 					((var_descriptionl (level + 1) var) ^
 						((List.fold_left
-									(fun acc el -> (var_descriptionl (level + 1) el) ^ acc)
-									"" varlist)
+									(fun acc el -> el ^ "," ^ acc) "" varlist)
 							^
 							(List.fold_left
 									(fun acc el ->
@@ -155,7 +154,7 @@ struct
 				(expr_descriptionl (level + 1) expr)
 		| Ast.EvaluatedName(lst) ->
 				(prefix level) ^"EvaluatedName\n"^
-				(List.fold_left (fun acc el -> acc ^ (var_descriptionl (level+1) el)) "" lst)
+				(List.fold_left (fun acc el -> acc ^ (var_descriptionl (level + 1) el)) "" lst)
 	and expr_descriptionl level expr =
 		match expr with
 		| Ast.BinaryOp (op1, op, op2) ->
@@ -172,18 +171,20 @@ struct
 						("\n" ^
 							((expr_descriptionl (level + 1) op1) ^
 								(expr_descriptionl (level + 1) op2)))))
-		| Ast.Value value -> value_descriptionl level value
+		| Ast.Value value ->
+				(prefix level) ^ "Value reference\n" ^ value_descriptionl (level + 1) value
 		| Ast.FunctionCall (var, expr_list) ->
 				(prefix level) ^
 				("FunctionCall\n" ^
-					((var_descriptionl (level+1) var) ^
+					((var_descriptionl (level + 1) var) ^
 						(expression_list (level + 1) expr_list)))
 		| Ast.MapExpr v ->
 				(prefix level) ^ ("Map\n" ^ ((property_list (level + 1) v) ^ "\n"))
 		| Ast.ArrayExpr v ->
 				(prefix level) ^ ("Array\n" ^ (expression_list (level + 1) v))
-		| Ast.VariableExpr v -> var_descriptionl level v
-		
+		| Ast.VariableExpr v ->
+				(prefix level) ^ "Variable reference\n" ^ var_descriptionl (level + 1) v
+	
 	and value_descriptionl level value =
 		match value with
 		| Ast.IntegerValue v ->
@@ -192,8 +193,7 @@ struct
 				(prefix level) ^
 				("Function\n" ^
 					((List.fold_left
-								(fun acc el -> (var_descriptionl (level + 1) el) ^ acc) ""
-								arglist)
+								(fun acc el -> el^ "," ^ acc) "" arglist)
 						^ (statement_list (level + 1) stmts)))
 		| Ast.LibraryFunction(_, _, _) -> "" (* never in ast *)
 		| Ast.BooleanValue v ->
@@ -201,7 +201,7 @@ struct
 		| Ast.StringValue v -> (prefix level) ^ ("String " ^ (v ^ "\n"))
 		| Ast.FloatValue v ->
 				(prefix level) ^ ("Float " ^ ((string_of_float v) ^ "\n"))
-		| Ast.MapValue v -> "" (* Not in AST *)
+		| Ast.MapValue( _, _) -> "" (* Not in AST *)
 		| Ast.Void -> "void\n"
 		| Ast.NaN -> "NaN\n"
 	

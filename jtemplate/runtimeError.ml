@@ -50,6 +50,12 @@ exception MismatchedCallArgs of string * int * int
 (** Generic library call error *)
 exception LibraryError of string
 
+(** indicates that the index passed to an array is invalid
+@param field1 the index
+@param field2 the variable name
+*)
+exception InvalidArrayIndex of string * string
+
 let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
@@ -64,5 +70,6 @@ let string_of_error ex =
 			"In function call to " ^ name ^ ", expected " ^ (string_of_int num_formal) ^
 			" arguments, got "^ (string_of_int num_call) ^ " instead."
 	| LibraryError msg -> msg
+	| InvalidArrayIndex(ind, name) -> "Invalid array index "^ind^" in "^name
 	| e -> "uncaught exception "^(Printexc.to_string e)
 

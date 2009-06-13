@@ -266,7 +266,9 @@ struct
 						let expr = ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]) in
 						let stmt = Declaration(Name("a"), expr) in
 						Interpreter.interpret_statement stmt s;
-						SymbolTable.get_value (CompoundName(["a";"length"])) s = IntegerValue(3)
+						(match SymbolTable.get_value (Name("a")) s with
+							| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(3)
+							| _ -> false)
 			);
 			("for loop: var a=0;for(var i=0;i<10000;i=i+1){a=a+2} a=20000? i not in scope?", fun() ->
 						let s = SymbolTable.initialize() in
@@ -353,7 +355,7 @@ struct
 						let stmts = [
 							Declaration(Name("a"), Value(IntegerValue(0)));
 							Declaration(Name("b"), Value(IntegerValue(0)));
-							Declaration(Name("f"), Value(FunctionValue([Name("x"); Name("y")],
+							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")));
 										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1)); Value(IntegerValue(2))]));
@@ -366,7 +368,7 @@ struct
 						let stmts = [
 							Declaration(Name("a"), Value(IntegerValue(0)));
 							Declaration(Name("b"), Value(IntegerValue(0)));
-							Declaration(Name("f"), Value(FunctionValue([Name("x"); Name("y")],
+							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")));
 										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1))]));
@@ -383,7 +385,7 @@ struct
 						let stmts = [
 							Declaration(Name("a"), Value(IntegerValue(0)));
 							Declaration(Name("b"), Value(IntegerValue(0)));
-							Declaration(Name("f"), Value(FunctionValue([Name("x"); Name("y")],
+							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")));
 										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),

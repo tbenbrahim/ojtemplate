@@ -50,6 +50,10 @@ struct
 	(** internal exception to indicate illegal reassignment of value of different type *)
 	exception ETypeMismatchInAssignment of string * string * string (* name , current_type, new_type *)
 	
+	exception EUnexpectedName
+	
+	exception EInvalidArrayIndex of string  (*key, map*)
+	
 	(**
 	returns the printable name of a variable name
 	@param name an Ast.variable_name type
@@ -59,14 +63,14 @@ struct
 			Ast.CompoundName(lst) ->
 				(match lst with
 					| el:: lst -> List.fold_left(fun acc el -> acc^"."^el) el lst
-					| [] -> "") 
+					| [] -> "")
 		| Ast.Name(name) -> name
-		| Ast.ArrayIndex(_,_) | Ast.EvaluatedName(_) -> "unresolved name" (* will never get these *)
+		| Ast.ArrayIndex(_, _) | Ast.EvaluatedName(_) -> "unresolved name" (* will never get these *)
 	
 	let string_of_args args =
 		match args with
 		| [] -> "()"
-		| el:: tl -> "(" ^ (List.fold_left (fun acc el -> acc^","^(fullname el)) (fullname el) tl) ^")"
+		| el:: tl -> "(" ^ (List.fold_left (fun acc el -> acc^","^el) el tl) ^")"
 	
 	let string_of_symbol_value = function
 		| IntegerValue(i) -> string_of_int i
@@ -75,7 +79,8 @@ struct
 		| StringValue(s) -> s
 		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
 		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
-		| MapValue(map) -> "{}" (* TODO recurse *)
+		| MapValue(map, MapSubtype) -> "{...}" (* TODO recurse *)
+		| MapValue(map, ArraySubtype _) -> "[...]" (* TODO recurse *)
 		| Void -> "void"
 		| NaN -> "NaN"
 	
@@ -86,11 +91,22 @@ struct
 		| StringValue(_) -> "string"
 		| FunctionValue(_, _, _) -> "function"
 		| LibraryFunction(_, _, _) -> "library call"
-		| MapValue(_) -> "map"
+		| MapValue(_, MapSubtype) -> "map"
+		| MapValue(_, ArraySubtype _) -> "array"
 		| Void -> "void"
 		| NaN -> "NaN"
 	
-	type valuetype = IntegerType | FloatType | BooleanType | StringType | FunctionType | LibraryCallType | MapType | VoidType | NaNType
+	type valuetype =
+		| IntegerType
+		| FloatType
+		| BooleanType
+		| StringType
+		| FunctionType
+		| LibraryCallType
+		| MapType
+		| ArrayType
+		| VoidType
+		| NaNType
 	
 	let value_type = function
 		| IntegerValue(_) -> IntegerType
@@ -99,14 +115,15 @@ struct
 		| StringValue(_) -> StringType
 		| FunctionValue(_, _, _) -> FunctionType
 		| LibraryFunction(_, _, _) -> LibraryCallType
-		| MapValue(_) -> MapType
+		| MapValue(_, MapSubtype) -> MapType
+		| MapValue(_, ArraySubtype _) -> ArrayType
 		| Void -> VoidType
 		| NaN -> NaNType
 	
 	let rec print_symbol_map map prefix =
 		let _ = (Hashtbl.iter (fun key var -> print_string (prefix^key^"="^(string_of_symbol_value var)^"\n");
 								(match var with
-									| MapValue(map) -> let _ = print_symbol_map map (prefix^key^".") in ()
+									| MapValue(map, _) -> let _ = print_symbol_map map (prefix^key^".") in ()
 									| _ -> ()
 								)) map) in ()
 	
@@ -146,7 +163,11 @@ struct
 			lastelem::[] ->
 		(* this is the last element, it must be a MapValue *)
 				(match container with
-						MapValue(hashtbl) ->
+						MapValue(hashtbl, subtype) ->
+							if subtype = ArraySubtype && lastelem!="length" && try let _ = int_of_string lastelem in false with Failure _ -> true then
+								raise (EInvalidArrayIndex(lastelem))
+							else
+								();
 							if assignment then
 								try
 									let old_value_type = string_of_symbol_type (Hashtbl.find hashtbl lastelem ) in
@@ -164,7 +185,7 @@ struct
 		| elem :: tail ->
 		(* middle element, it must be a MapValue *)
 				(match container with
-						MapValue(hashtbl) -> replace_map_value assignment elem tail (lookup hashtbl elem) value
+						MapValue(hashtbl, _) -> replace_map_value assignment elem tail (lookup hashtbl elem) value
 					| _ -> raise (ENotAMap containername))
 	
 	let rec resolve_replace assignment name symbol_table value =
@@ -202,6 +223,7 @@ struct
 												| ENotAMap(comp) -> raise (NotAMap(comp, fullname name))
 												| ENotFound(comp) -> raise (ReferenceToUndefinedMapVariable(comp, fullname name))
 												| ETypeMismatchInAssignment(comp, old_type, new_type) -> raise (TypeMismatchInMapAssignment(comp, fullname name, old_type, new_type))
+												| EInvalidArrayIndex(comp) -> raise (InvalidArrayIndex(comp, fullname name))
 											)
 											else( (*it is a declaration, always use current scope *)
 												try
@@ -213,6 +235,7 @@ struct
 											)
 								)
 							)
+					| _ -> raise EUnexpectedName
 				)
 	
 	(**
@@ -227,9 +250,14 @@ struct
 	*)
 	let rec get_map_value name value name_list =
 		match value with
-		| MapValue(map) ->
+		| MapValue(map, subtype) ->
 				(match name_list with
-					| el::[] -> (try Hashtbl.find map el with Not_found -> raise (ENotFound el)) (* last element, return value *)
+					| el::[] ->
+							if subtype = ArraySubtype && (try let _ = int_of_string el in false with Failure _ -> true) then
+								raise (EInvalidArrayIndex(el))
+							else
+								();
+							(try Hashtbl.find map el with Not_found -> raise (ENotFound el)) (* last element, return value *)
 					| el:: tl -> get_map_value el
 								(try Hashtbl.find map el with Not_found -> raise (ENotFound el)) tl (* intermediate element, recurse *)
 					| _ -> raise EUnexpectedCompoundName (* could only happen if compound name had less than 2 elements *)
@@ -246,7 +274,7 @@ struct
 		| Some table -> (
 					try
 						match name with
-						| Ast.EvaluatedName(_) | Ast.ArrayIndex(_, _) -> raise (ENotFound ("unresolved name")) (* will never get these two *)
+						| Ast.EvaluatedName(_) | Ast.ArrayIndex(_, _) -> raise EUnexpectedName (* will never get these two *)
 						| Ast.Name(varname) ->
 								(try
 									let value = Hashtbl.find table.values varname in
@@ -270,6 +298,7 @@ struct
 						Not_found -> raise (ReferenceToUndefinedVariable (fullname name))
 					| ENotFound ename -> raise (ReferenceToUndefinedMapVariable (ename , fullname name))
 					| ENotAMap ename -> raise (NotAMap (ename, fullname name))
+					| EInvalidArrayIndex comp -> raise (InvalidArrayIndex (comp, fullname name))
 				)
 	
 	let declare name value symbol_table = resolve_replace false name (Some symbol_table) value
@@ -300,7 +329,7 @@ struct
 		match arglist with
 		| [] -> ()
 		| hd:: tl ->
-				let _ = declare hd (List.hd vallist) symbol_table in
+				let _ = declare (Name(hd)) (List.hd vallist) symbol_table in
 				put_args_in_scope tl (List.tl vallist) symbol_table
 	
 	let new_function_call_scope name scope arglist vallist =

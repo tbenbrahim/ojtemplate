@@ -148,7 +148,8 @@ struct
 						match type1 with
 						| SymbolTable.IntegerType | SymbolTable.StringType | SymbolTable.FloatType -> compare_same_type value1 comparator value2
 						| SymbolTable.BooleanType | SymbolTable.MapType | SymbolTable.FunctionType
-						| SymbolTable.LibraryCallType | SymbolTable.VoidType | SymbolTable.NaNType -> restricted_compare value1 comparator value2
+						| SymbolTable.LibraryCallType | SymbolTable.VoidType | SymbolTable.NaNType
+						| SymbolTable.ArrayType -> restricted_compare value1 comparator value2
 					else
 						match casting_type value1 value2 with
 						| FloatCast -> compare_same_type (FloatValue(cast_to_float value1)) comparator (FloatValue(cast_to_float value2))
@@ -171,9 +172,9 @@ struct
 					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
 				)
 		| MapExpr(str_expr_list) ->
-				MapValue(make_map str_expr_list symbol_table)
+				MapValue(make_map str_expr_list symbol_table, MapSubtype)
 		| ArrayExpr(expr_list) ->
-				MapValue(make_array expr_list symbol_table)
+				MapValue(make_array expr_list symbol_table, ArraySubtype)
 		| VariableExpr(variable) ->
 				SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table
 		| Value(value) -> value

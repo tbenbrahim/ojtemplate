@@ -29,6 +29,8 @@ and replacement_spec =
 
 and template_spec =
 	((label option) * text)
+	
+and map_subtype = | MapSubtype | ArraySubtype
 
 (** type definition for the four scalar values (int, float, string, bool)
 for a function definition, and for maps. Arrays are syntactic sugar
@@ -43,9 +45,9 @@ and variable_value =
 	| FloatValue of float
 	| StringValue of string
 	| BooleanValue of bool
-	| FunctionValue of variable_name list * statement list * symbol_table
-	| LibraryFunction of variable_name list * (symbol_table -> unit) * symbol_table
-	| MapValue of (string, variable_value) Hashtbl.t
+	| FunctionValue of string list * statement list * symbol_table
+	| LibraryFunction of string list * (symbol_table -> unit) * symbol_table
+	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
 	| NaN
 and
@@ -79,11 +81,11 @@ and statement =
 	| For of statement * expression * statement * statement list
 	| ExpressionStatement of expression
 	| Break
-	| Continue
+	| Continue 
 	| Noop
 	| Return of expression
 	| If of expression * statement list * statement list
 	| TemplateDef of variable_name * template_spec list
-	| Instructions of variable_name * variable_name list * replacement_spec list
+	| Instructions of variable_name * string list * replacement_spec list
 	| StatementBlock of statement list
 

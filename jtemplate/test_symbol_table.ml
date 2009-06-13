@@ -20,23 +20,23 @@ struct
 			);
 			("compound declaration a={}, a.b={}, a.b.c=1", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
-						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue ((Hashtbl.create 10), MapSubtype)) s;
+						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b";"c"])) (IntegerValue(1)) s;
 						true
 			);
 			("compound retrieval a={}, a.b={}, a.b.c=1", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
-						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
+						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						let name = CompoundName(["a";"b";"c"]) in
 						SymbolTable.declare name (IntegerValue(1)) s;
 						SymbolTable.get_value name s = IntegerValue(1)
 			);
 			("multiple declaration to map preserves values a={}, a.b={}, a.b.c=1, a.b.d=2", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
-						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
+						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						let name1 = CompoundName(["a";"b";"c"]) in
 						let name2 = CompoundName(["a";"b";"d"]) in
 						SymbolTable.declare name1 (IntegerValue(1)) s;
@@ -55,7 +55,7 @@ struct
 			);
 			("a={},a.b=2, a.b.c=1 should throw NotAMap(\"b\" \"a.b.c\")", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(2)) s;
 						try
 							SymbolTable.declare (CompoundName(["a";"b";"c"])) (IntegerValue(1)) s;
@@ -75,7 +75,7 @@ struct
 			);
 			("a={} a.b.c=1 should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b.c\") ", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						try
 							SymbolTable.declare (CompoundName(["a";"b";"c"])) (IntegerValue(1)) s ;
 							false
@@ -103,7 +103,7 @@ struct
 			);
 			("reference to undeclared a.b when a={} should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b\") ", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						try
 							let _ = SymbolTable.get_value (CompoundName(["a";"b"])) s in
 							false
@@ -113,8 +113,8 @@ struct
 			);
 			("reference to undeclared a.b.c when a={},a.b={} should throw ReferenceToUndefinedMapVariable(\"c\",\"a.b.c\") ", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
-						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
+						SymbolTable.declare (CompoundName(["a";"b"])) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						try
 							let _ = SymbolTable.get_value (CompoundName(["a";"b";"c"])) s in
 							false
@@ -124,7 +124,7 @@ struct
 			);
 			("reference to undeclared a.b.c when a={} should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b.c\") ", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						try
 							let _ = SymbolTable.get_value (CompoundName(["a";"b";"c"])) s in
 							false
@@ -134,7 +134,7 @@ struct
 			);
 			("reference to undeclared a.b.c when a={},a.b=1 should throw NotAMap(\"b\",\"a.b.c\") ", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s;
 						try
 							let _ = SymbolTable.get_value (CompoundName(["a";"b";"c"])) s in
@@ -158,7 +158,7 @@ struct
 			
 			("visibility of map in nested scope : a={}, a.b=1 { a.b=1? }", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.get_value (CompoundName(["a";"b"])) s = IntegerValue(1)
@@ -166,7 +166,7 @@ struct
 			
 			("adding key to map in nested scope : a={} { a.b=1 } should throw ReferenceToUndefinedMapVariable(\"a\",\"a.b\")", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						let s = SymbolTable.push_scope s in
 						try
 							let _ = SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s in
@@ -177,7 +177,7 @@ struct
 			
 			("assigning key value to map in nested scope: a={},a.b=1 { { a.b=2 a.b=2?}}", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s;
 						let s = SymbolTable.push_scope s in
 						let s = SymbolTable.push_scope s in
@@ -187,7 +187,7 @@ struct
 			
 			("assigning key value to map in nested scope: a={},a.b=1 { { a.b=2 }} a.b=2?", fun () ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s;
 						let s = SymbolTable.push_scope s in
 						let s = SymbolTable.push_scope s in
@@ -280,7 +280,7 @@ struct
 						let s = SymbolTable.initialize() in
 						SymbolTable.declare (Name("a")) (IntegerValue(1)) s;
 						let s = SymbolTable.push_scope s in
-						SymbolTable.declare (Name("b")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("b")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["b";"x"])) (FunctionValue([],[], SymbolTable.dummy_table)) s;
 						match SymbolTable.get_value (CompoundName(["b";"x"])) s with
 						| FunctionValue(_, _, functionScope) ->
@@ -316,7 +316,7 @@ struct
 			
 			("map redeclaration to different type: a={b:1}, a.b='1' ", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (StringValue("1")) s;
 						true
@@ -324,7 +324,7 @@ struct
 			
 			("reassignment to different type: a={b:1}, a.b='1'  should fail with TypeMismatchInMapAssignment(\"b\",\"a.b\",\"integer\",\"string\")", fun() ->
 						let s = SymbolTable.initialize() in
-						SymbolTable.declare (Name("a")) (MapValue(Hashtbl.create 10)) s;
+						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s;
 						try
 							let _ = SymbolTable.assign (CompoundName(["a";"b"])) (StringValue("1")) s in

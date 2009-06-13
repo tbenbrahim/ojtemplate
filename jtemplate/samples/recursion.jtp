@@ -32,8 +32,5 @@ println('The GCD of 99 and 16 is '+ gcd(99,16));
 println('');
 println('fib(12)='+fib(12));
 println('');
-println('fact(6)='+fact(6));
+println('fact(20)='+fact(20));
 println('');
-
-
-
