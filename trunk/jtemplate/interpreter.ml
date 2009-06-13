@@ -16,23 +16,12 @@ struct
 	exception CFBreak
 	exception CFContinue
 	
-	type cast_type = | IntegerCast | FloatCast | StringCast | BoolCast
+	type cast_type = | IntegerCast of int * int | FloatCast of float * float | StringCast of string * string | BoolCast of bool * bool
 	
-	let casting_type value1 value2 =
-		let type1 = SymbolTable.value_type value1 in
-		let type2 = SymbolTable.value_type value2 in
-		if type1 = SymbolTable.StringType || type2 = SymbolTable.StringType then
-			StringCast
-		else if (type1 = SymbolTable.FloatType && (type2 = SymbolTable.IntegerType || type2 = SymbolTable.FloatType))
-		or (type2 = SymbolTable.FloatType && (type1 = SymbolTable.IntegerType || type1 = SymbolTable.FloatType)) then
-			FloatCast
-		else if type1 = SymbolTable.IntegerType && type2 = SymbolTable.IntegerType then
-			IntegerCast
-		else if type1 = SymbolTable.BooleanType && type2 = SymbolTable.BooleanType then
-			BoolCast
-		else
-			raise (EIncompatibleTypes(SymbolTable.string_of_symbol_type value1,
-						SymbolTable.string_of_symbol_type value2))
+	let cast_to_bool value =
+		match value with
+		| BooleanValue(b) -> b
+		| _ -> raise (EInvalidCast (SymbolTable.string_of_symbol_value value,"boolean"))
 	
 	let cast_to_string value =
 		SymbolTable.string_of_symbol_value value
@@ -47,6 +36,22 @@ struct
 		| FloatValue(f) -> f
 		| IntegerValue(i) -> float_of_int i
 		| _ -> raise (EInvalidCast (SymbolTable.string_of_symbol_value value,"float"))
+	
+	let casting_type value1 value2 =
+		let type1 = SymbolTable.value_type value1 in
+		let type2 = SymbolTable.value_type value2 in
+		if type1 = SymbolTable.StringType || type2 = SymbolTable.StringType then
+			StringCast(cast_to_string value1, cast_to_string value2)
+		else if (type1 = SymbolTable.FloatType && (type2 = SymbolTable.IntegerType || type2 = SymbolTable.FloatType))
+		or (type2 = SymbolTable.FloatType && (type1 = SymbolTable.IntegerType || type1 = SymbolTable.FloatType)) then
+			FloatCast(cast_to_float value1, cast_to_float value2)
+		else if type1 = SymbolTable.IntegerType && type2 = SymbolTable.IntegerType then
+			IntegerCast(cast_to_integer value1, cast_to_integer value2)
+		else if type1 = SymbolTable.BooleanType && type2 = SymbolTable.BooleanType then
+			BoolCast(cast_to_bool value1, cast_to_bool value2)
+		else
+			raise (EIncompatibleTypes(SymbolTable.string_of_symbol_type value1,
+						SymbolTable.string_of_symbol_type value2))
 	
 	let rec make_map str_expr_list symbol_table =
 		let map = Hashtbl.create (1 + List.length str_expr_list) in
@@ -104,38 +109,32 @@ struct
 				let value1 = evaluate_expression expr1 symbol_table in
 				let value2 = evaluate_expression expr2 symbol_table in
 				(match casting_type value1 value2 with
-					| BoolCast ->
-							(let BooleanValue(b1) = value1 in
-								let BooleanValue(b2) = value2 in
-								(match operator with
-									| And -> BooleanValue(b1 && b2)
-									| Or -> BooleanValue(b1 || b2)
-									| _ -> raise (EInvalidOperation (operator,"boolean"))
-								))
-					| StringCast ->
+					| BoolCast(b1, b2) ->
 							(match operator with
-								| Plus -> StringValue((cast_to_string value1) ^ (cast_to_string value2))
+								| And -> BooleanValue(b1 && b2)
+								| Or -> BooleanValue(b1 || b2)
+								| _ -> raise (EInvalidOperation (operator,"boolean"))
+							)
+					| StringCast(s1, s2) ->
+							(match operator with
+								| Plus -> StringValue(s1 ^ s2)
 								| _ -> raise (EInvalidOperation (operator,"string"))
 							)
-					| FloatCast -> (match operator with
-								| Plus -> FloatValue( (cast_to_float value1) +. (cast_to_float value2))
-								| Minus -> FloatValue( (cast_to_float value1) -. (cast_to_float value2))
-								| Times -> FloatValue( (cast_to_float value1) *. (cast_to_float value2))
-								| Divide -> let divisor = cast_to_float value2 in
-										if divisor <> 0.0 then FloatValue( (cast_to_float value1) /. divisor)
-										else NaN
-								| _ -> raise (EInvalidOperation (operator,"float"))
+					| FloatCast(f1, f2) -> (let f = (match operator with
+										| Plus -> f1 +. f2
+										| Minus -> f1 -. f2
+										| Times -> f1 *. f2
+										| Divide -> f1 /. f2
+										| _ -> raise (EInvalidOperation (operator,"float"))) in
+								if f = infinity || f = neg_infinity || f = nan then NaN
+								else FloatValue(f)
 							)
-					| IntegerCast -> (match operator with
-								| Plus -> IntegerValue( (cast_to_integer value1) + (cast_to_integer value2))
-								| Minus -> IntegerValue( (cast_to_integer value1) - (cast_to_integer value2))
-								| Times -> IntegerValue( (cast_to_integer value1) * (cast_to_integer value2))
-								| Divide -> let divisor = cast_to_integer value2 in
-										if divisor <> 0 then IntegerValue( (cast_to_integer value1) / divisor)
-										else NaN
-								| Modulo -> let divisor = cast_to_integer value2 in
-										if divisor <> 0 then IntegerValue( (cast_to_integer value1) mod divisor)
-										else NaN
+					| IntegerCast(i1, i2) -> (match operator with
+								| Plus -> IntegerValue( i1 + i2 )
+								| Minus -> IntegerValue( i1 - i2)
+								| Times -> IntegerValue( i1 * i2)
+								| Divide -> if i2 <> 0 then IntegerValue( i1 / i2) else NaN
+								| Modulo -> if i2 <> 0 then IntegerValue( i1 mod i2) else NaN
 								| _ -> raise (EInvalidOperation (operator,"integer"))
 							)
 				)
@@ -152,7 +151,7 @@ struct
 						| SymbolTable.ArrayType -> restricted_compare value1 comparator value2
 					else
 						match casting_type value1 value2 with
-						| FloatCast -> compare_same_type (FloatValue(cast_to_float value1)) comparator (FloatValue(cast_to_float value2))
+						| FloatCast(f1, f2) -> compare_same_type (FloatValue(f1)) comparator (FloatValue(f2))
 						| _ ->	raise (EMismatchedTypeInCompare(SymbolTable.string_of_symbol_type value1,
 											SymbolTable.string_of_symbol_type value2))
 				)
