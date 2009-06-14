@@ -2,6 +2,7 @@ module Interpreter =
 struct
 	open Ast
 	open Symbol_table
+	open RuntimeError
 	
 	exception EIncompatibleTypes of string * string (* type1, type2 *)
 	exception EInvalidCast of string * string (* value, typename *)
@@ -198,7 +199,7 @@ struct
 				(try
 					let symbol_table = SymbolTable.push_scope symbol_table in
 					interpret_statement preloop symbol_table;
-					let runloop ()=
+					let runloop () =
 						match (evaluate_expression condexpr symbol_table) with
 						| BooleanValue(true) -> true
 						| BooleanValue(false) -> false
@@ -217,6 +218,34 @@ struct
 				with
 					CFBreak -> ()
 				)
+		| ForEach (varname, expr, stmtlist) ->
+				(try
+					let map=evaluate_expression expr symbol_table  in
+					let list =
+						match map with
+						| MapValue(h, MapSubtype) -> Hashtbl.fold (fun k v lst -> v:: lst) h []
+						| MapValue(_, ArraySubtype) -> SymbolTable.list_of_array map
+						| _ -> raise(NotACollectionType("the second argument of forEach",SymbolTable.string_of_symbol_type map))
+					in
+					let symbol_table = SymbolTable.push_scope symbol_table in
+					let runloop lst=
+						match lst with
+						| [] -> (false,[])
+						| el::tl-> SymbolTable.declare varname el symbol_table;(true,tl)
+				   in
+					let rec loop lst = (
+						  let (continue,rest_list)= runloop lst in
+							if continue then
+								((try
+										interpret_statements stmtlist symbol_table
+									with
+										CFContinue -> ());
+									loop rest_list
+								) else ()
+						) in loop list
+				with
+					CFBreak -> ()
+				)
 		| If(condexpr, if_stmts, else_stmts) ->
 				(try (match (evaluate_expression condexpr symbol_table) with
 						| BooleanValue(true) -> interpret_statements if_stmts (SymbolTable.push_scope symbol_table)
@@ -225,7 +254,6 @@ struct
 					)with
 				| CFBreak -> ())
 		| StatementBlock(statements) -> interpret_statements statements symbol_table
-		| ForEach (_, _, _) -> ()
 		| Instructions(_, _, _) -> ()
 		| TemplateDef(_, _) -> ()
 		| Return expression -> raise (CFReturn(evaluate_expression expression symbol_table))

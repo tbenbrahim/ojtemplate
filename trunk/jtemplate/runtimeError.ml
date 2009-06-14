@@ -61,6 +61,13 @@ exception LibraryError of string
 *)
 exception InvalidArrayIndex of string * string
 
+(** indicates that a collection type was expected but another
+type was seen instead
+@param field1 the location of the error
+@param field2 the name of the offending type
+*)
+exception NotACollectionType of string * string
+
 let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
@@ -77,5 +84,7 @@ let string_of_error ex =
 			"In definition of "^name^", a vararg parameter must be the last formal parameter"
 	| LibraryError msg -> msg
 	| InvalidArrayIndex(ind, name) -> "Invalid array index "^ind^" in "^name
+	| NotACollectionType(where, typename) -> "Expected a collection type for "^
+			where^", received a "^typename^" instead"
 	| e -> "uncaught exception "^(Printexc.to_string e)
 
