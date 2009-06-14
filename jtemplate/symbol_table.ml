@@ -85,9 +85,9 @@ struct
 		| StringValue(s) -> s
 		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
 		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
-		| MapValue(map, MapSubtype) -> "{...}" (* TODO recurse *)
-		| MapValue(map, ArraySubtype _) -> "[...]" (* TODO recurse *)
-		| Void -> "void"
+		| MapValue(map, MapSubtype) -> "map" 
+		| MapValue(map, ArraySubtype _) -> "array" 
+		| Void -> "Void"
 		| NaN -> "NaN"
 	
 	let string_of_symbol_type = function
@@ -149,6 +149,10 @@ struct
 	
 	let dummy_table = initialize() (* used in AST as placeholder in function declarations *)
 	
+	let valid_array_index ind =
+		(ind ="length") ||
+		(try let _ = int_of_string ind in true with Failure _ -> false)
+	
 	(** creates a new symbol table for a nested scope. *)
 	let push_scope symbol_table =
 		{ values = Hashtbl.create 10 ; parent_table = Some symbol_table	}
@@ -170,7 +174,7 @@ struct
 		(* this is the last element, it must be a MapValue *)
 				(match container with
 						MapValue(hashtbl, subtype) ->
-							if subtype = ArraySubtype && lastelem!="length" && try let _ = int_of_string lastelem in false with Failure _ -> true then
+							if subtype = ArraySubtype && not(valid_array_index  lastelem)then
 								raise (EInvalidArrayIndex(lastelem))
 							else
 								();
@@ -259,7 +263,7 @@ struct
 		| MapValue(map, subtype) ->
 				(match name_list with
 					| el::[] ->
-							if subtype = ArraySubtype && (try let _ = int_of_string el in false with Failure _ -> true) then
+							if subtype = ArraySubtype && not(valid_array_index  el) then
 								raise (EInvalidArrayIndex(el))
 							else
 								();
