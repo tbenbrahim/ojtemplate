@@ -2,16 +2,35 @@
 Extensions to the Map map
 ***/
 
-var Map.printMap=function(m){
-    var keys=Map.keys(m);
-    for (var i=0;i<Array.length(keys);i=i+1){
-        println(keys[i],': ',m[keys[i]]);
-    }
+import 'array.jtp';
+
+var Map.print=function(m){
+    Map.fold(function(k,v,n){
+            println(k,': ',v);
+            },m,Void);
 };
 
-var Map.fold=function(f,m){
+var Map.fold=function(f,m,acc){
     var keys=Map.keys(m);
     for (var i=0;i<Array.length(keys);i=i+1){
-        f(keys[i], m[keys[i]]);
+        acc=f(keys[i], m[keys[i]],acc);
     }
+    return acc;
 };
+
+var Map.clone=function(m){
+    return Map.fold(function(key,v,map){
+        switch(typeof(v)){
+        case 'map': 
+            var map[key]=Map.clone(v);
+            break;
+        case 'array': 
+            var map[key]=Array.clone(v);
+            break;
+        default:
+            var map[key]=v;
+        }
+        return map;
+    },m,{});
+};
+

@@ -178,20 +178,20 @@ struct
 							| CFReturn value -> value)
 					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
 				)
-		| DirectFunctionCall(expr,exprlist) ->
-                let value_list = evaluate_exprs exprlist symbol_table in
-                (match expr with
-                    | Value(FunctionValue(arglist, stmts)) ->
-                            let old_stack = symbol_table.env.stack_trace in
-                            (try
-                                symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
-                                interpret_statements stmts (SymbolTable.new_function_call_scope (Name("anon")) symbol_table arglist value_list);
-                                symbol_table.env.stack_trace <- old_stack;
-                                Void
-                            with
-                            | CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
-                    | _ -> raise (ENotAFunction "anon")
-                )
+		| DirectFunctionCall(expr, exprlist) ->
+				let value_list = evaluate_exprs exprlist symbol_table in
+				(match expr with
+					| Value(FunctionValue(arglist, stmts)) ->
+							let old_stack = symbol_table.env.stack_trace in
+							(try
+								symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
+								interpret_statements stmts (SymbolTable.new_function_call_scope (Name("anon")) symbol_table arglist value_list);
+								symbol_table.env.stack_trace <- old_stack;
+								Void
+							with
+							| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
+					| _ -> raise (ENotAFunction "anon")
+				)
 		| MapExpr(str_expr_list) ->
 				MapValue(make_map str_expr_list symbol_table, MapSubtype)
 		| ArrayExpr(expr_list) ->
@@ -291,6 +291,24 @@ struct
 				with
 					CFBreak -> ()
 				)
+		| Switch(expr, case_list) ->
+				let value1 = Value(evaluate_expression expr symbol_table) in
+				let rec loop list =
+					match list with
+					| [] -> ()
+					| el:: tl ->
+							let (opt_expr, stmts) = el in
+							let matchfound = (
+									match opt_expr with
+									| Some expr -> (evaluate_expression (CompOp(value1, Equal, expr)) symbol_table = BooleanValue(true))
+									| None -> true) in
+							if matchfound then
+								try
+									interpret_statements stmts (SymbolTable.push_scope symbol_table)
+								with
+								| CFBreak -> ()
+							else loop tl in
+				loop case_list
 		| If(condexpr, if_stmts, else_stmts, env) ->
 				symbol_table.env.current_stmt <- env;
 				(try (match (evaluate_expression condexpr symbol_table) with

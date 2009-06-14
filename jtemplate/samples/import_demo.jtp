@@ -2,12 +2,12 @@ import 'imports/date.jtp';
 import 'imports/map.jtp';
 import 'imports/string.jtp';
 
-Map.printMap(Date.now());
+Map.print(Date.now());
 println();
 
-Map.fold( function(k, v) {
+Map.fold( function(k, v, acc) {
 	println(String.padLeft(k, 11, ' '), ': ', String.padLeft(v, 4, ' '));
-}, Date.now());
+}, Date.now(),Void);
 println();
 
 println('Today is ', Date.toString(Date.now()));
@@ -29,3 +29,27 @@ function(f, elements...){
 		f(element);
 	}
 }(function(x){print(x,' ');},'','Hello','world',1,2,3);
+
+var m1={a:1,b:'test',c:[1,2,3],d:{a:1,b:2}};
+var m2=Map.clone(m1);
+println(m1==m2);
+Map.print(m1);
+Map.print(m2);
+
+//switch test
+
+for (var i=0;i<10;i=i+1){
+	switch(i){
+	case 1: 
+		println('one');
+		println('one');
+	case 2:
+		println('two');
+		print('two');
+		break;
+	default:
+		println(i);
+		println(i);
+	}
+}
+

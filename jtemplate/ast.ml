@@ -55,11 +55,11 @@ and
 (**
 Definition for a symbol table.
 *)
-environment={
-    parse_callback: string -> statement;
-		mutable loaded_imports: string list;
-		mutable current_stmt: string*int;
-		mutable stack_trace: (string*int) list; (* filename, line, repeat *)
+environment ={
+	parse_callback: string -> statement;
+	mutable loaded_imports: string list;
+	mutable current_stmt: string * int;
+	mutable stack_trace: (string * int) list; (* filename, line, repeat *)
 }
 and
 symbol_table ={
@@ -101,4 +101,5 @@ and statement =
 	| Instructions of variable_name * string list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
 	| Import of (string * imported_statements) * (string * int)
+	| Switch of expression * (expression option * statement list) list
 
