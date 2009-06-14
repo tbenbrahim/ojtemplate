@@ -186,16 +186,16 @@ struct
 	and
 	interpret_statement statement symbol_table =
 		match statement with
-		| Assignment(varname, expression) ->
+		| Assignment(varname, expression, env) ->
 				SymbolTable.assign (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
-		| Declaration(varname, expression) ->
+		| Declaration(varname, expression,env) ->
 				SymbolTable.declare (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
-		| ExpressionStatement expression ->
+		| ExpressionStatement(expression,env) ->
 				let _ = evaluate_expression expression symbol_table in ()
 		| Noop -> ()
-		| For (preloop, condexpr, endstmt, stmtlist) ->
+		| For (preloop, condexpr, endstmt, stmtlist,env) ->
 				(try
 					let symbol_table = SymbolTable.push_scope symbol_table in
 					interpret_statement preloop symbol_table;
@@ -218,7 +218,7 @@ struct
 				with
 					CFBreak -> ()
 				)
-		| ForEach (varname, expr, stmtlist) ->
+		| ForEach (varname, expr, stmtlist,env) ->
 				(try
 					let map=evaluate_expression expr symbol_table  in
 					let list =
@@ -246,7 +246,7 @@ struct
 				with
 					CFBreak -> ()
 				)
-		| If(condexpr, if_stmts, else_stmts) ->
+		| If(condexpr, if_stmts, else_stmts,env) ->
 				(try (match (evaluate_expression condexpr symbol_table) with
 						| BooleanValue(true) -> interpret_statements if_stmts (SymbolTable.push_scope symbol_table)
 						| BooleanValue(false) -> interpret_statements else_stmts (SymbolTable.push_scope symbol_table)
@@ -254,11 +254,11 @@ struct
 					)with
 				| CFBreak -> ())
 		| StatementBlock(statements) -> interpret_statements statements symbol_table
-		| Instructions(_, _, _) -> ()
-		| TemplateDef(_, _) -> ()
-		| Return expression -> raise (CFReturn(evaluate_expression expression symbol_table))
-		| Continue ->	raise CFContinue
-		| Break -> raise CFBreak
+		| Instructions(_, _, _,env) -> ()
+		| TemplateDef(_, _,env) -> ()
+		| Return(expression,env) -> raise (CFReturn(evaluate_expression expression symbol_table))
+		| Continue(env) ->	raise CFContinue
+		| Break(env) -> raise CFBreak
 	and
 	interpret_statements statement_list symbol_table =
 		List.fold_left (fun _ stmt -> interpret_statement stmt symbol_table) () statement_list

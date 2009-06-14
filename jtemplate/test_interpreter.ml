@@ -247,15 +247,15 @@ struct
 						BooleanValue(false) = Interpreter.evaluate_expression (CompOp(v2, LessThan, v1)) s
 			);
 			("scalar declaration: var a=1;a=1?", fun() ->
-						let stmt = Declaration(Name("a"), Value(IntegerValue(1))) in
+						let stmt = Declaration(Name("a"), Value(IntegerValue(1)), ("", 0)) in
 						let s = SymbolTable.initialize () in
 						Interpreter.interpret_statement stmt s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(1)
 			);
 			("expression declaration: var a=1;var b=a+2;b=3?", fun() ->
 						let stmts =
-							[Declaration(Name("a"), Value(IntegerValue(1)));
-							Declaration(Name("b"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))))
+							[Declaration(Name("a"), Value(IntegerValue(1)), ("", 0));
+							Declaration(Name("b"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0))
 							] in
 						let s = SymbolTable.initialize () in
 						Interpreter.interpret_statements stmts s;
@@ -263,8 +263,8 @@ struct
 			);
 			("expression assignment: var a=1;var a=a+2;a=3?", fun() ->
 						let stmts =
-							[Declaration(Name("a"), Value(IntegerValue(1)));
-							Declaration(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))))
+							[Declaration(Name("a"), Value(IntegerValue(1)), ("", 0));
+							Declaration(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0))
 							] in
 						let s = SymbolTable.initialize () in
 						Interpreter.interpret_statements stmts s;
@@ -273,7 +273,7 @@ struct
 			("array length test: var a=[1,2,3];a.length=3?", fun () ->
 						let s = SymbolTable.initialize() in
 						let expr = ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]) in
-						let stmt = Declaration(Name("a"), expr) in
+						let stmt = Declaration(Name("a"), expr, ("", 0)) in
 						Interpreter.interpret_statement stmt s;
 						(match SymbolTable.get_value (Name("a")) s with
 							| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(3)
@@ -282,13 +282,13 @@ struct
 			("for loop: var a=0;for(var i=0;i<10000;i=i+1){a=a+2} a=20000? i not in scope?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							For(Declaration(Name("i"), Value(IntegerValue(0))),
+							Declaration(Name("a"), Value(IntegerValue(0)), ("", 0));
+							For(Declaration(Name("i"), Value(IntegerValue(0)), ("", 0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
-								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1)))),
+								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))), ("", 0)),
 								[
-								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
-								])
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0));
+								], ("", 0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(20000) &&
@@ -297,13 +297,13 @@ struct
 			("for loop, no loop: var a=0;for(var i=0;i<0;i=i+1){a=a+2} a=0? ", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							For(Declaration(Name("i"), Value(IntegerValue(0))),
+							Declaration(Name("a"), Value(IntegerValue(0)), ("", 0));
+							For(Declaration(Name("i"), Value(IntegerValue(0)), ("", 0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(0))),
-								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1)))),
+								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))), ("", 0)),
 								[
-								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
-								])
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0));
+								], ("", 0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(0)
@@ -311,14 +311,14 @@ struct
 			("for loop with break: var a=0;for(var i=0;i<10000;i=i+1){a=a+2;break} a=2? i not in scope?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							For(Declaration(Name("i"), Value(IntegerValue(0))),
+							Declaration(Name("a"), Value(IntegerValue(0)), ("", 0));
+							For(Declaration(Name("i"), Value(IntegerValue(0)), ("", 0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
-								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1)))),
+								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))), ("", 0)),
 								[
-								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
-								Break;
-								])
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0));
+								Break(("", 0));
+								], ("", 0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(2) &&
@@ -327,15 +327,15 @@ struct
 			("for loop with continue: var a=0;for(var i=0;i<10000;i=i+1){a=a+2;continue;a=a+2} a=20000? i not in scope?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							For(Declaration(Name("i"), Value(IntegerValue(0))),
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							For(Declaration(Name("i"), Value(IntegerValue(0)),("",0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
-								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1)))),
+								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))),("",0)),
 								[
-								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
-								Continue;
-								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
-								])
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))),("",0));
+								Continue(("",0));
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))),("",0));
+								],("",0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(20000) &&
@@ -344,16 +344,16 @@ struct
 			("if test: var a=0;for(var i=0;i<10000;i=i+1){if (i%2=1){continue};a=a+2} a=10000? i not in scope?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							For(Declaration(Name("i"), Value(IntegerValue(0))),
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							For(Declaration(Name("i"), Value(IntegerValue(0)),("",0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
-								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(2)))),
+								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(2))),("",0)),
 								[
 								If(CompOp(BinaryOp(VariableExpr(Name("i")), Modulo, Value(IntegerValue(1))),
 										Equal, Value(IntegerValue(1))),
-									[ Continue ],[ Noop ]);
-								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
-								])
+									[ Continue(("",0))],[ Noop ],("",0));
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))),("",0));
+								],("",0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(10000) &&
@@ -362,13 +362,13 @@ struct
 			("static scoping test: var x=2;var f=function(){return x;};\n\t\tvar g=function(){var x=1;return f();} var y=g();y=2?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("x"), Value(IntegerValue(2)));
+							Declaration(Name("x"), Value(IntegerValue(2)),("",0));
 							Declaration(Name("f"), Value(FunctionValue([],
-										[Return(VariableExpr(Name("x")))], SymbolTable.dummy_table)));
+										[Return(VariableExpr(Name("x")),("",0))], SymbolTable.dummy_table)),("",0));
 							Declaration(Name("g"), Value(FunctionValue([],[
-										Declaration(Name("x"), Value(IntegerValue(1)));
-										Return(FunctionCall(Name("f"),[]));], SymbolTable.dummy_table)));
-							Declaration(Name("y"), FunctionCall(Name("g"),[]));
+										Declaration(Name("x"), Value(IntegerValue(1)),("",0));
+										Return(FunctionCall(Name("f"),[]),("",0));], SymbolTable.dummy_table)),("",0));
+							Declaration(Name("y"), FunctionCall(Name("g"),[]),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("y")) s = IntegerValue(2)
@@ -376,12 +376,12 @@ struct
 			("function call args are assigned correctely: var a=0;var b=0; var f=function(x,y){a=x;b=y;}\n\t f(1,2); a=1? b=2?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							Declaration(Name("b"), Value(IntegerValue(0)));
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							Declaration(Name("b"), Value(IntegerValue(0)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
-										[ Assignment(Name("a"), VariableExpr(Name("x")));
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
-							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1)); Value(IntegerValue(2))]));
+										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1)); Value(IntegerValue(2))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(1) && SymbolTable.get_value (Name("b")) s = IntegerValue(2)
@@ -389,12 +389,12 @@ struct
 			("function call with too few arguments should throw MismatchedCallArgs", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							Declaration(Name("b"), Value(IntegerValue(0)));
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							Declaration(Name("b"), Value(IntegerValue(0)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
-										[ Assignment(Name("a"), VariableExpr(Name("x")));
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
-							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1))]));
+										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts s; false
@@ -406,13 +406,13 @@ struct
 			("function call with too many arguments should throw MismatchedCallArgs", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							Declaration(Name("b"), Value(IntegerValue(0)));
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							Declaration(Name("b"), Value(IntegerValue(0)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
-										[ Assignment(Name("a"), VariableExpr(Name("x")));
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
-									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]));
+									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts s; false
@@ -424,13 +424,13 @@ struct
 			("call function with vararg", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"[y"],
-										[ Assignment(Name("a"), VariableExpr(Name("x")));
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
-									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]));
+									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
 						IntegerValue(1) = SymbolTable.get_value (Name "a") s &&
@@ -443,13 +443,13 @@ struct
 			("call function with vararg, fewer values than formal arguments", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"[y"],
-										[ Assignment(Name("a"), VariableExpr(Name("x")));
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
-									[Value(IntegerValue(1))]));
+									[Value(IntegerValue(1))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
 						IntegerValue(1) = SymbolTable.get_value (Name "a") s &&
@@ -460,10 +460,10 @@ struct
 			("call function with single vararg, no values", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["[y"],[
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
-							Ast.ExpressionStatement(FunctionCall(Name("f"), []));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+							Ast.ExpressionStatement(FunctionCall(Name("f"), []),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
 						match SymbolTable.get_value (Name "b") s with
@@ -473,13 +473,13 @@ struct
 			("function with vararg not in last position should throw VarArgsMustbeLast", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
-							Declaration(Name("a"), Value(IntegerValue(0)));
-							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("a"), Value(IntegerValue(0)),("",0));
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["[x";"y"],
-										[ Assignment(Name("a"), VariableExpr(Name("x")));
-										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
-									[Value(IntegerValue(1))]));
+									[Value(IntegerValue(1))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts s; false

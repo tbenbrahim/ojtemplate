@@ -16,9 +16,9 @@ let  parse_error s =
 	print_string "\n";
   flush stdout
 
-let get_env = function
-	() -> let pos=Parsing.symbol_start_pos() in
-		(pos.Lexing.pos_fname,pos.Lexing.pos_lnum)
+let get_env ()= 
+	let pos=Parsing.symbol_start_pos() in
+	(pos.Lexing.pos_fname,pos.Lexing.pos_lnum)
 		
 %}
 
@@ -58,32 +58,32 @@ statement_block:                      LBRACE statements RBRACE                { 
                                     | LBRACE RBRACE                           { [] }
 ;
 /* for_target_statements can appear inside a for() statements */
-for_target_statement:                 variable EQUALS expression              { Assignment($1,$3) }
-                                    | VAR variable EQUALS expression          { Declaration($2,$4) }
-                                    | expression                              { ExpressionStatement($1) }
+for_target_statement:                 variable EQUALS expression              { Assignment($1,$3,get_env()) }
+                                    | VAR variable EQUALS expression          { Declaration($2,$4,get_env()) }
+                                    | expression                              { ExpressionStatement($1,get_env()) }
                                     | /*nothing*/                             { Noop }
 ;
 statement:                            for_target_statement SEMICOLON          { $1 }                            
-                                    | CONTINUE SEMICOLON                      { Continue }
-                                    | BREAK SEMICOLON                         { Break }
-                                    | RETURN expression SEMICOLON             { Return($2) }
-																		| RETURN SEMICOLON                        { Return(Value(Void)) }
+                                    | CONTINUE SEMICOLON                      { Continue(get_env())}
+                                    | BREAK SEMICOLON                         { Break(get_env())}
+                                    | RETURN expression SEMICOLON             { Return($2,get_env()) }
+																		| RETURN SEMICOLON                        { Return(Value(Void),get_env()) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
-                                                                              { ForEach(Name($3),$5,$7) }
+                                                                              { ForEach(Name($3),$5,$7,get_env()) }
                                     | WHILE LPAREN expression RPAREN statement_block 
-                                                                              { For(Noop,$3,Noop,$5) }
+                                                                              { For(Noop,$3,Noop,$5,get_env()) }
                                     | FOR LPAREN for_target_statement SEMICOLON 
                                                  expression SEMICOLON 
                                                  for_target_statement RPAREN statement_block
-                                                                              { For($3,$5,$7,$9) }
+                                                                              { For($3,$5,$7,$9,get_env()) }
                                     | IF LPAREN expression RPAREN statement_block ELSE statement_block
-                                                                              { If($3,$5,$7) }
+                                                                              { If($3,$5,$7,get_env()) }
                                     | IF LPAREN expression RPAREN statement_block
-                                                                              { If($3,$5,[]) }
+                                                                              { If($3,$5,[],get_env()) }
                                     | TEMPLATE ID LBRACE template_specs RBRACE
-                                                                              { TemplateDef(Name($2), $4) }
+                                                                              { TemplateDef(Name($2), $4,get_env()) }
                                     | INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
-                                                                              { Instructions(Name($3),$5,$8) }
+                                                                              { Instructions(Name($3),$5,$8,get_env()) }
 ;
 expression:                           value                                   { $1 }
 																		| function_call                           { $1 }

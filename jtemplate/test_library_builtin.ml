@@ -13,8 +13,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
-							ExpressionStatement(FunctionCall(CompoundName(["Array";"push"]),[VariableExpr(Name("arr")); Value(StringValue("x"))]));
+							Declaration(Name("arr"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]),("",0));
+							ExpressionStatement(FunctionCall(CompoundName(["Array";"push"]),[VariableExpr(Name("arr")); Value(StringValue("x"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						StringValue("x") = SymbolTable.get_value (CompoundName(["arr";"3"])) symbol_table &&
@@ -26,8 +26,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
-							Declaration(Name("hd"), FunctionCall(CompoundName(["Array";"pop"]),[VariableExpr(Name("arr"))]));
+							Declaration(Name("arr"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]),("",0));
+							Declaration(Name("hd"), FunctionCall(CompoundName(["Array";"pop"]),[VariableExpr(Name("arr"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						IntegerValue(3) = SymbolTable.get_value (Name "hd") symbol_table &&
@@ -39,8 +39,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
-							Declaration(Name("len"), FunctionCall(CompoundName(["Array";"length"]),[VariableExpr(Name("arr"))]));
+							Declaration(Name("arr"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]),("",0));
+							Declaration(Name("len"), FunctionCall(CompoundName(["Array";"length"]),[VariableExpr(Name("arr"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						IntegerValue(3) = SymbolTable.get_value (Name "len") symbol_table
@@ -49,8 +49,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), ArrayExpr([]));
-							Declaration(Name("hd"), FunctionCall(CompoundName(["Array";"pop"]),[VariableExpr(Name("arr"))]));
+							Declaration(Name("arr"), ArrayExpr([]),("",0));
+							Declaration(Name("hd"), FunctionCall(CompoundName(["Array";"pop"]),[VariableExpr(Name("arr"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -62,8 +62,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
-							ExpressionStatement(FunctionCall(CompoundName(["Array";"push"]),[VariableExpr(Name("arr")); Value(StringValue("x"))]));
+							Declaration(Name("arr"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]),("",0));
+							ExpressionStatement(FunctionCall(CompoundName(["Array";"push"]),[VariableExpr(Name("arr")); Value(StringValue("x"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -75,8 +75,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
-							Declaration(Name("hd"), FunctionCall(CompoundName(["Array";"pop"]),[VariableExpr(Name("arr"))]));
+							Declaration(Name("arr"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]),("",0));
+							Declaration(Name("hd"), FunctionCall(CompoundName(["Array";"pop"]),[VariableExpr(Name("arr"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -88,8 +88,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("arr"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
-							Declaration(Name("len"), FunctionCall(CompoundName(["Array";"length"]),[VariableExpr(Name("arr"))]));
+							Declaration(Name("arr"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]),("",0));
+							Declaration(Name("len"), FunctionCall(CompoundName(["Array";"length"]),[VariableExpr(Name("arr"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -101,10 +101,10 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
-							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map")); Value(StringValue("1"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map")); Value(StringValue("3"))]));
-							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]));
+							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]),("",0));
+							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map")); Value(StringValue("1"))]),("",0));
+							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map")); Value(StringValue("3"))]),("",0));
+							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						StringValue("2") = SymbolTable.get_value (CompoundName(["arr";"0"])) symbol_table &&
@@ -116,9 +116,9 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
-							Declaration(Name("shouldBeTrue"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("1"))]));
-							Declaration(Name("shouldBeFalse"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("X"))]));
+							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]),("",0));
+							Declaration(Name("shouldBeTrue"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("1"))]),("",0));
+							Declaration(Name("shouldBeFalse"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("X"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						BooleanValue(true) = SymbolTable.get_value (Name("shouldBeTrue")) symbol_table &&
@@ -128,8 +128,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]));
-							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]));
+							Declaration(Name("map"), MapExpr([("1", Value(IntegerValue(1))); ("2", Value(IntegerValue(2))); ("3", Value(IntegerValue(4)));]),("",0));
+							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						StringValue("1") = SymbolTable.get_value (CompoundName(["arr";"0"])) symbol_table &&
@@ -143,8 +143,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
-							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]));
+							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]),("",0));
+							Declaration(Name("arr"), FunctionCall(CompoundName(["Map";"keys"]),[VariableExpr(Name("map"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -156,8 +156,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
-							Declaration(Name("x"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("x"))]));
+							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]),("",0));
+							Declaration(Name("x"), FunctionCall(CompoundName(["Map";"contains"]),[VariableExpr(Name("map")); Value(StringValue("x"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -169,8 +169,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]));
-							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map"));Value(StringValue("1"))]));
+							Declaration(Name("map"), ArrayExpr([Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3));]),("",0));
+							ExpressionStatement(FunctionCall(CompoundName(["Map";"remove"]),[VariableExpr(Name("map"));Value(StringValue("1"))]),("",0));
 							] in
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
@@ -182,8 +182,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("good"), FunctionCall(CompoundName(["Integer";"parse"]),[Value(StringValue("1234"))]));
-							Declaration(Name("bad"), FunctionCall(CompoundName(["Integer";"parse"]),[Value(StringValue("1234a"))]));
+							Declaration(Name("good"), FunctionCall(CompoundName(["Integer";"parse"]),[Value(StringValue("1234"))]),("",0));
+							Declaration(Name("bad"), FunctionCall(CompoundName(["Integer";"parse"]),[Value(StringValue("1234a"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						IntegerValue(1234) = SymbolTable.get_value (Name("good")) symbol_table &&
@@ -193,8 +193,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("good"), FunctionCall(CompoundName(["Float";"parse"]),[Value(StringValue("12.34"))]));
-							Declaration(Name("bad"), FunctionCall(CompoundName(["Float";"parse"]),[Value(StringValue("12.34a"))]));
+							Declaration(Name("good"), FunctionCall(CompoundName(["Float";"parse"]),[Value(StringValue("12.34"))]),("",0));
+							Declaration(Name("bad"), FunctionCall(CompoundName(["Float";"parse"]),[Value(StringValue("12.34a"))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						FloatValue(12.34) = SymbolTable.get_value (Name("good")) symbol_table &&
@@ -204,8 +204,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library BuiltinLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("a"), FunctionCall(CompoundName(["Float";"round"]),[Value(FloatValue(12.34))]));
-							Declaration(Name("b"), FunctionCall(CompoundName(["Float";"round"]),[Value(FloatValue(12.64))]));
+							Declaration(Name("a"), FunctionCall(CompoundName(["Float";"round"]),[Value(FloatValue(12.34))]),("",0));
+							Declaration(Name("b"), FunctionCall(CompoundName(["Float";"round"]),[Value(FloatValue(12.64))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts symbol_table;
 						IntegerValue(12) = SymbolTable.get_value (Name("a")) symbol_table &&

@@ -30,17 +30,17 @@ struct
 		| Ast.StatementBlock(stmts) ->
 				List.fold_left(fun pre stmt -> pre^(statement_descriptionl (level + 1) stmt))
 					((prefix level) ^"Statement block\n") stmts
-		| Ast.Assignment (var, expr) ->
+		| Ast.Assignment (var, expr, env) ->
 				(prefix level) ^
 				("Assignment\n" ^
 					((var_descriptionl (level + 1) var) ^
 						(expr_descriptionl (level + 1) expr)))
-		| Ast.Declaration (var, expr) ->
+		| Ast.Declaration (var, expr, env) ->
 				(prefix level) ^
 				("Declaration\n" ^
 					((var_descriptionl (level + 1) var) ^
 						(expr_descriptionl (level + 1) expr)))
-		| Ast.Instructions (var, varlist, specs) ->
+		| Ast.Instructions (var, varlist, specs, env) ->
 				(prefix level) ^
 				("Instructions\n" ^
 					((var_descriptionl (level + 1) var) ^
@@ -100,7 +100,7 @@ struct
 																											expr)))))
 																			"" repllist)))))))
 									"" specs))))
-		| Ast.TemplateDef (var, specs) ->
+		| Ast.TemplateDef (var, specs, env) ->
 				(prefix level) ^
 				("Template Definition\n" ^
 					((var_descriptionl (level + 1) var) ^
@@ -113,25 +113,25 @@ struct
 													acc ^ (label ^ (":\t" ^ (text ^ "\n")))
 											| None -> acc ^ (":\t" ^ (text ^ "\n")))
 								"" specs)))
-		| Ast.If (expr, iflist, elselist) ->
+		| Ast.If (expr, iflist, elselist, env) ->
 				(prefix level) ^
 				("If/Else\n" ^
 					((expr_descriptionl (level + 1) expr) ^
 						((statement_list (level + 1) iflist) ^
 							(statement_list (level + 1) elselist))))
-		| Ast.Return expr ->
+		| Ast.Return( expr, env) ->
 				(prefix level) ^
 				("Return\n" ^ (expr_descriptionl (level + 1) expr))
-		| Ast.ExpressionStatement expr -> expr_descriptionl level expr
-		| Ast.ForEach (var, expr, stmt) ->
+		| Ast.ExpressionStatement (expr , env) -> expr_descriptionl level expr
+		| Ast.ForEach (var, expr, stmt, env) ->
 				(prefix level) ^
 				("ForEach\n" ^
 					((var_descriptionl (level + 1) var) ^
 						((expr_descriptionl (level + 1) expr) ^
 							(statement_list (level + 1) stmt))))
-		| Ast.Continue -> (prefix level) ^ "Continue\n"
-		| Ast.Break -> (prefix level) ^ "Break\n"
-		| Ast.For (stmt1, expr, stmt3, stmt_list) ->
+		| Ast.Continue(env) -> (prefix level) ^ "Continue\n"
+		| Ast.Break(env) -> (prefix level) ^ "Break\n"
+		| Ast.For (stmt1, expr, stmt3, stmt_list, env) ->
 				(prefix level) ^
 				("For\n" ^
 					((statement_descriptionl (level + 1) stmt1) ^

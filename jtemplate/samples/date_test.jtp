@@ -1,8 +1,0 @@
-var printMap=function(m){
-    var keys=Map.keys(m);
-    for (var i=0;i<Array.length(keys);i=i+1){
-        println(keys[i],': ',m[keys[i]]);
-    }
-};
-
-printMap(Date.now());
