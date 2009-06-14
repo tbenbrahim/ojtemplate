@@ -103,6 +103,7 @@ expression:                           value                                   { 
 																		| expression COMPOP expression            { CompOp($1,$2,$3) }
 ;
 function_call:                        variable LPAREN expr_list RPAREN        { FunctionCall($1,$3) }
+                                    | function_def LPAREN expr_list RPAREN    { DirectFunctionCall($1,$3) }
 ;
 variable:                             ids                                     {
 																																								 match $1 with
@@ -116,15 +117,17 @@ ids:                                  ID                                      { 
                                     | array_index                             { [$1] }
                                     | ID DOT ids                              { Name($1)::$3 }
 ;
+function_def:
+                                      FUNCTION LPAREN arglist RPAREN statement_block 
+                                                                              { Value(FunctionValue($3,$5)) }
+;																																							
 value:                                INT                                     { Value(IntegerValue($1)) }
 																		| REAL                                    { Value(FloatValue($1)) }
 																		| STRING                                  { Value(StringValue($1)) }
 																		| BOOLEAN                                 { Value(BooleanValue($1)) }
 																		| VOID                                    { Value(Void) }
 																		| NAN                                     { Value(NaN) }
-																		| FUNCTION LPAREN arglist RPAREN statement_block 
-																		                               						{ Value(FunctionValue($3,$5)) }
-																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4)) }
+																		| function_def                            { $1 }
 																		| LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
 																		| LBRACE RBRACE                           { MapExpr([]) }
 																		| LBRACE prop_list RBRACE                 { MapExpr($2) }
@@ -133,6 +136,7 @@ value:                                INT                                     { 
 arglist:                              ID                                      { [$1] }
                                     | ID DOTDOTDOT                            { ["["^$1] }
 																		| ID COMMA arglist                        { $1::$3 }
+																		| /* nothing */                           { [] }
 ;
 expr_list:
                                       expression                              { [$1] }

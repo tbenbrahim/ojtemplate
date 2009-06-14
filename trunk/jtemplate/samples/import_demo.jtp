@@ -11,3 +11,21 @@ Map.fold( function(k, v) {
 println();
 
 println('Today is ', Date.toString(Date.now()));
+
+//test of varargs, foreach
+
+var apply=function(f, elements...){
+	foreach(element in elements){
+		f(element);
+	}
+};
+
+apply(function(x){print(x,' ');},'','Hello','world',1,2,3);
+
+println();
+
+function(f, elements...){
+	foreach(element in elements){
+		f(element);
+	}
+}(function(x){print(x,' ');},'','Hello','world',1,2,3);

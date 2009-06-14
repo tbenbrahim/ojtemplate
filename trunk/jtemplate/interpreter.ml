@@ -178,6 +178,20 @@ struct
 							| CFReturn value -> value)
 					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
 				)
+		| DirectFunctionCall(expr,exprlist) ->
+                let value_list = evaluate_exprs exprlist symbol_table in
+                (match expr with
+                    | Value(FunctionValue(arglist, stmts)) ->
+                            let old_stack = symbol_table.env.stack_trace in
+                            (try
+                                symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
+                                interpret_statements stmts (SymbolTable.new_function_call_scope (Name("anon")) symbol_table arglist value_list);
+                                symbol_table.env.stack_trace <- old_stack;
+                                Void
+                            with
+                            | CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
+                    | _ -> raise (ENotAFunction "anon")
+                )
 		| MapExpr(str_expr_list) ->
 				MapValue(make_map str_expr_list symbol_table, MapSubtype)
 		| ArrayExpr(expr_list) ->
