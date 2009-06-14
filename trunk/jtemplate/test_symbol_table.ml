@@ -64,13 +64,13 @@ struct
 						| NotAMap ("b", "a.b.c") -> true
 						| _ -> false
 			);
-			("a.b=1 should throw ReferenceToUndefinedMapVariable(\"a\",\"a.b\") ", fun() ->
+			("a.b=1 should throw ReferenceToUndefinedVariable(\"a.b\") ", fun() ->
 						let s = SymbolTable.initialize() in
 						try
 							let _ = SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s in
 							false
 						with
-						| ReferenceToUndefinedMapVariable ("a", "a.b") -> true
+						| ReferenceToUndefinedVariable ( "a.b") -> true
 						| _ -> false
 			);
 			("a={} a.b.c=1 should throw ReferenceToUndefinedMapVariable(\"b\",\"a.b.c\") ", fun() ->
@@ -164,15 +164,12 @@ struct
 						SymbolTable.get_value (CompoundName(["a";"b"])) s = IntegerValue(1)
 			);
 			
-			("adding key to map in nested scope : a={} { a.b=1 } should throw ReferenceToUndefinedMapVariable(\"a\",\"a.b\")", fun () ->
+			("adding key to map in nested scope : a={} { a.b=1 } ", fun () ->
 						let s = SymbolTable.initialize() in
 						SymbolTable.declare (Name("a")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
 						let s = SymbolTable.push_scope s in
-						try
-							let _ = SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s in
-							false
-						with
-							ReferenceToUndefinedMapVariable("a","a.b") -> true
+						let _ = SymbolTable.declare (CompoundName(["a";"b"])) (IntegerValue(1)) s in
+						IntegerValue(1) = SymbolTable.get_value (CompoundName(["a";"b"])) s
 			);
 			
 			("assigning key value to map in nested scope: a={},a.b=1 { { a.b=2 a.b=2?}}", fun () ->
