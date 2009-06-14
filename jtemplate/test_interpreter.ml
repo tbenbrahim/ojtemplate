@@ -240,15 +240,11 @@ struct
 							Interpreter.EInvalidComparaison(LessThan, "boolean") -> true
 						| _ -> false
 			);
-			("comparaison of two mismtached types throws EMismatchedTypeInCompare(\"integer\", \"string\")", fun() ->
+			("comparaison of two mismtached types returns false", fun() ->
 						let v1 = Value(StringValue("3")) in
 						let v2 = Value(IntegerValue(1)) in
 						let s = SymbolTable.initialize() in
-						try
-							let _ = Interpreter.evaluate_expression (CompOp(v2, LessThan, v1)) s in false
-						with
-							Interpreter.EMismatchedTypeInCompare("integer", "string") -> true
-						| _ -> false
+						BooleanValue(false) = Interpreter.evaluate_expression (CompOp(v2, LessThan, v1)) s
 			);
 			("scalar declaration: var a=1;a=1?", fun() ->
 						let stmt = Declaration(Name("a"), Value(IntegerValue(1))) in
