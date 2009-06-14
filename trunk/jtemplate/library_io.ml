@@ -178,9 +178,8 @@ struct
 		(["Directory";"exists"],["name"], fun stbl ->
 					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
 					raise (Interpreter.CFReturn(BooleanValue((try
-										let h = opendir name in let _ = readdir h in closedir h ; true
+										Sys.is_directory name
 									with
-									| Unix_error(ENOTDIR, _, _) -> false
 									| _ -> raise (Interpreter.CFReturn(Void))))))
 		);
 		]
