@@ -294,6 +294,20 @@ struct
 						SymbolTable.get_value (Name("a")) s = IntegerValue(20000) &&
 						SymbolTable.is_undefined (Name("i")) s
 			);
+			("for loop, no loop: var a=0;for(var i=0;i<0;i=i+1){a=a+2} a=0? ", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Declaration(Name("a"), Value(IntegerValue(0)));
+							For(Declaration(Name("i"), Value(IntegerValue(0))),
+								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(0))),
+								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1)))),
+								[
+								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))));
+								])
+							] in
+						Interpreter.interpret_statements stmts s;
+						SymbolTable.get_value (Name("a")) s = IntegerValue(0)
+			);
 			("for loop with break: var a=0;for(var i=0;i<10000;i=i+1){a=a+2;break} a=2? i not in scope?", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [

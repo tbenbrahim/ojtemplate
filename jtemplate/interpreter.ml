@@ -198,19 +198,22 @@ struct
 				(try
 					let symbol_table = SymbolTable.push_scope symbol_table in
 					interpret_statement preloop symbol_table;
+					let runloop ()=
+						match (evaluate_expression condexpr symbol_table) with
+						| BooleanValue(true) -> true
+						| BooleanValue(false) -> false
+						| value ->
+								raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean")) in
 					let rec loop () = (
-							(try
-								interpret_statements stmtlist symbol_table
-							with
-								CFContinue -> ());
-							interpret_statement endstmt symbol_table;
-							match (evaluate_expression condexpr symbol_table) with
-							| BooleanValue(true) -> loop ()
-							| BooleanValue(false) -> ()
-							| value ->
-									raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
-						) in
-					loop ()
+							if runloop () then
+								((try
+										interpret_statements stmtlist symbol_table
+									with
+										CFContinue -> ());
+									interpret_statement endstmt symbol_table;
+									loop()
+								) else ()
+						) in loop ()
 				with
 					CFBreak -> ()
 				)
