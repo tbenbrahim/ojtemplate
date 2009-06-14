@@ -447,6 +447,19 @@ struct
 						| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(0)
 						| _ -> false
 			);
+			("call function with single vararg, no values", fun() ->
+						let s = SymbolTable.initialize() in
+						let stmts = [
+							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)));
+							Declaration(Name("f"), Value(FunctionValue(["[y"],[
+										Assignment(Name("b"), VariableExpr(Name("y")))], SymbolTable.dummy_table)));
+							Ast.ExpressionStatement(FunctionCall(Name("f"), []));
+							] in
+						Interpreter.interpret_statements stmts s;
+						match SymbolTable.get_value (Name "b") s with
+						| MapValue(h, ArraySubtype) -> Hashtbl.find h "length" = IntegerValue(0)
+						| _ -> false
+			);
 			("function with vararg not in last position should throw VarArgsMustbeLast", fun() ->
 						let s = SymbolTable.initialize() in
 						let stmts = [
