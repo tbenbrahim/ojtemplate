@@ -57,13 +57,15 @@ Definition for a symbol table.
 *)
 environment={
     parse_callback: string -> statement;
-		mutable loaded_imports: string list 
+		mutable loaded_imports: string list;
+		mutable current_stmt: string*int;
+		mutable stack_trace: (string*int) list; (* filename, line, repeat *)
 }
 and
 symbol_table ={
 	values: (string, variable_value) Hashtbl.t; (* variable values for this scope *)
 	parent_table: symbol_table option;
-	env: environment
+	env: environment;
 }
 
 and variable_name =
