@@ -23,6 +23,11 @@ let resolve_import (filename, library, (inp_file, _))=
 	let fullname=Filename_util.resolve_filename (Filename.dirname inp_file) filename
 	in
 	   (fullname, {loaded=false})
+		
+let extract_stmt_list=function
+	| [] -> []
+	| [StatementBlock(lst)] -> lst
+	| lst -> lst
 %}
 
 %token<string> ID
@@ -75,19 +80,19 @@ statement:                            for_target_statement SEMICOLON          { 
                                     | RETURN expression SEMICOLON             { Return($2,get_env()) }
 																		| RETURN SEMICOLON                        { Return(Value(Void),get_env()) }
 																		| SWITCH LPAREN expression RPAREN statement_block
-																		                                          { Switch($3,$5,get_env()) }
+																		                                          { Switch($3,extract_stmt_list($5),get_env()) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
-                                                                              { ForEach(Name($3),$5,$7,get_env()) }
+                                                                              { ForEach(Name($3),$5,extract_stmt_list($7),get_env()) }
                                     | WHILE LPAREN expression RPAREN statement_block 
-                                                                              { For(Noop,$3,Noop,$5,get_env()) }
+                                                                              { For(Noop,$3,Noop,extract_stmt_list($5),get_env()) }
                                     | FOR LPAREN for_target_statement SEMICOLON 
                                                  expression SEMICOLON 
                                                  for_target_statement RPAREN statement_block
-                                                                              { For($3,$5,$7,$9,get_env()) }
+                                                                              { For($3,$5,$7,extract_stmt_list($9),get_env()) }
                                     | IF LPAREN expression RPAREN statement_block ELSE statement_block
-                                                                              { If($3,$5,$7,get_env()) }
+                                                                              { If($3,extract_stmt_list($5),extract_stmt_list($7),get_env()) }
                                     | IF LPAREN expression RPAREN statement_block
-                                                                              { If($3,$5,[],get_env()) }
+                                                                              { If($3,extract_stmt_list($5),[],get_env()) }
                                     | TEMPLATE ID LBRACE template_specs RBRACE
                                                                               { TemplateDef(Name($2), $4,get_env()) }
                                     | INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
