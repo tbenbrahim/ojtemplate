@@ -150,10 +150,12 @@ struct
 						| SymbolTable.LibraryCallType | SymbolTable.VoidType | SymbolTable.NaNType
 						| SymbolTable.ArrayType -> restricted_compare value1 comparator value2
 					else
-						match casting_type value1 value2 with
-						| FloatCast(f1, f2) -> compare_same_type (FloatValue(f1)) comparator (FloatValue(f2))
-						| _ ->	raise (EMismatchedTypeInCompare(SymbolTable.string_of_symbol_type value1,
-											SymbolTable.string_of_symbol_type value2))
+						try
+							match casting_type value1 value2 with
+							| FloatCast(f1, f2) -> compare_same_type (FloatValue(f1)) comparator (FloatValue(f2))
+							| _ ->	BooleanValue(false)
+						with
+						| EIncompatibleTypes(_, _) -> BooleanValue(false)
 				)
 		| FunctionCall(variable, exprlist) ->
 				let value_list = evaluate_exprs exprlist symbol_table in
