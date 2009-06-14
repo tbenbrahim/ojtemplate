@@ -63,7 +63,7 @@ and variable_name =
 	| Name of string 
 	| CompoundName of string list 
 	| EvaluatedName of variable_name list 
-	| ArrayIndex of string*expression 
+	| ArrayIndex of string * expression 
 	
 and expression =
 	| BinaryOp of expression * operator * expression
@@ -75,17 +75,17 @@ and expression =
 	| Value of variable_value
 
 and statement =
-	| Assignment of variable_name * expression
-	| Declaration of variable_name * expression
-	| ForEach of variable_name * expression * statement list
-	| For of statement * expression * statement * statement list
-	| ExpressionStatement of expression
-	| Break
-	| Continue 
-	| Noop
-	| Return of expression
-	| If of expression * statement list * statement list
-	| TemplateDef of variable_name * template_spec list
-	| Instructions of variable_name * string list * replacement_spec list
+	| Assignment of variable_name * expression * (string*int)
+	| Declaration of variable_name * expression * (string*int)
+	| ForEach of variable_name * expression * statement list * (string*int)
+	| For of statement * expression * statement * statement list * (string*int)
+	| ExpressionStatement of expression * (string*int)
+	| Break of (string*int)
+	| Continue of (string*int)
+	| Noop 
+	| Return of expression * (string*int)
+	| If of expression * statement list * statement list * (string*int)
+	| TemplateDef of variable_name * template_spec list * (string*int)
+	| Instructions of variable_name * string list * replacement_spec list * (string*int)
 	| StatementBlock of statement list
 

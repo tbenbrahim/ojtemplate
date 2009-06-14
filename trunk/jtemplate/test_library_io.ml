@@ -14,7 +14,7 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(Name("print"),
-									[Value(StringValue("test of print\n"))]))
+									[Value(StringValue("test of print\n"))]), ("", 0))
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						true
@@ -24,7 +24,7 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(Name("println"),
-									[Value(StringValue("test of println"))]))
+									[Value(StringValue("test of println"))]), ("", 0))
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						true
@@ -34,10 +34,10 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test\n"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						true
@@ -47,10 +47,10 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						StringValue("this is a test") = SymbolTable.get_value (Name("data")) symbol_table &&
@@ -61,14 +61,14 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test"))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						StringValue("this is a test") = SymbolTable.get_value (Name("data")) symbol_table
@@ -78,15 +78,15 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test\n"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						StringValue("this is a test") = SymbolTable.get_value (Name("data")) symbol_table &&
@@ -97,14 +97,14 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test\n"))]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -117,14 +117,14 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test\n"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -137,12 +137,12 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test\n"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							Declaration(Name("atEnd"), FunctionCall(CompoundName(["File";"eof"]),[Value(IntegerValue(1))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -155,11 +155,11 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(1));
-									Value(StringValue("this is a test\n"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -172,9 +172,9 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test123.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(2))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("test123.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(2))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -187,9 +187,9 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(2))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(2))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -202,10 +202,10 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForWriting"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
+									Value(StringValue("test1.txt"))]), ("", 0));
 							ExpressionStatement(FunctionCall(CompoundName(["File";"write"]),[Value(IntegerValue(2));
-									Value(StringValue("this is a test\n"))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]));
+									Value(StringValue("this is a test\n"))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(1));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -218,9 +218,9 @@ struct
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
-									Value(StringValue("test1.txt"))]));
-							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(2));]));
+									Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(2));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
@@ -232,8 +232,8 @@ struct
 						let symbol_table = SymbolTable.initialize () in
 						register_library IOLibrary.exported symbol_table;
 						let stmts =[
-							Declaration(Name("shouldbetrue"), FunctionCall(CompoundName(["File";"exists"]),[Value(StringValue("test1.txt"))]));
-							Declaration(Name("shouldbefalse"), FunctionCall(CompoundName(["File";"exists"]),[Value(StringValue("test1234.txt"))]));
+							Declaration(Name("shouldbetrue"), FunctionCall(CompoundName(["File";"exists"]),[Value(StringValue("test1.txt"))]), ("", 0));
+							Declaration(Name("shouldbefalse"), FunctionCall(CompoundName(["File";"exists"]),[Value(StringValue("test1234.txt"))]), ("", 0));
 							] in
 						let _ = Interpreter.interpret_statements stmts symbol_table in
 						BooleanValue(true) = SymbolTable.get_value (Name("shouldbetrue")) symbol_table &&
