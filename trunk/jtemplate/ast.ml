@@ -101,5 +101,6 @@ and statement =
 	| Instructions of variable_name * string list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
 	| Import of (string * imported_statements) * (string * int)
-	| Switch of expression * (expression option * statement list) list
+	| Switch of expression * statement list * (string*int)
+	| Case of expression option * (string * int)
 

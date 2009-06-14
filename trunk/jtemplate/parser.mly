@@ -67,19 +67,15 @@ for_target_statement:                 variable EQUALS expression              { 
                                     | expression                              { ExpressionStatement($1,get_env()) }
                                     | /*nothing*/                             { Noop }
 ;
-case_item:                            CASE expression COLON statements        { (Some $2,$4) }
-                                    | DEFAULT COLON statements                { (None,$3) }
-;
-case_list:                            case_item                               { [$1] }
-                                    | case_item case_list                     { $1::$2 }
-;
-statement:                            for_target_statement SEMICOLON          { $1 }                            
+statement:                            for_target_statement SEMICOLON          { $1 }          
+                                    | CASE expression COLON                   { Case(Some $2,get_env()) }
+                                    | DEFAULT COLON                           { Case(None,get_env()) }
                                     | CONTINUE SEMICOLON                      { Continue(get_env())}
                                     | BREAK SEMICOLON                         { Break(get_env())}
                                     | RETURN expression SEMICOLON             { Return($2,get_env()) }
 																		| RETURN SEMICOLON                        { Return(Value(Void),get_env()) }
-																		| SWITCH LPAREN expression RPAREN LBRACE case_list RBRACE
-																		                                          { Switch($3,$6) }
+																		| SWITCH LPAREN expression RPAREN statement_block
+																		                                          { Switch($3,$5,get_env()) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
                                                                               { ForEach(Name($3),$5,$7,get_env()) }
                                     | WHILE LPAREN expression RPAREN statement_block 

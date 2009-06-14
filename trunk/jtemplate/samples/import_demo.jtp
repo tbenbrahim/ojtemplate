@@ -12,7 +12,7 @@ println();
 
 println('Today is ', Date.toString(Date.now()));
 
-//test of varargs, foreach
+// test of varargs, foreach
 
 var apply=function(f, elements...){
 	foreach(element in elements){
@@ -36,19 +36,16 @@ println(m1==m2);
 Map.print(m1);
 Map.print(m2);
 
-//switch test
+// switch test
 
 for (var i=0;i<10;i=i+1){
 	switch(i){
 	case 1: 
 		println('one');
-		println('one');
 	case 2:
 		println('two');
-		print('two');
 		break;
 	default:
-		println(i);
 		println(i);
 	}
 }
