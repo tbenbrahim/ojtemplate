@@ -3,7 +3,6 @@ struct
 	
 	open RuntimeError
 	open Ast
-	open Interpreter
 	
 	(** Implementation of a symbol table.
 	
