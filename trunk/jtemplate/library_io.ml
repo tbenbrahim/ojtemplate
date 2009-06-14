@@ -2,6 +2,7 @@ open Ast
 open Interpreter
 open Symbol_table
 open RuntimeError
+open Unix
 
 module IOLibrary =
 struct
@@ -122,6 +123,65 @@ struct
 					with
 					| _ -> raise (Interpreter.CFReturn(BooleanValue(false))));
 					raise (Interpreter.CFReturn(BooleanValue(true)))
+		);
+		(["File";"delete"],["name"], fun stbl ->
+					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					(try
+						unlink name
+					with
+					| _ -> raise (Interpreter.CFReturn(BooleanValue(false))));
+					raise (Interpreter.CFReturn(BooleanValue(true)))
+		);
+		(["File";"rename"],["fromname";"toname"], fun stbl ->
+					let fromname = Interpreter.cast_to_string (SymbolTable.get_value (Name("fromname")) stbl) in
+					let toname = Interpreter.cast_to_string (SymbolTable.get_value (Name("toname")) stbl) in
+					(try
+						rename fromname toname
+					with
+					| _ -> raise (Interpreter.CFReturn(BooleanValue(false))));
+					raise (Interpreter.CFReturn(BooleanValue(true)))
+		);
+		(["Directory";"create"],["name"], fun stbl ->
+					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					(try
+						mkdir name 0o640
+					with
+					| _ -> raise (Interpreter.CFReturn(BooleanValue(false))));
+					raise (Interpreter.CFReturn(BooleanValue(true)))
+		);
+		(["Directory";"delete"],["name"], fun stbl ->
+					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					(try
+						rmdir name
+					with
+					| _ -> raise (Interpreter.CFReturn(BooleanValue(false))));
+					raise (Interpreter.CFReturn(BooleanValue(true)))
+		);
+		(["Directory";"list"],["name"], fun stbl ->
+					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					let arr = (try
+							let handle = opendir name in
+							let h = Hashtbl.create 10
+							in let rec loop cnt =
+								try
+									Hashtbl.add h (string_of_int cnt) (StringValue(readdir handle));
+									loop (cnt + 1)
+								with
+								| End_of_file -> closedir handle; cnt
+								| _ -> closedir handle; raise (Interpreter.CFReturn(Void))
+							in Hashtbl.add h "length" (IntegerValue(loop 0));
+							h
+						with
+						| _ -> raise (Interpreter.CFReturn(Void)))
+					in raise (Interpreter.CFReturn(MapValue(arr, ArraySubtype)));
+		);
+		(["Directory";"exists"],["name"], fun stbl ->
+					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					raise (Interpreter.CFReturn(BooleanValue((try
+										let h = opendir name in let _ = readdir h in closedir h ; true
+									with
+									| Unix_error(ENOTDIR, _, _) -> false
+									| _ -> raise (Interpreter.CFReturn(Void))))))
 		);
 		]
 	
