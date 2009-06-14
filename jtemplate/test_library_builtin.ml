@@ -55,7 +55,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("Array.push() on non array throws LibraryException", fun () ->
@@ -68,7 +68,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("Array.pop() on non array throws LibraryException", fun () ->
@@ -81,7 +81,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("Array.length() on non array throws LibraryException", fun () ->
@@ -94,7 +94,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _)-> true
 						| _ -> false
 			);
 			("Map.remove()", fun() ->
@@ -149,7 +149,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("Map.contains() call on non map throws LibraryException", fun() ->
@@ -162,7 +162,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _)-> true
 						| _ -> false
 			);
 			("Map.remove() call on non map throws LibraryException", fun() ->
@@ -175,7 +175,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts symbol_table; false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("Integer.parse()", fun() ->

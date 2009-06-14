@@ -74,6 +74,8 @@ exception InternalError of string
 
 exception DefaultCaseShouldBeLast
 
+exception FatalExit of exn
+
 let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
@@ -85,7 +87,7 @@ let string_of_error ex =
 	| TypeMismatchInMapAssignment(comp, name, old_type, new_type) ->
 			"Cannot assign a "^new_type^" to in "^comp^" of type "^old_type^" in map "^name
 	| MismatchedCallArgs(name) ->
-			"In function call to " ^ name ^ ", the number of parameters do not match the number of formal arguments"
+			"In function call to " ^ name ^ ", the number of arguments do not match the number of formal parameters"
 	| VarArgsMustbeLast(name) ->
 			"In definition of "^name^", a vararg parameter must be the last formal parameter"
 	| LibraryError msg | InternalError msg -> msg

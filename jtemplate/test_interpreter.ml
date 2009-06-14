@@ -399,7 +399,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts s; false
 						with
-						| MismatchedCallArgs("f") -> true
+						| FatalExit MismatchedCallArgs("f") -> true
 						| e -> raise e
 				
 			);
@@ -417,7 +417,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts s; false
 						with
-						| MismatchedCallArgs("f") -> true
+						| FatalExit MismatchedCallArgs("f") -> true
 						| e -> raise e
 				
 			);
@@ -484,7 +484,7 @@ struct
 						try
 							Interpreter.interpret_statements stmts s; false
 						with
-						| VarArgsMustbeLast _ -> true
+						| FatalExit VarArgsMustbeLast _ -> true
 						| e -> raise e
 			);
 			

@@ -12,7 +12,7 @@ let run_test utest =
 	let (name, func) = utest in
 	let result = (
 			try
-				func() 
+				flush_all();let result = func() in flush_all();result
 			with
 			| e -> print_string ("\tuncaught exception " ^ (Printexc.to_string e)^" thrown in "^name^"\n"); false
 		)
