@@ -37,7 +37,7 @@ let resolve_import (filename, library, (inp_file, _))=
 %token FOREACH WHILE IF  FOR ELSE TEMPLATE INSTRUCTIONS FUNCTION CONTINUE BREAK
 %token RETURN IN ONCE WHEN VAR EOF LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token COMMA SEMICOLON COLON DOTDOTDOT DOT EQUALS NOT QUESTION PLUS MINUS TIMES
-%token DIVIDE MODULO AND OR VOID NAN
+%token DIVIDE MODULO AND OR VOID NAN SWITCH CASE DEFAULT
 
 
 
@@ -67,11 +67,19 @@ for_target_statement:                 variable EQUALS expression              { 
                                     | expression                              { ExpressionStatement($1,get_env()) }
                                     | /*nothing*/                             { Noop }
 ;
+case_item:                            CASE expression COLON statements        { (Some $2,$4) }
+                                    | DEFAULT COLON statements                { (None,$3) }
+;
+case_list:                            case_item                               { [$1] }
+                                    | case_item case_list                     { $1::$2 }
+;
 statement:                            for_target_statement SEMICOLON          { $1 }                            
                                     | CONTINUE SEMICOLON                      { Continue(get_env())}
                                     | BREAK SEMICOLON                         { Break(get_env())}
                                     | RETURN expression SEMICOLON             { Return($2,get_env()) }
 																		| RETURN SEMICOLON                        { Return(Value(Void),get_env()) }
+																		| SWITCH LPAREN expression RPAREN LBRACE case_list RBRACE
+																		                                          { Switch($3,$6) }
                                     | FOREACH LPAREN ID IN expression RPAREN statement_block
                                                                               { ForEach(Name($3),$5,$7,get_env()) }
                                     | WHILE LPAREN expression RPAREN statement_block 

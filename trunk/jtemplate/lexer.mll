@@ -38,6 +38,9 @@ let map_id name=
 	| "NaN" -> NAN 
   | "import" -> IMPORT(false)
   | "use" -> IMPORT(true)
+	| "switch" -> SWITCH
+	| "case" -> CASE
+	| "default" -> DEFAULT
 	|	_ ->  ID(name)
 		
 }

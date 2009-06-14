@@ -76,7 +76,7 @@ let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
 	| ReferenceToUndefinedMapVariable(comp, varname) ->
-			"Reference to undefined field " ^ comp ^ "variable " ^ varname
+			"Reference to undefined field " ^ comp ^ " variable in" ^ varname
 	| NotAMap(comp, varname) -> comp ^ " is not a map in access of map " ^ varname
 	| TypeMismatchInAssignment(name, old_type, new_type) ->
 			"Cannot assign a "^new_type^" to variable "^name^" of type "^old_type
