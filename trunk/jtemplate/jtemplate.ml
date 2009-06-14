@@ -14,7 +14,8 @@ open Filename_util
 let _ =
 	let symbol_table = SymbolTable.initialize_environment
 			{ parse_callback = (Parser_util.parse_filename);
-				loaded_imports =[] } in
+				loaded_imports =[] ;current_stmt=("",0);
+				stack_trace= []; } in
 	register_library BuiltinLibrary.exported symbol_table;
 	register_library StringLibrary.exported symbol_table;
 	register_library IOLibrary.exported symbol_table;

@@ -162,13 +162,18 @@ struct
 				let value_list = evaluate_exprs exprlist symbol_table in
 				(match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
 					| ScopedFunctionValue(arglist, stmts, scope) ->
+							let old_stack = symbol_table.env.stack_trace in
 							(try
-								interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list); Void
+								symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
+								interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list);
+								symbol_table.env.stack_trace <- old_stack;
+								Void
 							with
-							| CFReturn value -> value)
+							| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
 					| LibraryFunction(arglist, code, scope) ->
 							(try
-								code (SymbolTable.new_function_call_scope variable scope arglist value_list); Void
+								code (SymbolTable.new_function_call_scope variable scope arglist value_list);
+								Void
 							with
 							| CFReturn value -> value)
 					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
@@ -184,18 +189,43 @@ struct
 	evaluate_exprs exprlist symbol_table =
 		List.map (fun expr -> evaluate_expression expr symbol_table ) exprlist
 	and
+	stack_trace = function
+		| [] -> ()
+		| (file, line):: tl ->
+				prerr_string ("Called from line "^(string_of_int line)^" in file "^ (Filename.basename file)^":\n");
+				stack_trace tl
+	and
 	interpret_statement statement symbol_table =
+		try
+			interpret_stmt statement symbol_table
+		with
+		| CFReturn v -> raise (CFReturn(v))
+		| CFContinue -> raise CFContinue
+		| CFBreak -> raise CFBreak
+		| e ->
+				flush stdout;
+				let (file, line) = symbol_table.env.current_stmt in
+				prerr_string ("At line "^(string_of_int line)^" in file "^ (Filename.basename file)^": ");
+				prerr_string (RuntimeError.string_of_error e); prerr_newline();
+				stack_trace symbol_table.env.stack_trace;
+				exit(- 1)
+	and
+	interpret_stmt statement symbol_table =
 		match statement with
 		| Assignment(varname, expression, env) ->
+				symbol_table.env.current_stmt <- env;
 				SymbolTable.assign (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
 		| Declaration(varname, expression, env) ->
+				symbol_table.env.current_stmt <- env;
 				SymbolTable.declare (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
 		| ExpressionStatement(expression, env) ->
+				symbol_table.env.current_stmt <- env;
 				let _ = evaluate_expression expression symbol_table in ()
 		| Noop -> ()
 		| For (preloop, condexpr, endstmt, stmtlist, env) ->
+				symbol_table.env.current_stmt <- env;
 				(try
 					let symbol_table = SymbolTable.push_scope symbol_table in
 					interpret_statement preloop symbol_table;
@@ -219,6 +249,7 @@ struct
 					CFBreak -> ()
 				)
 		| ForEach (varname, expr, stmtlist, env) ->
+				symbol_table.env.current_stmt <- env;
 				(try
 					let map = evaluate_expression expr symbol_table in
 					let list =
@@ -247,6 +278,7 @@ struct
 					CFBreak -> ()
 				)
 		| If(condexpr, if_stmts, else_stmts, env) ->
+				symbol_table.env.current_stmt <- env;
 				(try (match (evaluate_expression condexpr symbol_table) with
 						| BooleanValue(true) -> interpret_statements if_stmts (SymbolTable.push_scope symbol_table)
 						| BooleanValue(false) -> interpret_statements else_stmts (SymbolTable.push_scope symbol_table)
@@ -255,6 +287,7 @@ struct
 				| CFBreak -> ())
 		| StatementBlock(statements) -> interpret_statements statements (SymbolTable.push_scope symbol_table)
 		| Import((filename, descr), env) ->
+				symbol_table.env.current_stmt <- env;
 				if descr.loaded then
 					()
 				else
@@ -264,17 +297,20 @@ struct
 						else(
 							let ast = symbol_table.env.parse_callback filename in
 							descr.loaded <- true;
-							symbol_table.env.loaded_imports <-  filename::symbol_table.env.loaded_imports;
+							symbol_table.env.loaded_imports <- filename:: symbol_table.env.loaded_imports;
 							match ast with
 							| StatementBlock(stmts) -> interpret_import stmts symbol_table
 							| _ -> raise (InternalError "expected a StatementBlock from parse")
 						)
 					)
-		| Instructions(_, _, _, env) -> ()
-		| TemplateDef(_, _, env) -> ()
-		| Return(expression, env) -> raise (CFReturn(evaluate_expression expression symbol_table))
-		| Continue(env) ->	raise CFContinue
-		| Break(env) -> raise CFBreak
+		| Instructions(_, _, _, env) -> symbol_table.env.current_stmt <- env; ()
+		| TemplateDef(_, _, env) -> symbol_table.env.current_stmt <- env; ()
+		| Return(expression, env) -> symbol_table.env.current_stmt <- env;
+				raise (CFReturn(evaluate_expression expression symbol_table))
+		| Continue(env) -> symbol_table.env.current_stmt <- env;
+				raise CFContinue
+		| Break(env) -> symbol_table.env.current_stmt <- env;
+				raise CFBreak
 	and
 	interpret_statements statement_list symbol_table =
 		List.fold_left (fun _ stmt -> interpret_statement stmt symbol_table) () statement_list

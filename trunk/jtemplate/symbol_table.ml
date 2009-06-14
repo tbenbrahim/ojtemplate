@@ -147,7 +147,8 @@ struct
 	let initialize () =
 		{ values = Hashtbl.create 10 ; parent_table = None ;
 			env = { parse_callback = (fun s -> Ast.Noop);
-				loaded_imports = [] } }
+				loaded_imports = [];current_stmt = ("", 0);
+				stack_trace=[]; } }
 	
 	let initialize_environment environment =
 		{ values = Hashtbl.create 10 ; parent_table = None ; env = environment }
