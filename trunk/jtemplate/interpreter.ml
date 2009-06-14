@@ -161,7 +161,7 @@ struct
 		| FunctionCall(variable, exprlist) ->
 				let value_list = evaluate_exprs exprlist symbol_table in
 				(match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
-					| FunctionValue(arglist, stmts, scope) ->
+					| ScopedFunctionValue(arglist, stmts, scope) ->
 							(try
 								interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list); Void
 							with
@@ -189,13 +189,13 @@ struct
 		| Assignment(varname, expression, env) ->
 				SymbolTable.assign (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
-		| Declaration(varname, expression,env) ->
+		| Declaration(varname, expression, env) ->
 				SymbolTable.declare (resolve_variable_name varname symbol_table)
 					(evaluate_expression expression symbol_table) symbol_table
-		| ExpressionStatement(expression,env) ->
+		| ExpressionStatement(expression, env) ->
 				let _ = evaluate_expression expression symbol_table in ()
 		| Noop -> ()
-		| For (preloop, condexpr, endstmt, stmtlist,env) ->
+		| For (preloop, condexpr, endstmt, stmtlist, env) ->
 				(try
 					let symbol_table = SymbolTable.push_scope symbol_table in
 					interpret_statement preloop symbol_table;
@@ -211,33 +211,33 @@ struct
 										interpret_statements stmtlist symbol_table
 									with
 										CFContinue -> ());
-									interpret_statement endstmt symbol_table;
+									interpret_statement endstmt (SymbolTable.push_scope symbol_table);
 									loop()
 								) else ()
 						) in loop ()
 				with
 					CFBreak -> ()
 				)
-		| ForEach (varname, expr, stmtlist,env) ->
+		| ForEach (varname, expr, stmtlist, env) ->
 				(try
-					let map=evaluate_expression expr symbol_table  in
+					let map = evaluate_expression expr symbol_table in
 					let list =
 						match map with
 						| MapValue(h, MapSubtype) -> Hashtbl.fold (fun k v lst -> v:: lst) h []
 						| MapValue(_, ArraySubtype) -> SymbolTable.list_of_array map
-						| _ -> raise(NotACollectionType("the second argument of forEach",SymbolTable.string_of_symbol_type map))
+						| _ -> raise(NotACollectionType("the second argument of forEach", SymbolTable.string_of_symbol_type map))
 					in
 					let symbol_table = SymbolTable.push_scope symbol_table in
-					let runloop lst=
+					let runloop lst =
 						match lst with
 						| [] -> (false,[])
-						| el::tl-> SymbolTable.declare varname el symbol_table;(true,tl)
-				   in
+						| el:: tl -> SymbolTable.declare varname el symbol_table; (true, tl)
+					in
 					let rec loop lst = (
-						  let (continue,rest_list)= runloop lst in
+							let (continue, rest_list) = runloop lst in
 							if continue then
 								((try
-										interpret_statements stmtlist symbol_table
+										interpret_statements stmtlist (SymbolTable.push_scope symbol_table)
 									with
 										CFContinue -> ());
 									loop rest_list
@@ -246,21 +246,42 @@ struct
 				with
 					CFBreak -> ()
 				)
-		| If(condexpr, if_stmts, else_stmts,env) ->
+		| If(condexpr, if_stmts, else_stmts, env) ->
 				(try (match (evaluate_expression condexpr symbol_table) with
 						| BooleanValue(true) -> interpret_statements if_stmts (SymbolTable.push_scope symbol_table)
 						| BooleanValue(false) -> interpret_statements else_stmts (SymbolTable.push_scope symbol_table)
 						| value -> raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
 					)with
 				| CFBreak -> ())
-		| StatementBlock(statements) -> interpret_statements statements symbol_table
-		| Instructions(_, _, _,env) -> ()
-		| TemplateDef(_, _,env) -> ()
-		| Return(expression,env) -> raise (CFReturn(evaluate_expression expression symbol_table))
+		| StatementBlock(statements) -> interpret_statements statements (SymbolTable.push_scope symbol_table)
+		| Import((filename, descr), env) ->
+				if descr.loaded then
+					()
+				else
+					(
+						if List.mem filename symbol_table.env.loaded_imports then
+							(descr.loaded <- true; ())
+						else(
+							let ast = symbol_table.env.parse_callback filename in
+							descr.loaded <- true;
+							symbol_table.env.loaded_imports <-  filename::symbol_table.env.loaded_imports;
+							match ast with
+							| StatementBlock(stmts) -> interpret_import stmts symbol_table
+							| _ -> raise (InternalError "expected a StatementBlock from parse")
+						)
+					)
+		| Instructions(_, _, _, env) -> ()
+		| TemplateDef(_, _, env) -> ()
+		| Return(expression, env) -> raise (CFReturn(evaluate_expression expression symbol_table))
 		| Continue(env) ->	raise CFContinue
 		| Break(env) -> raise CFBreak
 	and
 	interpret_statements statement_list symbol_table =
 		List.fold_left (fun _ stmt -> interpret_statement stmt symbol_table) () statement_list
+	and interpret_import stmts symbol_table = (* only import decl and imports *)
+		List.fold_left (fun _ stmt ->
+						match stmt with
+						| Declaration(_, _, _) | Import(_, _) -> interpret_statement stmt symbol_table
+						| _ -> ()) () stmts
 	
 end

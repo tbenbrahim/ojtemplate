@@ -30,6 +30,8 @@ struct
 		| Ast.StatementBlock(stmts) ->
 				List.fold_left(fun pre stmt -> pre^(statement_descriptionl (level + 1) stmt))
 					((prefix level) ^"Statement block\n") stmts
+		| Ast.Import((filename, blk), env) ->
+				(prefix level) ^"Import "^filename^" ("^(string_of_bool false)^")\n"
 		| Ast.Assignment (var, expr, env) ->
 				(prefix level) ^
 				("Assignment\n" ^
@@ -189,7 +191,7 @@ struct
 		match value with
 		| Ast.IntegerValue v ->
 				(prefix level) ^ ("Integer " ^ ((string_of_int v) ^ "\n"))
-		| Ast.FunctionValue (arglist, stmts, _) ->
+		| Ast.FunctionValue (arglist, stmts) ->
 				(prefix level) ^
 				("Function " ^
 					((List.fold_left

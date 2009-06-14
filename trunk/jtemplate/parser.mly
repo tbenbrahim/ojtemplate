@@ -3,23 +3,26 @@
 open Ast
 open Symbol_table
 
-exception ParseException of string
-
-let  parse_error s =
-	let pos=Parsing.symbol_start_pos() in
-	print_string ("in file " ^ pos.Lexing.pos_fname ^ ": "^ s^" at line ");
-	print_int pos.Lexing.pos_lnum;
-	print_string " at columns ";
-	print_int (Parsing.symbol_start()-pos.Lexing.pos_bol);
-	print_string("-");
-	print_int (Parsing.symbol_end()-pos.Lexing.pos_bol);
-	print_string "\n";
-  flush stdout
-
+let parse_error s =
+    let pos = Parsing.symbol_start_pos() in
+    print_string ("in file " ^ (Filename.basename pos.Lexing.pos_fname) ^ ": "^ s^" at line ");
+    print_int pos.Lexing.pos_lnum;
+    print_string " at columns ";
+    print_int (Parsing.symbol_start() - pos.Lexing.pos_bol);
+    print_string("-");
+    print_int (Parsing.symbol_end() - pos.Lexing.pos_bol);
+    print_string "\n";
+    flush stdout
+		
 let get_env ()= 
 	let pos=Parsing.symbol_start_pos() in
 	(pos.Lexing.pos_fname,pos.Lexing.pos_lnum)
+
 		
+let resolve_import (filename, library, (inp_file, _))=
+	let fullname=Filename_util.resolve_filename (Filename.dirname inp_file) filename
+	in
+	   (fullname, {loaded=false})
 %}
 
 %token<string> ID
@@ -29,6 +32,7 @@ let get_env ()=
 %token <bool> BOOLEAN
 %token <string> TEXT
 %token <Ast.comparator> COMPOP
+%token <bool> IMPORT
 
 %token FOREACH WHILE IF  FOR ELSE TEMPLATE INSTRUCTIONS FUNCTION CONTINUE BREAK
 %token RETURN IN ONCE WHEN VAR EOF LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
@@ -84,6 +88,7 @@ statement:                            for_target_statement SEMICOLON          { 
                                                                               { TemplateDef(Name($2), $4,get_env()) }
                                     | INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
                                                                               { Instructions(Name($3),$5,$8,get_env()) }
+																		| IMPORT STRING                           { Import(resolve_import($2,$1,get_env()),get_env()) }
 ;
 expression:                           value                                   { $1 }
 																		| function_call                           { $1 }
@@ -118,8 +123,8 @@ value:                                INT                                     { 
 																		| VOID                                    { Value(Void) }
 																		| NAN                                     { Value(NaN) }
 																		| FUNCTION LPAREN arglist RPAREN statement_block 
-																		                               						{ Value(FunctionValue($3,$5,SymbolTable.dummy_table)) }
-																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4,SymbolTable.dummy_table)) }
+																		                               						{ Value(FunctionValue($3,$5)) }
+																		| FUNCTION LPAREN RPAREN statement_block	{ Value(FunctionValue([],$4)) }
 																		| LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
 																		| LBRACE RBRACE                           { MapExpr([]) }
 																		| LBRACE prop_list RBRACE                 { MapExpr($2) }
@@ -167,3 +172,5 @@ property:                             ID COLON expression                     { 
 prop_list:                            property                                { [$1] }
                                     | property COMMA prop_list                { $1::$3 }
 ;																																							
+
+%%

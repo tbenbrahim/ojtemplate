@@ -83,7 +83,7 @@ struct
 		| FloatValue(f) -> string_of_float f
 		| BooleanValue(b) -> string_of_bool b
 		| StringValue(s) -> s
-		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
+		| FunctionValue(args, _) | ScopedFunctionValue(args, _, _) -> "function"^(string_of_args args)
 		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
 		| MapValue(map, MapSubtype) -> "{}"
 		| MapValue(map, ArraySubtype _) -> "[]"
@@ -95,7 +95,7 @@ struct
 		| FloatValue(_) -> "float"
 		| BooleanValue(_) -> "boolean"
 		| StringValue(_) -> "string"
-		| FunctionValue(_, _, _) -> "function"
+		| FunctionValue(_, _) | ScopedFunctionValue(_, _, _) -> "function"
 		| LibraryFunction(_, _, _) -> "library call"
 		| MapValue(_, MapSubtype) -> "map"
 		| MapValue(_, ArraySubtype _) -> "array"
@@ -119,7 +119,7 @@ struct
 		| FloatValue(_) -> FloatType
 		| BooleanValue(_) -> BooleanType
 		| StringValue(_) -> StringType
-		| FunctionValue(_, _, _) -> FunctionType
+		| FunctionValue(_, _) | ScopedFunctionValue(_, _, _) -> FunctionType
 		| LibraryFunction(_, _, _) -> LibraryCallType
 		| MapValue(_, MapSubtype) -> MapType
 		| MapValue(_, ArraySubtype _) -> ArrayType
@@ -145,9 +145,12 @@ struct
 	@return an empty symbol table.
 	*)
 	let initialize () =
-		{ values = Hashtbl.create 10 ; parent_table = None }
+		{ values = Hashtbl.create 10 ; parent_table = None ;
+			env = { parse_callback = (fun s -> Ast.Noop);
+				loaded_imports = [] } }
 	
-	let dummy_table = initialize() (* used in AST as placeholder in function declarations *)
+	let initialize_environment environment =
+		{ values = Hashtbl.create 10 ; parent_table = None ; env = environment }
 	
 	let valid_array_index ind =
 		(ind ="length") ||
@@ -155,7 +158,7 @@ struct
 	
 	(** creates a new symbol table for a nested scope. *)
 	let push_scope symbol_table =
-		{ values = Hashtbl.create 10 ; parent_table = Some symbol_table	}
+		{ values = Hashtbl.create 10 ; parent_table = Some symbol_table; env = symbol_table.env	}
 	
 	let pop_scope symbol_table =
 		match symbol_table.parent_table with
@@ -180,12 +183,14 @@ struct
 								();
 							if assignment then
 								try
-									let old_value_type = string_of_symbol_type (Hashtbl.find hashtbl lastelem ) in
-									let new_value_type = string_of_symbol_type value in
+									let old_value = (Hashtbl.find hashtbl lastelem ) in
+									let old_value_type = value_type old_value in
+									let new_value_type = value_type value in
 									if new_value_type = old_value_type then
 										Hashtbl.replace hashtbl lastelem value
 									else
-										raise (ETypeMismatchInAssignment(lastelem, old_value_type, new_value_type))
+										raise (ETypeMismatchInAssignment(lastelem, string_of_symbol_type old_value,
+													string_of_symbol_type value))
 								with
 								| Not_found -> raise (ENotFound lastelem)
 							else
@@ -222,27 +227,18 @@ struct
 								(match lst with
 									| [] -> raise EUnexpectedCompoundName
 									| el:: lst ->
-											if assignment then ( (*it is an assignment, we must first find the declaration of the first element *)
-												try (* it is in the current scope *)
-													let v = Hashtbl.find table.values el in
-													match v with
-													| MapValue(_) -> replace_map_value assignment el lst v value
-													| _ -> raise (NotAMap (el, fullname name)) (* found something with same name, but wrong type *)
-												with
-												| Not_found -> resolve_replace assignment name table.parent_table value
-												| ENotAMap(comp) -> raise (NotAMap(comp, fullname name))
-												| ENotFound(comp) -> raise (ReferenceToUndefinedMapVariable(comp, fullname name))
-												| ETypeMismatchInAssignment(comp, old_type, new_type) -> raise (TypeMismatchInMapAssignment(comp, fullname name, old_type, new_type))
-												| EInvalidArrayIndex(comp) -> raise (InvalidArrayIndex(comp, fullname name))
-											)
-											else( (*it is a declaration, always use current scope *)
-												try
-													replace_map_value assignment el lst (Hashtbl.find table.values el) value
-												with
-												| Not_found -> raise (ReferenceToUndefinedMapVariable(el, fullname name))
-												| ENotAMap(comp) -> raise (NotAMap(comp, fullname name))
-												| ENotFound(comp) -> raise (ReferenceToUndefinedMapVariable(comp, fullname name))
-											)
+									(* we must first find the declaration of the 1st element *)
+											try (* it is in the current scope *)
+												let v = Hashtbl.find table.values el in
+												match v with
+												| MapValue(_) -> replace_map_value assignment el lst v value
+												| _ -> raise (NotAMap (el, fullname name)) (* found something with same name, but wrong type *)
+											with
+											| Not_found -> resolve_replace assignment name table.parent_table value
+											| ENotAMap(comp) -> raise (NotAMap(comp, fullname name))
+											| ENotFound(comp) -> raise (ReferenceToUndefinedMapVariable(comp, fullname name))
+											| ETypeMismatchInAssignment(comp, old_type, new_type) -> raise (TypeMismatchInMapAssignment(comp, fullname name, old_type, new_type))
+											| EInvalidArrayIndex(comp) -> raise (InvalidArrayIndex(comp, fullname name))
 								)
 							)
 					| _ -> raise EUnexpectedName
@@ -289,7 +285,7 @@ struct
 								(try
 									let value = Hashtbl.find table.values varname in
 									match value with
-									| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, table)
+									| FunctionValue(args, stmts) -> ScopedFunctionValue(args, stmts, table)
 									| _ -> value
 								with
 									Not_found -> resolve name table.parent_table)
@@ -298,7 +294,7 @@ struct
 									| el:: tl -> (try
 												let value = get_map_value el (Hashtbl.find table.values el) tl in
 												match value with
-												| FunctionValue(args, stmts, _) -> FunctionValue(args, stmts, table)
+												| FunctionValue(args, stmts) -> ScopedFunctionValue(args, stmts, table)
 												| _ -> value
 											with
 												Not_found -> resolve name table.parent_table)

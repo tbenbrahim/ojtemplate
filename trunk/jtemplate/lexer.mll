@@ -1,6 +1,7 @@
 {
-open Ast
+open RuntimeError
 open Parser
+open Ast
 
 (* from http://plus.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial.pdf , p.9 *)
 let incr_linenum lexbuf =
@@ -9,8 +10,6 @@ let incr_linenum lexbuf =
 		Lexing.pos_lnum = pos.Lexing.pos_lnum + 1;
 		Lexing.pos_bol = pos.Lexing.pos_cnum;
 		}
-
-exception LexerException of string * int * int
 
 let syntax_exception msg lexbuf=
 	raise (LexerException (msg, lexbuf.Lexing.lex_curr_p.Lexing.pos_lnum,
@@ -37,6 +36,8 @@ let map_id name=
 	| "false" -> BOOLEAN(false)
 	| "Void"  -> VOID
 	| "NaN" -> NAN 
+  | "import" -> IMPORT(false)
+  | "use" -> IMPORT(true)
 	|	_ ->  ID(name)
 		
 }

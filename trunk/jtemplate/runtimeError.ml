@@ -68,6 +68,10 @@ type was seen instead
 *)
 exception NotACollectionType of string * string
 
+exception LexerException of string * int * int
+
+exception InternalError of string
+
 let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
@@ -82,7 +86,7 @@ let string_of_error ex =
 			"In function call to " ^ name ^ ", the number of parameters do not match the number of formal arguments"
 	| VarArgsMustbeLast(name) ->
 			"In definition of "^name^", a vararg parameter must be the last formal parameter"
-	| LibraryError msg -> msg
+	| LibraryError msg | InternalError msg -> msg
 	| InvalidArrayIndex(ind, name) -> "Invalid array index "^ind^" in "^name
 	| NotACollectionType(where, typename) -> "Expected a collection type for "^
 			where^", received a "^typename^" instead"

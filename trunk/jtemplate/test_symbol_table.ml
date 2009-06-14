@@ -220,14 +220,14 @@ struct
 						SymbolTable.declare (Name("a")) (IntegerValue(1)) s ;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Name("b")) (IntegerValue(2)) s;
-						SymbolTable.declare (Name("x")) (FunctionValue([],[], SymbolTable.dummy_table)) s;
+						SymbolTable.declare (Name("x")) (FunctionValue([],[])) s;
 						match SymbolTable.get_value (Name("x")) s with
-						| FunctionValue(_, _, functionScope) ->
+						| ScopedFunctionValue(_, _, functionScope) ->
 								SymbolTable.get_value (Name("b")) functionScope = IntegerValue(2)
 								&& SymbolTable.get_value (Name("a")) functionScope = IntegerValue(1)
 								&&
 								(match SymbolTable.get_value (Name("x")) functionScope with
-									| FunctionValue(_, _, _) -> true
+									| ScopedFunctionValue(_, _, _) -> true
 									| _ -> false
 								)
 						| _ -> false
@@ -236,18 +236,18 @@ struct
 			("function call symbol table: a=1;x=function(){} { b=2; x(); } a and x are in scope of x(),b is not ", fun() ->
 						let s = SymbolTable.initialize() in
 						SymbolTable.declare (Name("a")) (IntegerValue(1)) s ;
-						SymbolTable.declare (Name("x")) (FunctionValue([],[], SymbolTable.dummy_table)) s ;
+						SymbolTable.declare (Name("x")) (FunctionValue([],[])) s ;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Name("b")) (IntegerValue(2)) s;
 						match SymbolTable.get_value (Name("x")) s with
-						| FunctionValue(_, _, functionScope) ->
+						| ScopedFunctionValue(_, _, functionScope) ->
 								(try let _ = SymbolTable.get_value (Name("b")) functionScope in false
 								with
 								| ReferenceToUndefinedVariable("b") -> true
 								| _ -> false
 								) &&
 								(match SymbolTable.get_value (Name("x")) functionScope with
-									| FunctionValue(_, _, _) -> true
+									| ScopedFunctionValue(_, _, _) -> true
 									| _ -> false
 								) &&
 								SymbolTable.get_value (Name("a")) functionScope = IntegerValue(1)
@@ -257,19 +257,19 @@ struct
 			("function call symbol table: a=1;x=function(){} { b=2; } x(); a and x are in scope of x(),b is not ", fun() ->
 						let s = SymbolTable.initialize() in
 						SymbolTable.declare (Name("a")) (IntegerValue(1)) s;
-						SymbolTable.declare (Name("x")) (FunctionValue([],[], SymbolTable.dummy_table)) s;
+						SymbolTable.declare (Name("x")) (FunctionValue([],[])) s;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Name("b")) (IntegerValue(2)) s;
 						let s = SymbolTable.pop_scope s in
 						match SymbolTable.get_value (Name("x")) s with
-						| FunctionValue(_, _, functionScope) ->
+						| ScopedFunctionValue(_, _, functionScope) ->
 								(try let _ = SymbolTable.get_value (Name("b")) functionScope in false
 								with
 								| ReferenceToUndefinedVariable("b") -> true
 								| _ -> false
 								) &&
 								(match SymbolTable.get_value (Name("x")) functionScope with
-									| FunctionValue(_, _, _) -> true
+									| ScopedFunctionValue(_, _, _) -> true
 									| _ -> false
 								) &&
 								SymbolTable.get_value (Name("a")) functionScope = IntegerValue(1)
@@ -281,15 +281,15 @@ struct
 						SymbolTable.declare (Name("a")) (IntegerValue(1)) s;
 						let s = SymbolTable.push_scope s in
 						SymbolTable.declare (Name("b")) (MapValue((Hashtbl.create 10), MapSubtype)) s;
-						SymbolTable.declare (CompoundName(["b";"x"])) (FunctionValue([],[], SymbolTable.dummy_table)) s;
+						SymbolTable.declare (CompoundName(["b";"x"])) (FunctionValue([],[])) s;
 						match SymbolTable.get_value (CompoundName(["b";"x"])) s with
-						| FunctionValue(_, _, functionScope) ->
+						| ScopedFunctionValue(_, _, functionScope) ->
 								(match SymbolTable.get_value (Name("b")) functionScope with
 									| MapValue(_) -> true
 									| _ -> false
 								) &&
 								(match SymbolTable.get_value (CompoundName(["b";"x"])) functionScope with
-									| FunctionValue(_, _, _) -> true
+									| ScopedFunctionValue(_, _, _) -> true
 									| _ -> false
 								) &&
 								SymbolTable.get_value (Name("a")) functionScope = IntegerValue(1)

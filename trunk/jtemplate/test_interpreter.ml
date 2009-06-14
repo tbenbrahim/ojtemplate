@@ -364,10 +364,10 @@ struct
 						let stmts = [
 							Declaration(Name("x"), Value(IntegerValue(2)),("",0));
 							Declaration(Name("f"), Value(FunctionValue([],
-										[Return(VariableExpr(Name("x")),("",0))], SymbolTable.dummy_table)),("",0));
+										[Return(VariableExpr(Name("x")),("",0))])),("",0));
 							Declaration(Name("g"), Value(FunctionValue([],[
 										Declaration(Name("x"), Value(IntegerValue(1)),("",0));
-										Return(FunctionCall(Name("f"),[]),("",0));], SymbolTable.dummy_table)),("",0));
+										Return(FunctionCall(Name("f"),[]),("",0));])),("",0));
 							Declaration(Name("y"), FunctionCall(Name("g"),[]),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
@@ -380,7 +380,7 @@ struct
 							Declaration(Name("b"), Value(IntegerValue(0)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1)); Value(IntegerValue(2))]),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
@@ -393,7 +393,7 @@ struct
 							Declaration(Name("b"), Value(IntegerValue(0)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),[Value(IntegerValue(1))]),("",0));
 							] in
 						try
@@ -410,7 +410,7 @@ struct
 							Declaration(Name("b"), Value(IntegerValue(0)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
 									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]),("",0));
 							] in
@@ -428,7 +428,7 @@ struct
 							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"[y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
 									[Value(IntegerValue(1)); Value(IntegerValue(2)); Value(IntegerValue(3))]),("",0));
 							] in
@@ -447,7 +447,7 @@ struct
 							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["x";"[y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
 									[Value(IntegerValue(1))]),("",0));
 							] in
@@ -462,7 +462,7 @@ struct
 						let stmts = [
 							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["[y"],[
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"), []),("",0));
 							] in
 						Interpreter.interpret_statements stmts s;
@@ -477,7 +477,7 @@ struct
 							Declaration(Name("b"), Value(MapValue(Hashtbl.create 10, ArraySubtype)),("",0));
 							Declaration(Name("f"), Value(FunctionValue(["[x";"y"],
 										[ Assignment(Name("a"), VariableExpr(Name("x")),("",0));
-										Assignment(Name("b"), VariableExpr(Name("y")),("",0))], SymbolTable.dummy_table)),("",0));
+										Assignment(Name("b"), VariableExpr(Name("y")),("",0))])),("",0));
 							Ast.ExpressionStatement(FunctionCall(Name("f"),
 									[Value(IntegerValue(1))]),("",0));
 							] in

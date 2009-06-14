@@ -29,7 +29,7 @@ and replacement_spec =
 
 and template_spec =
 	((label option) * text)
-	
+
 and map_subtype = | MapSubtype | ArraySubtype
 
 (** type definition for the four scalar values (int, float, string, bool)
@@ -45,7 +45,8 @@ and variable_value =
 	| FloatValue of float
 	| StringValue of string
 	| BooleanValue of bool
-	| FunctionValue of string list * statement list * symbol_table
+	| ScopedFunctionValue of string list * statement list * symbol_table
+	| FunctionValue of string list * statement list
 	| LibraryFunction of string list * (symbol_table -> unit) * symbol_table
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
@@ -54,17 +55,23 @@ and
 (**
 Definition for a symbol table.
 *)
+environment={
+    parse_callback: string -> statement;
+		mutable loaded_imports: string list 
+}
+and
 symbol_table ={
 	values: (string, variable_value) Hashtbl.t; (* variable values for this scope *)
-	parent_table: symbol_table option
+	parent_table: symbol_table option;
+	env: environment
 }
 
 and variable_name =
-	| Name of string 
-	| CompoundName of string list 
-	| EvaluatedName of variable_name list 
-	| ArrayIndex of string * expression 
-	
+	| Name of string
+	| CompoundName of string list
+	| EvaluatedName of variable_name list
+	| ArrayIndex of string * expression
+
 and expression =
 	| BinaryOp of expression * operator * expression
 	| CompOp of expression * comparator * expression
@@ -74,18 +81,21 @@ and expression =
 	| VariableExpr of variable_name
 	| Value of variable_value
 
+and imported_statements ={ mutable loaded: bool }
+
 and statement =
-	| Assignment of variable_name * expression * (string*int)
-	| Declaration of variable_name * expression * (string*int)
-	| ForEach of variable_name * expression * statement list * (string*int)
-	| For of statement * expression * statement * statement list * (string*int)
-	| ExpressionStatement of expression * (string*int)
-	| Break of (string*int)
-	| Continue of (string*int)
-	| Noop 
-	| Return of expression * (string*int)
-	| If of expression * statement list * statement list * (string*int)
-	| TemplateDef of variable_name * template_spec list * (string*int)
-	| Instructions of variable_name * string list * replacement_spec list * (string*int)
+	| Assignment of variable_name * expression * (string * int)
+	| Declaration of variable_name * expression * (string * int)
+	| ForEach of variable_name * expression * statement list * (string * int)
+	| For of statement * expression * statement * statement list * (string * int)
+	| ExpressionStatement of expression * (string * int)
+	| Break of (string * int)
+	| Continue of (string * int)
+	| Noop
+	| Return of expression * (string * int)
+	| If of expression * statement list * statement list * (string * int)
+	| TemplateDef of variable_name * template_spec list * (string * int)
+	| Instructions of variable_name * string list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
+	| Import of (string * imported_statements) * (string * int)
 
