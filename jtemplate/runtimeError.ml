@@ -72,6 +72,8 @@ exception LexerException of string * int * int
 
 exception InternalError of string
 
+exception DefaultCaseShouldBeLast
+
 let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
@@ -90,5 +92,6 @@ let string_of_error ex =
 	| InvalidArrayIndex(ind, name) -> "Invalid array index "^ind^" in "^name
 	| NotACollectionType(where, typename) -> "Expected a collection type for "^
 			where^", received a "^typename^" instead"
+	| DefaultCaseShouldBeLast -> "Unexpected case statement found after a default statement"
 	| e -> "uncaught exception "^(Printexc.to_string e)
 

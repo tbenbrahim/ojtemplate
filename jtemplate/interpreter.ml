@@ -291,24 +291,45 @@ struct
 				with
 					CFBreak -> ()
 				)
-		| Switch(expr, case_list) ->
-				let value1 = Value(evaluate_expression expr symbol_table) in
-				let rec loop list =
-					match list with
-					| [] -> ()
-					| el:: tl ->
-							let (opt_expr, stmts) = el in
-							let matchfound = (
-									match opt_expr with
-									| Some expr -> (evaluate_expression (CompOp(value1, Equal, expr)) symbol_table = BooleanValue(true))
-									| None -> true) in
-							if matchfound then
-								try
-									interpret_statements stmts (SymbolTable.push_scope symbol_table)
-								with
-								| CFBreak -> ()
-							else loop tl in
-				loop case_list
+		| Case(_, _) -> () (* ignore, preprocessed in switch *)
+		| Switch(expr, stmtlist, env) ->
+				symbol_table.env.current_stmt <- env;
+				(* extract stmt list *)
+				let stmtlist=match (stmtlist) with
+					| [] -> []
+					| [StatementBlock(lst)] -> lst
+					| _ -> raise (InternalError "expected statement block in stmt list") 
+				(* make a list of case expressions and succeeding statement *)
+				in let rec find_cases stmtlist caselist defaultfound =
+					match stmtlist with
+					| []-> caselist
+					| Case(Some expr, _):: tl ->
+							if defaultfound then
+								raise DefaultCaseShouldBeLast
+							else(
+								let caselist = (Some expr, tl):: caselist in
+								find_cases tl caselist false)
+					| Case(None, _):: tl ->
+							let caselist = (None, tl):: caselist in
+							find_cases tl caselist true
+					| _:: tl -> find_cases tl caselist false
+				(* match a value with a case and return a statement list *)
+				in let rec match_case expr1 caselist =
+					match caselist with
+					| [] -> []
+					| (Some expr2, stmts):: tl ->
+							if evaluate_expression (CompOp(expr1, Equal, expr2)) symbol_table = BooleanValue(true) then
+								stmts
+							else
+								match_case expr1 tl
+					| (None, stmts):: tl -> stmts
+				in let caselist =List.rev (find_cases stmtlist [] false)
+				in let value = evaluate_expression expr symbol_table
+				in let stmts = match_case (Value(value)) caselist
+				in (try
+					interpret_statements stmts (SymbolTable.push_scope symbol_table)
+				with
+				| CFBreak -> ())
 		| If(condexpr, if_stmts, else_stmts, env) ->
 				symbol_table.env.current_stmt <- env;
 				(try (match (evaluate_expression condexpr symbol_table) with
