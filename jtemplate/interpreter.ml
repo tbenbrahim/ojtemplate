@@ -294,13 +294,8 @@ struct
 		| Case(_, _) -> () (* ignore, preprocessed in switch *)
 		| Switch(expr, stmtlist, env) ->
 				symbol_table.env.current_stmt <- env;
-				(* extract stmt list *)
-				let stmtlist=match (stmtlist) with
-					| [] -> []
-					| [StatementBlock(lst)] -> lst
-					| _ -> raise (InternalError "expected statement block in stmt list") 
 				(* make a list of case expressions and succeeding statement *)
-				in let rec find_cases stmtlist caselist defaultfound =
+				let rec find_cases stmtlist caselist defaultfound =
 					match stmtlist with
 					| []-> caselist
 					| Case(Some expr, _):: tl ->
