@@ -78,6 +78,7 @@ and expression =
 	| BinaryOp of expression * operator * expression
 	| CompOp of expression * comparator * expression
 	| FunctionCall of variable_name * expression list
+	| DirectFunctionCall of expression * expression list
 	| MapExpr of (string * expression) list
 	| ArrayExpr of expression list
 	| VariableExpr of variable_name
