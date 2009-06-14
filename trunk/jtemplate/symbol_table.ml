@@ -3,6 +3,7 @@ struct
 	
 	open RuntimeError
 	open Ast
+	open Interpreter
 	
 	(** Implementation of a symbol table.
 	
@@ -85,8 +86,8 @@ struct
 		| StringValue(s) -> s
 		| FunctionValue(args, _, _) -> "function"^(string_of_args args)
 		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
-		| MapValue(map, MapSubtype) -> "map" 
-		| MapValue(map, ArraySubtype _) -> "array" 
+		| MapValue(map, MapSubtype) -> "{}"
+		| MapValue(map, ArraySubtype _) -> "[]"
 		| Void -> "Void"
 		| NaN -> "NaN"
 	
@@ -174,7 +175,7 @@ struct
 		(* this is the last element, it must be a MapValue *)
 				(match container with
 						MapValue(hashtbl, subtype) ->
-							if subtype = ArraySubtype && not(valid_array_index  lastelem)then
+							if subtype = ArraySubtype && not(valid_array_index lastelem)then
 								raise (EInvalidArrayIndex(lastelem))
 							else
 								();
@@ -263,7 +264,7 @@ struct
 		| MapValue(map, subtype) ->
 				(match name_list with
 					| el::[] ->
-							if subtype = ArraySubtype && not(valid_array_index  el) then
+							if subtype = ArraySubtype && not(valid_array_index el) then
 								raise (EInvalidArrayIndex(el))
 							else
 								();
