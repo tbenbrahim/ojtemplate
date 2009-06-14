@@ -7,6 +7,8 @@ open Unix
 module IOLibrary =
 struct
 	
+	exception EIOPassthrough of string
+	
 	type channelType = OutChannel of out_channel | InChannel of in_channel * (string * bool)
 	
 	let exported =
@@ -15,7 +17,7 @@ struct
 			(try
 				Hashtbl.find descriptors handle
 			with
-			| Not_found -> raise (LibraryError ("invalid handle for "^command))) in
+			| Not_found -> raise (EIOPassthrough("invalid handle for "^command))) in
 		let try_read ch =
 			(
 				try
@@ -41,11 +43,12 @@ struct
 					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
 					try
 						if Hashtbl.mem descriptors handle then
-							raise (LibraryError("handle "^handle^" is already opened"))
+							raise (EIOPassthrough("handle "^handle^" is already opened in call to openForWriting"))
 						else
 							let ch = open_out filename in
 							Hashtbl.add descriptors handle (OutChannel(ch), filename)
 					with
+					| EIOPassthrough(msg) -> raise (LibraryError msg)
 					| _ -> raise (LibraryError ("error opening file "^filename^" in openFileForWriting"))
 		);
 		(["File";"openForReading"],["handle"; "filename"], fun stbl ->
@@ -53,11 +56,12 @@ struct
 					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
 					try
 						if Hashtbl.mem descriptors handle then
-							raise (LibraryError("handle "^handle^" is already opened"))
+							raise (EIOPassthrough("handle "^handle^" is already opened in call to openForReading"))
 						else
 							let ch = open_in filename in
 							Hashtbl.add descriptors handle (InChannel(ch, (try_read ch)), filename)
 					with
+					| EIOPassthrough(msg) -> raise (LibraryError msg)
 					| _ -> raise (LibraryError ("error opening file "^filename^" in openFileForReading"))
 		);
 		(["File";"close"],["handle"], fun stbl ->
@@ -69,6 +73,7 @@ struct
 							| InChannel(ch, _) -> close_in ch);
 						Hashtbl.remove descriptors handle
 					with
+					| EIOPassthrough(msg) -> raise (LibraryError msg)
 					| Sys_error msg -> raise (LibraryError ("System error on closeFile:" ^ msg ))
 		);
 		(["File";"write"],["handle"; "[value"], fun stbl ->
@@ -80,6 +85,7 @@ struct
 								let _ = List.map (fun el -> output_string ch (Interpreter.cast_to_string el))
 										(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in ()
 							with
+							| EIOPassthrough(msg) -> raise (LibraryError msg)
 							| _ -> raise (LibraryError ("error writing file "^filename^" in write")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
@@ -93,6 +99,7 @@ struct
 										(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in
 								output_string ch ( "\n")
 							with
+							| EIOPassthrough(msg) -> raise (LibraryError msg)
 							| _ -> raise (LibraryError ("error writing file "^filename^" in writeln")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
@@ -100,12 +107,13 @@ struct
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let (c, filename) = get_descriptor handle "readln" in
 					match c with
-					| OutChannel(ch) -> raise (LibraryError ("invalid handle in call to readln. Handle "^handle^" was opened for writing "^filename))
-					| InChannel(ch, (_, true)) -> raise (LibraryError ("End of file reached for handle "^handle^" in call to readln"))
+					| OutChannel(ch) -> raise (EIOPassthrough ("invalid handle in call to readln. Handle "^handle^" was opened for writing "^filename))
+					| InChannel(ch, (_, true)) -> raise (EIOPassthrough ("End of file reached for handle "^handle^" in call to readln"))
 					| InChannel(ch, (data, false)) ->
 							( try
 								Hashtbl.replace descriptors handle (InChannel(ch, (try_read ch)), filename)
 							with
+							| EIOPassthrough(msg) -> raise (LibraryError msg)
 							| _ -> raise (LibraryError ("error reading file "^filename^" in readln")));
 							raise (Interpreter.CFReturn(StringValue(data)))
 		);
@@ -113,7 +121,7 @@ struct
 					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
 					let (c, filename) = get_descriptor handle "eof" in
 					match c with
-					| OutChannel(ch) -> raise (LibraryError ("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
+					| OutChannel(ch) -> raise (EIOPassthrough("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
 					| InChannel(ch, (_, eof)) -> raise (Interpreter.CFReturn(BooleanValue(eof)))
 		);
 		(["File";"exists"],["filename"], fun stbl ->

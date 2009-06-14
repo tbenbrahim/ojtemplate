@@ -217,12 +217,13 @@ struct
 		| CFContinue -> raise CFContinue
 		| CFBreak -> raise CFBreak
 		| e ->
-				flush stdout;
+				flush_all ();
 				let (file, line) = symbol_table.env.current_stmt in
 				prerr_string ("At line "^(string_of_int line)^" in file "^ (Filename.basename file)^": ");
 				prerr_string (RuntimeError.string_of_error e); prerr_newline();
 				stack_trace symbol_table.env.stack_trace;
-				exit(- 1)
+				flush_all();
+				raise (FatalExit e)
 	and
 	interpret_stmt statement symbol_table =
 		match statement with

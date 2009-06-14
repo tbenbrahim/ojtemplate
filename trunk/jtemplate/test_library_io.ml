@@ -109,7 +109,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("open for write with already open handle throws LibraryError", fun () ->
@@ -129,7 +129,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("reading from handle opened for write throws LibraryError", fun () ->
@@ -147,7 +147,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("writing to handle opened for read throws LibraryError", fun () ->
@@ -164,7 +164,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("opening non existent file throws LibraryError", fun () ->
@@ -179,7 +179,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("reading from unknown handle throws LibraryError", fun () ->
@@ -194,7 +194,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("writing to unknwown handle throws LibraryError", fun () ->
@@ -210,7 +210,7 @@ struct
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("closing unknown handle throws LibraryError", fun () ->
@@ -220,12 +220,12 @@ struct
 							ExpressionStatement(FunctionCall(CompoundName(["File";"openForReading"]),[Value(IntegerValue(1));
 									Value(StringValue("test1.txt"))]), ("", 0));
 							Declaration(Name("data"), FunctionCall(CompoundName(["File";"readln"]),[Value(IntegerValue(1))]), ("", 0));
-							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(2));]), ("", 0));
+							ExpressionStatement(FunctionCall(CompoundName(["File";"close"]),[Value(IntegerValue(12));]), ("", 0));
 							] in
 						try
 							let _ = Interpreter.interpret_statements stmts symbol_table in false
 						with
-						| LibraryError _ -> true
+						| FatalExit (LibraryError _) -> true
 						| _ -> false
 			);
 			("File.exists()", fun () ->
