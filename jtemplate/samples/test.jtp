@@ -1,29 +1,3 @@
-var getEntryType = function(filename) {
-	var ret = Directory.exists(filename);
-	if (ret==Void || ret == false){
-		return 'file';
-	}
-	return 'directory';
-};
+import 'date.jtp';
 
-var content = Directory.list('..');
-
-if (typeof (content) != 'Void') {
-	for ( var i = 0; i < content.length; i = i + 1) {
-		println(content[i], ' ', getEntryType('../' + content[i]));
-	}
-}
-
-for(var i=0;i<100;i=i+1){
-	println(i);
-}
-
-foreach(el in Date.now()){
-	println(el);
-}
-
-var x=[1,'abc',Date.now()];
-       
-foreach(el in x){
-	println(el);
-}
+println('done');

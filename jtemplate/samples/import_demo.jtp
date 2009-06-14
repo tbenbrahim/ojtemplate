@@ -1,0 +1,13 @@
+import 'imports/date.jtp';
+import 'imports/map.jtp';
+import 'imports/string.jtp';
+
+Map.printMap(Date.now());
+println();
+
+Map.fold( function(k, v) {
+	println(String.padLeft(k, 11, ' '), ': ', String.padLeft(v, 4, ' '));
+}, Date.now());
+println();
+
+println('Today is ', Date.toString(Date.now()));
