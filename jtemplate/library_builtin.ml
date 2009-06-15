@@ -129,5 +129,11 @@ struct
 								raise (LibraryError("exit code must be an integer between -128 and 127 in call to exit"))
 					| _ -> raise (LibraryError("exit code must be an integer in call to exit"))
 		);
+		(["Debug";"dumpSymbolTable"],[], fun stbl ->
+					SymbolTable.print_symbol_table stbl
+		);
+		(["Debug";"dumpStackTrace"],[], fun stbl ->
+					Interpreter.stack_trace stbl.env.stack_trace
+		);
 		]
 end

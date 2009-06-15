@@ -56,8 +56,8 @@ let extract_stmt_list=function
 
 
 %%
-program:                              statements EOF                          { StatementBlock($1) }
-                                    | EOF                                     { StatementBlock([]) }
+program:                              statements EOF                          { Program($1) }
+                                    | EOF                                     { Program([]) }
 ;
 statements:                           statement                               { [$1] }
                                     | statement statements                    { $1::$2 }

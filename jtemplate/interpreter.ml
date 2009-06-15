@@ -379,6 +379,7 @@ struct
 					)with
 				| CFBreak -> ())
 		| StatementBlock(statements) -> interpret_statements statements (SymbolTable.push_scope symbol_table)
+		| Program(statements) -> interpret_statements statements symbol_table
 		| Import((filename, descr), env) ->
 				symbol_table.env.current_stmt <- env;
 				if descr.loaded then
