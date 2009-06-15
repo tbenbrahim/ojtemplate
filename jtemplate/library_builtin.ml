@@ -124,13 +124,18 @@ struct
 								)))
 		);
 		(["exit"],["exitcode"], fun stbl ->
-					match SymbolTable.get_value (Name("code")) stbl with
+					match SymbolTable.get_value (Name("exitcode")) stbl with
 					| IntegerValue(c) -> if c >= - 128 && c <= 127 then exit c else
-								raise (LibraryError("exit code must be an integer between -128 and 127 in call to exit"))
-					| _ -> raise (LibraryError("exit code must be an integer in call to exit"))
+								raise (LibraryError("exitcode must be an integer between -128 and 127 in call to exit"))
+					| _ -> raise (LibraryError("exitcode must be an integer in call to exit"))
 		);
-		(["Debug";"dumpSymbolTable"],[], fun stbl ->
-					SymbolTable.print_symbol_table stbl
+		(["Debug";"dumpSymbolTable"],["includeLibraryCalls"], fun stbl ->
+					let incl_lib = (match SymbolTable.get_value (Name("includeLibraryCalls")) stbl with
+							| BooleanValue(x) -> x
+							| _ -> raise (LibraryError "includeLibraryCalls must be a boolean in call to Debug.dumpSymbolTable") ) in
+					match stbl.parent_table with
+					| Some table ->	SymbolTable.print_symbol_table table incl_lib
+					| None -> raise (InternalError "should be in function's scope, so should have a parent")
 		);
 		(["Debug";"dumpStackTrace"],[], fun stbl ->
 					Interpreter.stack_trace stbl.env.stack_trace
