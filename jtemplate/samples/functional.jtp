@@ -48,3 +48,43 @@ println('');
 println('The sum of [1,2,4,8,16] is '+ Array.reduce(function(a,b){ return a+b; },data,0));
 println('The product of [1,2,4,8,16] is '+ Array.reduce(function(a,b){ return a*b; },data,1));
 println('');
+
+
+function(f, elements...){
+    foreach(element in elements){
+        f(element);
+    }
+}(function(x){print(x,' ');},'','Hello','world',1,2,3);
+
+/*
+example 4, partial application
+*/
+
+var add=function(a,b){return a+b;};
+var inc=add(1,x?);
+var one=1;
+var inc2=add(one,x?);
+println(inc(10),' ',inc2(4));
+
+// now for varags and partial application
+
+//with a library function
+var println2=println('from println2>>> ',value...?);
+println2('This is a test ',1,2,3);
+
+//with a 'native' function
+var print_sep=function(separator,elements...){
+    foreach(element in elements){
+        print(element,separator);
+    }
+};
+
+var print_space=print_sep(' ',items...?);
+var print_comma=print_sep(', ',items?...);
+
+print_space(1,2,3,4,5);
+print_comma(1,2,3,4,5);
+println();
+
+
+

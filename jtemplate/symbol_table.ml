@@ -336,15 +336,15 @@ struct
 		match values with
 		| [] -> cnt
 		| el:: rest_vals -> Hashtbl.add arr (string_of_int cnt) el; add_vals_to_arr arr rest_vals (cnt + 1)
-	
+
 	let rec put_args_in_scope args vals scope =
 		match args with
 		| [] -> if vals != [] then raise EMismatchedArgsInCall else ()
 		| Name(last)::[] -> (* only place where vararg is allowed *)
-				if last.[0]='[' then
+				if is_vararg last then
 					let h = (Hashtbl.create 10) in
 					Hashtbl.add h "length" (IntegerValue(add_vals_to_arr h vals 0));
-					declare (Name(String.sub last 1 ((String.length last) - 1))) (MapValue(h, ArraySubtype)) scope
+					declare (Name(vararg_formalname last)) (MapValue(h, ArraySubtype)) scope
 				else(
 					if vals =[] then raise EMismatchedArgsInCall (* ran out of values *)
 					else declare (Name last) (List.hd vals) scope; put_args_in_scope [] (List.tl vals) scope

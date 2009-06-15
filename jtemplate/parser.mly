@@ -122,6 +122,8 @@ variable:                             ids                                     {
 																																							}
 ;
 unbound_variable:                     ID QUESTION                             { UnboundVar(Name($1)) }
+                                    | ID DOTDOTDOT QUESTION                   { UnboundVar(Name("["^$1)) }
+                                    | ID QUESTION DOTDOTDOT                   { UnboundVar(Name("["^$1)) }
 ;
 array_index:                          ID LBRACKET expression RBRACKET         { ArrayIndex($1,$3) }
 ;
