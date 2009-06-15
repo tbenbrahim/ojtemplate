@@ -60,25 +60,7 @@ struct
 	
 	exception EUnexpected
 	
-	(**
-	returns the printable name of a variable name
-	@param name an Ast.variable_name type
-	@return a string specifying the variable name
-	*)
-	let fullname = function
-			Ast.CompoundName(lst) ->
-				(match lst with
-					| el:: lst -> List.fold_left(fun acc el -> acc^"."^el) el lst
-					| [] -> "")
-		| Ast.Name(name) -> name
-		| Ast.ArrayIndex(_, _) | Ast.EvaluatedName(_) -> "unresolved name" (* will never get these *)
-	
-	let string_of_args args =
-		match args with
-		| [] -> "()"
-		| el:: tl -> "(" ^ (List.fold_left (fun acc el -> acc^","^el) el tl) ^")"
-	
-	let string_of_symbol_value = function
+	let rec string_of_symbol_value = function
 		| IntegerValue(i) -> string_of_int i
 		| FloatValue(f) -> string_of_float f
 		| BooleanValue(b) -> string_of_bool b
@@ -89,6 +71,24 @@ struct
 		| MapValue(map, ArraySubtype _) -> "[]"
 		| Void -> "Void"
 		| NaN -> "NaN"
+	and
+	(**
+	returns the printable name of a variable name
+	@param name an Ast.variable_name type
+	@return a string specifying the variable name
+	*)
+	fullname = function
+			Ast.CompoundName(lst) ->
+				(match lst with
+					| el:: lst -> List.fold_left(fun acc el -> acc^"."^el) el lst
+					| [] -> "")
+		| Ast.Name(name) -> name
+		| Ast.ArrayIndex(_, _) | Ast.EvaluatedName(_) -> "unresolved name" (* will never get these *)
+	
+	and string_of_args args =
+		match args with
+		| [] -> "()"
+		| _ -> "(" ^ (List.fold_left (fun acc el -> acc^","^(fullname el)) "" args) ^")"
 	
 	let string_of_symbol_type = function
 		| IntegerValue(_) -> "integer"
@@ -147,8 +147,8 @@ struct
 	let initialize () =
 		{ values = Hashtbl.create 10 ; parent_table = None ;
 			env = { parse_callback = (fun s -> Ast.Noop);
-				loaded_imports = [];current_stmt = ("", 0);
-				stack_trace=[]; } }
+				loaded_imports = []; current_stmt = ("", 0);
+				stack_trace =[]; } }
 	
 	let initialize_environment environment =
 		{ values = Hashtbl.create 10 ; parent_table = None ; env = environment }
@@ -340,7 +340,7 @@ struct
 	let rec put_args_in_scope args vals scope =
 		match args with
 		| [] -> if vals != [] then raise EMismatchedArgsInCall else ()
-		| last::[] -> (* only place where vararg is allowed *)
+		| Name(last)::[] -> (* only place where vararg is allowed *)
 				if last.[0]='[' then
 					let h = (Hashtbl.create 10) in
 					Hashtbl.add h "length" (IntegerValue(add_vals_to_arr h vals 0));
@@ -349,7 +349,7 @@ struct
 					if vals =[] then raise EMismatchedArgsInCall (* ran out of values *)
 					else declare (Name last) (List.hd vals) scope; put_args_in_scope [] (List.tl vals) scope
 				)
-		| el:: rest_args ->
+		| Name(el):: rest_args ->
 				if el.[0]='[' then
 					raise EVarArgsMustbeLast
 				else(
@@ -358,6 +358,7 @@ struct
 						declare (Name el) (List.hd vals) scope;
 						put_args_in_scope rest_args (List.tl vals) scope
 					))
+		| _ -> raise (RuntimeError.InternalError "put_args_in_scope called with something that is not a Name(_) list")
 	
 	let new_function_call_scope name scope arglist vallist =
 		let scope =	push_scope scope in

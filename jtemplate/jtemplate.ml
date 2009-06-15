@@ -10,6 +10,7 @@ open Library_io
 open Library_helper
 open Ast
 open Filename_util
+open RuntimeError
 
 let rec register_args ind len symbol_table =
 	if ind = 1 then
@@ -41,5 +42,8 @@ let _ =
 			let filename = Sys.argv.(1) in
 			let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
 			in
-			Interpreter.interpret_statement ast symbol_table
+			try
+			 Interpreter.interpret_statement ast symbol_table
+			with
+				| FatalExit _ -> exit(-1)
 		)

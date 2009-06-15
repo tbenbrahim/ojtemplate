@@ -54,7 +54,24 @@ struct
 			raise (EIncompatibleTypes(SymbolTable.string_of_symbol_type value1,
 						SymbolTable.string_of_symbol_type value2))
 	
-	let rec make_map str_expr_list symbol_table =
+	(** given a function call's arglist, resolve to either a
+	list of values if the arglist has no unbound values, or	a list of expression (values are Value, UnboundVars are Variable)
+	if the arglist has unbound values. Invoked with arglist, returns (boolean, ((exprlist, formal_args), valuelist,)
+	if the boolean is true, unbound names were found and exprlist	should be used. if the boolean is false, all names were bound
+	and valuelist should be used. formal_args will contain a list of unbound names *)
+	let rec resolve_arg_list arglist symbol_table =
+		let rec resolve arglist exprlist valuelist formal_args has_unbound =
+			match arglist with
+			| [] -> (has_unbound, (List.rev exprlist, List.rev formal_args), List.rev valuelist)
+			| expr:: tl ->
+					match expr with
+					| UnboundVar(name) -> (*from this point on, valuelist is no longer valid *)
+							resolve tl (VariableExpr(name):: exprlist) (valuelist) (name:: formal_args) true
+					| _ ->
+							let value = evaluate_expression expr symbol_table
+							in resolve tl (Value(value):: exprlist) (value:: valuelist) formal_args has_unbound
+		in resolve arglist [] [] [] false
+	and make_map str_expr_list symbol_table =
 		let map = Hashtbl.create (1 + List.length str_expr_list) in
 		List.fold_left
 			(fun acc el ->
@@ -159,25 +176,35 @@ struct
 						| EIncompatibleTypes(_, _) -> BooleanValue(false)
 				)
 		| FunctionCall(variable, exprlist) ->
-				let value_list = evaluate_exprs exprlist symbol_table in
-				(match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
-					| ScopedFunctionValue(arglist, stmts, scope) ->
-							let old_stack = symbol_table.env.stack_trace in
-							(try
-								symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
-								interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list);
-								symbol_table.env.stack_trace <- old_stack;
-								Void
-							with
-							| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
-					| LibraryFunction(arglist, code, scope) ->
-							(try
-								code (SymbolTable.new_function_call_scope variable scope arglist value_list);
-								Void
-							with
-							| CFReturn value -> value)
-					| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
-				)
+				let (has_unbound, (exprlist, formal_args), value_list) = resolve_arg_list exprlist symbol_table in
+				if has_unbound then
+					FunctionValue(formal_args,[Return(FunctionCall(variable, exprlist), symbol_table.env.current_stmt)])
+				(**match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
+				| ScopedFunctionValue(arglist, stmts, scope) ->
+				ScopedFunctionValue(formal_args,[MatchInvoke(variable, namelist, arglist, stmts)], scope)
+				| LibraryFunction(arglist, code, scope) ->
+				ScopedFunctionValue(formal_args,[MatchInvoke(variable, namelist, arglist, [InvokeNative code])], scope)
+				| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
+				*)
+				else
+					(match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
+						| ScopedFunctionValue(arglist, stmts, scope) ->
+								let old_stack = symbol_table.env.stack_trace in
+								(try
+									symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
+									interpret_statements stmts (SymbolTable.new_function_call_scope variable scope arglist value_list);
+									symbol_table.env.stack_trace <- old_stack;
+									Void
+								with
+								| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
+						| LibraryFunction(arglist, code, scope) ->
+								(try
+									code (SymbolTable.new_function_call_scope variable scope arglist value_list);
+									Void
+								with
+								| CFReturn value -> value)
+						| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
+					)
 		| DirectFunctionCall(expr, exprlist) ->
 				let value_list = evaluate_exprs exprlist symbol_table in
 				(match expr with
@@ -199,6 +226,7 @@ struct
 		| VariableExpr(variable) ->
 				SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table
 		| Value(value) -> value
+		| UnboundVar(name) -> raise (UnexpectedUnboundVar (SymbolTable.fullname name))
 	and
 	evaluate_exprs exprlist symbol_table =
 		List.map (fun expr -> evaluate_expression expr symbol_table ) exprlist
@@ -216,6 +244,7 @@ struct
 		| CFReturn v -> raise (CFReturn(v))
 		| CFContinue -> raise CFContinue
 		| CFBreak -> raise CFBreak
+		| FatalExit e -> raise (FatalExit e)
 		| e ->
 				flush_all ();
 				let (file, line) = symbol_table.env.current_stmt in
@@ -319,7 +348,7 @@ struct
 							else
 								match_case expr1 tl
 					| (None, stmts):: tl -> stmts
-				in let caselist =List.rev (find_cases stmtlist [] false)
+				in let caselist = List.rev (find_cases stmtlist [] false)
 				in let value = evaluate_expression expr symbol_table
 				in let stmts = match_case (Value(value)) caselist
 				in (try
@@ -360,6 +389,8 @@ struct
 				raise CFContinue
 		| Break(env) -> symbol_table.env.current_stmt <- env;
 				raise CFBreak
+		| MatchInvoke(_, _, _, _) -> ()
+		| InvokeNative(_) -> ()
 	and
 	interpret_statements statement_list symbol_table =
 		List.fold_left (fun _ stmt -> interpret_statement stmt symbol_table) () statement_list

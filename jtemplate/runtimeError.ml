@@ -74,6 +74,8 @@ exception InternalError of string
 
 exception DefaultCaseShouldBeLast
 
+exception UnexpectedUnboundVar of string (*name*)
+
 exception FatalExit of exn
 
 let string_of_error ex =
@@ -95,5 +97,7 @@ let string_of_error ex =
 	| NotACollectionType(where, typename) -> "Expected a collection type for "^
 			where^", received a "^typename^" instead"
 	| DefaultCaseShouldBeLast -> "Unexpected case statement found after a default statement"
+	| UnexpectedUnboundVar name -> "Unexpected unbound variable "^name^
+			". Unbound variables can only be used in function calls."
 	| e -> "uncaught exception "^(Printexc.to_string e)
 
