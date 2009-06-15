@@ -50,3 +50,16 @@ for (var i=0;i<10;i=i+1){
 	}
 }
 
+//partial application test
+
+var add=function(a,b){return a+b;};
+var inc=add(1,x?);
+var one=1;
+var inc2=add(one,x?);
+println(inc(10),' ',inc2(4));
+
+// that was easy, how about a function with varargs
+
+var println2=println('>>> ',value...?);
+
+println2('This is a test');

@@ -101,6 +101,7 @@ statement:                            for_target_statement SEMICOLON          { 
 ;
 expression:                           value                                   { $1 }
 																		| function_call                           { $1 }
+																		| unbound_variable                        { $1 }
 																		| LPAREN expression RPAREN                { $2 }
 																		| expression PLUS expression              { BinaryOp($1,Plus,$3) }
 																		| expression MINUS expression             { BinaryOp($1,Minus,$3) }
@@ -119,6 +120,8 @@ variable:                             ids                                     {
 																																									  Name(id) :: [] -> Name(id)
 																																									| _ -> EvaluatedName($1)
 																																							}
+;
+unbound_variable:                     ID QUESTION                             { UnboundVar(Name($1)) }
 ;
 array_index:                          ID LBRACKET expression RBRACKET         { ArrayIndex($1,$3) }
 ;
@@ -142,9 +145,9 @@ value:                                INT                                     { 
 																		| LBRACE prop_list RBRACE                 { MapExpr($2) }
 																		| variable                                { VariableExpr($1) }
 ;
-arglist:                              ID                                      { [$1] }
-                                    | ID DOTDOTDOT                            { ["["^$1] }
-																		| ID COMMA arglist                        { $1::$3 }
+arglist:                              ID                                      { [Name($1)] }
+                                    | ID DOTDOTDOT                            { [Name("["^$1)] }
+																		| ID COMMA arglist                        { Name($1)::$3 }
 																		| /* nothing */                           { [] }
 ;
 expr_list:

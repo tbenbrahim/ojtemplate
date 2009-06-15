@@ -45,9 +45,9 @@ and variable_value =
 	| FloatValue of float
 	| StringValue of string
 	| BooleanValue of bool
-	| ScopedFunctionValue of string list * statement list * symbol_table
-	| FunctionValue of string list * statement list
-	| LibraryFunction of string list * (symbol_table -> unit) * symbol_table
+	| ScopedFunctionValue of variable_name list * statement list * symbol_table
+	| FunctionValue of variable_name list * statement list
+	| LibraryFunction of variable_name list * (symbol_table -> unit) * symbol_table
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
 	| NaN
@@ -83,6 +83,7 @@ and expression =
 	| ArrayExpr of expression list
 	| VariableExpr of variable_name
 	| Value of variable_value
+	| UnboundVar of variable_name
 
 and imported_statements ={ mutable loaded: bool }
 
@@ -98,9 +99,12 @@ and statement =
 	| Return of expression * (string * int)
 	| If of expression * statement list * statement list * (string * int)
 	| TemplateDef of variable_name * template_spec list * (string * int)
-	| Instructions of variable_name * string list * replacement_spec list * (string * int)
+	| Instructions of variable_name * variable_name list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
 	| Import of (string * imported_statements) * (string * int)
 	| Switch of expression * statement list * (string*int)
 	| Case of expression option * (string * int)
+	(* used internally for partial application of functions, especially those with varargs *)
+	| MatchInvoke of variable_name * variable_name list * variable_name list * statement list
+	| InvokeNative of (symbol_table -> unit)
 

@@ -1,5 +1,6 @@
 module AstInfo =
 struct
+	open Symbol_table
 	
 	let prefix level =
 		match level with
@@ -46,8 +47,7 @@ struct
 				(prefix level) ^
 				("Instructions\n" ^
 					((var_descriptionl (level + 1) var) ^
-						((List.fold_left
-									(fun acc el -> el ^ "," ^ acc) "" varlist)
+						((SymbolTable.string_of_args varlist)
 							^
 							(List.fold_left
 									(fun acc el ->
@@ -193,10 +193,8 @@ struct
 				(prefix level) ^ ("Integer " ^ ((string_of_int v) ^ "\n"))
 		| Ast.FunctionValue (arglist, stmts) ->
 				(prefix level) ^
-				("Function " ^
-					((List.fold_left
-								(fun acc el -> acc ^ el ^ "," ) "" arglist) ^ "\n"
-						^ (statement_list (level + 1) stmts)))
+				"Function " ^(SymbolTable.string_of_args arglist)^"\n"
+						^ (statement_list (level + 1) stmts)
 		| Ast.LibraryFunction(_, _, _) -> "" (* never in ast *)
 		| Ast.BooleanValue v ->
 				(prefix level) ^ ("Boolean " ^ ((string_of_bool v) ^ "\n"))
