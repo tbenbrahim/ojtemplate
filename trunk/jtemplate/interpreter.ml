@@ -56,21 +56,26 @@ struct
 	
 	(** given a function call's arglist, resolve to either a
 	list of values if the arglist has no unbound values, or	a list of expression (values are Value, UnboundVars are Variable)
-	if the arglist has unbound values. Invoked with arglist, returns (boolean, ((exprlist, formal_args), valuelist,)
+	if the arglist has unbound values. Invoked with arglist, returns (boolean, ((exprlist, formal_args, has_vararg), valuelist,)
 	if the boolean is true, unbound names were found and exprlist	should be used. if the boolean is false, all names were bound
-	and valuelist should be used. formal_args will contain a list of unbound names *)
+	and valuelist should be used. formal_args will contain a list of unbound names. has_vararg will be true if a vararg was found *)
 	let rec resolve_arg_list arglist symbol_table =
-		let rec resolve arglist exprlist valuelist formal_args has_unbound =
+		let rec resolve arglist exprlist valuelist formal_args has_unbound has_vararg =
 			match arglist with
-			| [] -> (has_unbound, (List.rev exprlist, List.rev formal_args), List.rev valuelist)
+			| [] -> (has_unbound, (List.rev exprlist, List.rev formal_args, has_vararg), List.rev valuelist)
 			| expr:: tl ->
 					match expr with
 					| UnboundVar(name) -> (*from this point on, valuelist is no longer valid *)
-							resolve tl (VariableExpr(name):: exprlist) (valuelist) (name:: formal_args) true
+							let varname = SymbolTable.fullname name in
+							let isvararg = is_vararg varname in
+							let formalname = (if isvararg then vararg_formalname varname else varname) in
+							(if isvararg && tl <>[] then raise (RuntimeError.VarArgsMustbeLast formalname) else ());
+							resolve tl (VariableExpr(Name(formalname)):: exprlist) (valuelist) (name:: formal_args) true isvararg
 					| _ ->
 							let value = evaluate_expression expr symbol_table
-							in resolve tl (Value(value):: exprlist) (value:: valuelist) formal_args has_unbound
-		in resolve arglist [] [] [] false
+							in resolve tl (Value(value):: exprlist) (value:: valuelist) formal_args has_unbound false
+		in resolve arglist [] [] [] false false
+	
 	and make_map str_expr_list symbol_table =
 		let map = Hashtbl.create (1 + List.length str_expr_list) in
 		List.fold_left
@@ -176,16 +181,15 @@ struct
 						| EIncompatibleTypes(_, _) -> BooleanValue(false)
 				)
 		| FunctionCall(variable, exprlist) ->
-				let (has_unbound, (exprlist, formal_args), value_list) = resolve_arg_list exprlist symbol_table in
+				let (has_unbound, (exprlist, formal_args, has_vararg), value_list) = resolve_arg_list exprlist symbol_table in
 				if has_unbound then
-					FunctionValue(formal_args,[Return(FunctionCall(variable, exprlist), symbol_table.env.current_stmt)])
-				(**match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
-				| ScopedFunctionValue(arglist, stmts, scope) ->
-				ScopedFunctionValue(formal_args,[MatchInvoke(variable, namelist, arglist, stmts)], scope)
-				| LibraryFunction(arglist, code, scope) ->
-				ScopedFunctionValue(formal_args,[MatchInvoke(variable, namelist, arglist, [InvokeNative code])], scope)
-				| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
-				*)
+					let stmts =
+						(if has_vararg then
+								let varargname = vararg_formalname (SymbolTable.fullname (List.hd (List.rev formal_args))) in
+								[Return(FunctionCallExpandVarArg(variable, exprlist, varargname), symbol_table.env.current_stmt)]
+							else
+								[Return(FunctionCall(variable, exprlist), symbol_table.env.current_stmt)]) in
+					FunctionValue(formal_args, stmts)
 				else
 					(match SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table with
 						| ScopedFunctionValue(arglist, stmts, scope) ->
@@ -205,6 +209,17 @@ struct
 								| CFReturn value -> value)
 						| _ -> raise (ENotAFunction (SymbolTable.fullname variable))
 					)
+		| FunctionCallExpandVarArg(variable, exprlist, varargname) ->
+		(* get the vararg value array, remove the append the values to the     *)
+		(* expression list (minus the last, which is the vararg array name),   *)
+		(* and call the function                                               *)
+				let (last, start) = match List.rev exprlist with
+					| [] -> raise (InternalError "expected at least the vararg variable in the expression list")
+					| last:: start -> (last, start) in
+				let arr = SymbolTable.get_value (Name varargname) symbol_table in
+				let value_list = SymbolTable.list_of_array arr in
+				let v_exprlist = List.map (fun value -> Value(value)) value_list in
+				evaluate_expression (FunctionCall(variable, (List.append (List.rev start) v_exprlist))) symbol_table
 		| DirectFunctionCall(expr, exprlist) ->
 				let value_list = evaluate_exprs exprlist symbol_table in
 				(match expr with
@@ -389,8 +404,6 @@ struct
 				raise CFContinue
 		| Break(env) -> symbol_table.env.current_stmt <- env;
 				raise CFBreak
-		| MatchInvoke(_, _, _, _) -> ()
-		| InvokeNative(_) -> ()
 	and
 	interpret_statements statement_list symbol_table =
 		List.fold_left (fun _ stmt -> interpret_statement stmt symbol_table) () statement_list

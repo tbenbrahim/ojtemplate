@@ -84,6 +84,9 @@ and expression =
 	| VariableExpr of variable_name
 	| Value of variable_value
 	| UnboundVar of variable_name
+	(* used internally for expansion of vararg in partially applied          *)
+	(* functions                                                             *)
+	| FunctionCallExpandVarArg of variable_name * expression list * string
 
 and imported_statements ={ mutable loaded: bool }
 
@@ -102,9 +105,11 @@ and statement =
 	| Instructions of variable_name * variable_name list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
 	| Import of (string * imported_statements) * (string * int)
-	| Switch of expression * statement list * (string*int)
+	| Switch of expression * statement list * (string * int)
 	| Case of expression option * (string * int)
-	(* used internally for partial application of functions, especially those with varargs *)
-	| MatchInvoke of variable_name * variable_name list * variable_name list * statement list
-	| InvokeNative of (symbol_table -> unit)
 
+let is_vararg varname =
+	varname.[0]='['
+
+let vararg_formalname varname =
+	String.sub varname 1 ((String.length varname) - 1)

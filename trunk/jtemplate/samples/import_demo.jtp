@@ -62,4 +62,11 @@ println(inc(10),' ',inc2(4));
 
 var println2=println('>>> ',value...?);
 
-println2('This is a test');
+println2('This is a test ',1,2,3);
+
+var bracket_print=println(prefix1?,prefix2?,value?...);
+
+bracket_print('JS',' > ',1,2,3,4,5);
+
+
+
