@@ -104,9 +104,12 @@ println();
 
 var double_array=Array.map(function(x){return 2*x;},arr?);
 
-var print_array=Array.map(function(x){print_space(x);},arr?);
-var print_array2=Array.map(print_space,arr?);
+{
+    var print_array=Array.map(function(x){print_space(x);},arr?);
+    var print_array2=Array.map(print_space,arr?);
 
-print_array(double_array([1,2,3,4]));
-print_array2(double_array([1,2,3,4]));
-
+    print_array(double_array([1,2,3,4]));
+    print_array2(double_array([1,2,3,4]));
+    
+    Debug.dumpSymbolTable(false);
+}
