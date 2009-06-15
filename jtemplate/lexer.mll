@@ -32,6 +32,7 @@ let map_id name=
 	| "once" -> ONCE
 	| "when" -> WHEN
 	| "var" -> VAR
+  | "let" -> VAR
 	| "true" -> BOOLEAN(true)
 	| "false" -> BOOLEAN(false)
 	| "Void"  -> VOID
