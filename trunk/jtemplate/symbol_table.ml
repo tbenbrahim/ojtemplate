@@ -15,26 +15,7 @@ struct
 	in let symbol_table = SymbolTable.pop_scope symbol_table
 	
 	function calls get the same scope as the scope the function is declared in (static scoping). Example:
-	[{
-	var b = 1;
-	var x = function() {
-	..var a = 1;
-	..var y = function() {
-	..};
-	..{
-	....var d = 2;
-	....var w = function() {
-	....};
-	....w();// a, b, c, d, w, x, y, z are in scope
-	..}
-	..y();// a, b, x, y, z are in scope
-	..z();// b, x, z are in scope
-	..x();// b, x , z are in scope
-	};
-	var z = function() {
-	};
-	x();// b, x, z are in scope
-	]}
+	
 	@author tbenbrahim
 	*)
 	
@@ -88,7 +69,8 @@ struct
 	and string_of_args args =
 		match args with
 		| [] -> "()"
-		| _ -> "(" ^ (List.fold_left (fun acc el -> acc^","^(fullname el)) "" args) ^")"
+		| _ -> "(" ^ (let x = (List.fold_left (fun acc el -> acc^","^(fullname el)) "" args) in
+					String.sub x 1 ((String.length x) - 1)) ^")"
 	
 	let string_of_symbol_type = function
 		| IntegerValue(_) -> "integer"
@@ -126,19 +108,22 @@ struct
 		| Void -> VoidType
 		| NaN -> NaNType
 	
-	let rec print_symbol_map map prefix =
-		let _ = (Hashtbl.iter (fun key var -> print_string (prefix^key^"="^(string_of_symbol_value var)^"\n");
+	let rec print_symbol_map map prefix incl_lib =
+		let _ = (Hashtbl.iter (fun key var ->
+								(match var with
+									| LibraryFunction(_, _, _) -> if incl_lib then print_string (prefix^key^"="^(string_of_symbol_value var)^"\n") else ()
+									| _ ->	print_string (prefix^key^"="^(string_of_symbol_value var)^"\n"));
 								(match var with
 									| MapValue(map, _) -> let _ = print_symbol_map map (prefix^key^".") in ()
 									| _ -> ()
 								)) map) in ()
 	
-	let rec print_symbol_table symbol_table =
+	let rec print_symbol_table symbol_table incl_lib =
 		print_string "SYMBOL TABLE:\n";
-		print_symbol_map symbol_table.values "";
+		print_symbol_map symbol_table.values "" incl_lib;
 		match symbol_table.parent_table with
 		| None -> ()
-		| Some table -> (print_string "PARENT "; print_symbol_table table)
+		| Some table -> (print_string "PARENT "; print_symbol_table table incl_lib)
 	
 	(** creates a new empty symbol table. Called only at the start of a program,
 	creating other symbol tables is accomplished by entering a new scope.
