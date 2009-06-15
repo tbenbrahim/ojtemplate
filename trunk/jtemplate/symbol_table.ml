@@ -322,7 +322,13 @@ struct
 	@raise NotAMap when part of the map variable name (except the last) is not a MapValue
 	@raise EUnexpectedCompoundName if a coumpound name has fewer than 2 elements (should never happen)
 	*)
-	let get_value name symbol_table = resolve name (Some symbol_table)
+	let get_value name symbol_table =
+		match name with (* handle of exception for dumpSymbolTable since we need the current table *)
+		| CompoundName(["Debug";"dumpSymbolTable"]) -> let res = resolve name (Some symbol_table) in
+				(match res with
+					| LibraryFunction(args, stmts, _) -> LibraryFunction(args, stmts, symbol_table)
+					| _ -> res)
+		| _ -> resolve name (Some symbol_table)
 	
 	let is_defined name symbol_table =
 		try
@@ -336,7 +342,7 @@ struct
 		match values with
 		| [] -> cnt
 		| el:: rest_vals -> Hashtbl.add arr (string_of_int cnt) el; add_vals_to_arr arr rest_vals (cnt + 1)
-
+	
 	let rec put_args_in_scope args vals scope =
 		match args with
 		| [] -> if vals != [] then raise EMismatchedArgsInCall else ()

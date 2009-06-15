@@ -2,39 +2,52 @@
  example 1
 */
 
-var Array.reduce=function(f, arr, init){
-    var result=init;
-    for (var i=0; i<Array.length(arr); i=i+1){
+let Array.reduce=function(f, arr, init){
+    let result=init;
+    for (let i=0; i<Array.length(arr); i=i+1){
         result = f(arr[i],result);
     }
     return result;
 };
 
-var data=[1,2,4,8,16];
+let data=[1,2,4,8,16];
 
-var sum=function(a,b){ return a+b; };
-var product=function(a,b){ return a*b; };
+let sum=function(a,b){ return a+b; };
+let product=function(a,b){ return a*b; };
 
 println('The sum of [1,2,4,8,16] is '+ Array.reduce(sum,data,0));
 println('The product of [1,2,4,8,16] is '+ Array.reduce(product,data,1));
 println('');
 
+let Array.map=function(f,arr){
+    let result=[];
+    for (let i=Array.length(arr)-1;i>=0;i=i-1){
+        Array.push(result,f(arr[i]));
+    }
+    return result;
+};
+
+Array.map(function(x){print(x,' ');},
+    Array.map(function(x){return 2*x;},[1,2,3,4])
+    );
+println();
+
 /*
   example 2, map functions and data
 */
 
-var Array.reduce2=function(m, arr){
-    var result=m.init;
-    for (var i=0; i<Array.length(arr); i=i+1){
+let Array.reduce2=function(m, arr){
+    let result=m.init;
+    for (let i=0; i<Array.length(arr); i=i+1){
         result = m.f(result,arr[i]);
     }
     return result;
 };
 
 
-var sum={f: function(a,b){ return a+b; } , init: 0 };
-var product={f: function(a,b){ return a*b; } , init: 1 };
-var concat={f: function(a,b){ return a+b+','; } , init: '' };
+let sum={f: function(a,b){ return a+b; } , init: 0 };
+let product={f: function(a,b){ return a*b; } , init: 1 };
+let concat={f: function(a,b){ return a+b+','; } , init: '' };
 
 println('The sum of [1,2,4,8,16] is '+ Array.reduce2(sum,data));
 println('The product of [1,2,4,8,16] is '+ Array.reduce2(product,data));
@@ -60,31 +73,40 @@ function(f, elements...){
 example 4, partial application
 */
 
-var add=function(a,b){return a+b;};
-var inc=add(1,x?);
-var one=1;
-var inc2=add(one,x?);
+let add=function(a,b){return a+b;};
+let inc=add(1,x?);
+let one=1;
+
+let inc2=add(one,x?);
 println(inc(10),' ',inc2(4));
 
 // now for varags and partial application
 
 //with a library function
-var println2=println('from println2>>> ',value...?);
+let println2=println('from println2>>> ',value...?);
 println2('This is a test ',1,2,3);
 
 //with a 'native' function
-var print_sep=function(separator,elements...){
+let print_sep=function(separator,elements...){
     foreach(element in elements){
         print(element,separator);
     }
 };
 
-var print_space=print_sep(' ',items...?);
-var print_comma=print_sep(', ',items?...);
+let print_space=print_sep(' ',items...?);
+let print_comma=print_sep(', ',items?...);
 
 print_space(1,2,3,4,5);
 print_comma(1,2,3,4,5);
 println();
 
+//with a function from above
 
+var double_array=Array.map(function(x){return 2*x;},arr?);
+
+var print_array=Array.map(function(x){print_space(x);},arr?);
+var print_array2=Array.map(print_space,arr?);
+
+print_array(double_array([1,2,3,4]));
+print_array2(double_array([1,2,3,4]));
 

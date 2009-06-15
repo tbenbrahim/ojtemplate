@@ -104,6 +104,7 @@ and statement =
 	| TemplateDef of variable_name * template_spec list * (string * int)
 	| Instructions of variable_name * variable_name list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
+	| Program of statement list (* like a statement block but does not push scope*)
 	| Import of (string * imported_statements) * (string * int)
 	| Switch of expression * statement list * (string * int)
 	| Case of expression option * (string * int)
