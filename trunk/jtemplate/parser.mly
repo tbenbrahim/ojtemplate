@@ -56,10 +56,14 @@ let extract_stmt_list=function
 %nonassoc MAP
 %nonassoc EMPTYBLOCK
 
-%right EQUALS PLUSEQUALS MINUSEQUALS TIMESEQUALS DIVEQUALS MODEQUALS
+%right EQUALS 
 
+%left NOT
 %left AND OR
 %left COMPOP
+
+%left PLUSEQUALS MINUSEQUALS 
+%left TIMESEQUALS DIVEQUALS MODEQUALS
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 
@@ -161,6 +165,7 @@ expression:
     | expression TIMES expression             { BinaryOp($1,Times,$3) }
     | expression DIVIDE expression            { BinaryOp($1,Divide,$3) }
     | expression MODULO expression            { BinaryOp($1,Modulo,$3) }
+		| NOT expression                          { Not($2) }
     | expression AND expression               { BinaryOp($1,And,$3) }
     | expression OR expression                { BinaryOp($1,Or,$3) }
     | expression COMPOP expression            { CompOp($1,$2,$3) }

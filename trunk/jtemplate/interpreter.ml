@@ -136,6 +136,13 @@ struct
 				let v = evaluate_expression expression symbol_table in
 				SymbolTable.declare (resolve_variable_name varname symbol_table) v symbol_table;
 				v
+		| Not(expr) ->
+				let v = evaluate_expression expr symbol_table in
+				(match v with
+					| BooleanValue(b) -> BooleanValue(not b)
+					| _ -> raise (EIncompatibleTypes(SymbolTable.string_of_symbol_type v,
+										"boolean"))
+				)
 		| BinaryOp(expr1 , operator , expr2) ->
 				let value1 = evaluate_expression expr1 symbol_table in
 				let value2 = evaluate_expression expr2 symbol_table in

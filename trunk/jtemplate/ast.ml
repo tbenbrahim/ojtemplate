@@ -77,6 +77,7 @@ and variable_name =
 and expression =
 	| BinaryOp of expression * operator * expression
 	| CompOp of expression * comparator * expression
+	| Not of expression
 	| FunctionCall of variable_name * expression list
 	| DirectFunctionCall of expression * expression list
 	| MapExpr of (string * expression) list
