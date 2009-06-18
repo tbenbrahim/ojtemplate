@@ -10,7 +10,8 @@ var testSuite={
                     if (a==3)
                         ;
                     else 
-                        a=10; //would not run if this else was associated with first if!
+                        a=10; // would not run if this else was associated
+								// with first if!
                 return a==10;
              }
         },{
@@ -87,9 +88,88 @@ var testSuite={
                     if (i>=10) break;
                     ++a;
                 }
-                println(a);
                 return a==10;
             }
+        },{
+            description: 'try finally with return in try block',
+            test: function(){
+        		var a=0;
+                var f=function(){
+                	try{
+                		return 1;
+                	}finally{
+                		a=2;
+                	}
+                };
+                return f()==1 && a==2;
+            }
+        },{
+            description: 'try finally with return in finally block',
+            test: function(){
+        		var a=0;
+                var f=function(){
+                	try{
+                		a=2;
+                		return a;
+                	}finally{
+                		return 3;
+                	}
+                };
+                return f()==3 && a==2;            }
+        },{
+            description: 'try catch with user exception',
+            test: function(){
+        		try{
+        			throw 'test';
+        			return false;
+        		}catch(e){
+        			return e=='test';
+        		}
+        	}
+        },{
+        	description: 'try catch with system exception',
+        	test: function(){
+        		try{
+        			var a=[1,2];
+        			var b=a[10];
+        			return false;
+        		}catch(e){
+        			return String.startsWith(e,'Reference to undefined');
+        		}
+        	}
+        },{
+        	description: 'try finally catch, all steps reached',
+        	test: function(){
+        		var a=var b=var c=var d=0;
+        		try{
+        			a=1;
+        			try{
+        				b=1;
+        				var x=a[10];
+        			}finally{
+        				c=1;
+        			}
+        		}catch(e){
+        			d=1;
+        		}
+        		return a==1 && b==1 && c==1 && d==1;
+        	}
+        },{
+        	description: 'try finally catch, catch after finally',
+        	test: function(){
+        		var a=0;
+        		try{
+        			try{
+        				var x=a[10];
+        			}finally{
+        				a=10;
+        			}
+        		}catch(e){
+        			a=1;
+        		}
+        		return a==1;
+        	}
         }
     ]
 };    
+

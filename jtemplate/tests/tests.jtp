@@ -25,9 +25,12 @@ var runSuite=function(suite){
     println('Running test suite: ', suite.description);
     foreach(test in suite.tests){
         numTests = numTests + 1;
-        print('    Running test: ', test.description,' ');
+        print('    -', test.description,' ');
         var result=test.test();
-        if (result){
+        if (typeof(result)!='boolean'){
+        	println('FAIL');
+        	println('         *test did not return a boolean value, but a ',typeof(result));
+        }else if (result){
             println('PASS');
             numPass=numPass+1;
         }else println('FAIL');

@@ -42,7 +42,8 @@ let extract_stmt_list=function
 %token RETURN IN ONCE WHEN VAR EOF LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token COMMA SEMICOLON COLON DOTDOTDOT DOT EQUALS NOT QUESTION PLUS MINUS TIMES
 %token DIVIDE MODULO AND OR VOID NAN SWITCH CASE DEFAULT PLUSEQUALS MINUSEQUALS
-%token TIMESEQUALS DIVEQUALS MODEQUALS PLUSPLUS MINUSMINUS AT
+%token TIMESEQUALS DIVEQUALS MODEQUALS PLUSPLUS MINUSMINUS AT TRY CATCH THROW
+%token FINALLY
 
 
 %start program
@@ -56,17 +57,21 @@ let extract_stmt_list=function
 %nonassoc MAP
 %nonassoc EMPTYBLOCK
 
-%right EQUALS 
 
-%left NOT
-%left AND OR
+
+%left OR
+%left AND 
 %left COMPOP
-
-%left PLUSEQUALS MINUSEQUALS 
-%left TIMESEQUALS DIVEQUALS MODEQUALS
+%right TIMESEQUALS DIVEQUALS MODEQUALS
+%right PLUSEQUALS MINUSEQUALS 
+%right EQUALS 
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
-
+%right UMINUS
+%right NOT
+%right PREFIX_INCDEC  
+%left POSTFIX_INCDEC
+%left ARR_INDEX
 
 %%
 program:
@@ -104,7 +109,10 @@ statement:
                                               { Switch($3,$6, get_env()) }		
     | FOR LPAREN opt_expression SEMICOLON 
                  opt_expression SEMICOLON 
-                 opt_expression RPAREN statement { For($3,$5,$7,$9,get_env()) }																					
+                 opt_expression RPAREN statement { For($3,$5,$7,$9,get_env()) }		
+    | TRY statement_block CATCH LPAREN ID RPAREN statement_block { TryCatch($2,Name($5),$7, get_env()) }
+    | TRY statement_block FINALLY statement_block { TryFinally($2,$4,get_env()) }                 		
+    | THROW expression SEMICOLON              { Throw($2, get_env()) }																	
 ;
 switch_statement:
     | CASE expression COLON                   { Case(Some $2,get_env()) }
@@ -118,6 +126,8 @@ switch_statements:
 value:                                
     | INT                                     { Value(IntegerValue($1)) }
     | REAL                                    { Value(FloatValue($1)) }
+    | %prec UMINUS MINUS INT                  { Value(IntegerValue(-$2)) }
+    | %prec UMINUS MINUS REAL                 { Value(FloatValue(-.$2)) }
     | STRING                                  { Value(StringValue($1)) }
     | BOOLEAN                                 { Value(BooleanValue($1)) }
     | VOID                                    { Value(Void) }
@@ -176,13 +186,13 @@ expression:
     | variable TIMESEQUALS expression         { Assignment($1,BinaryOp(VariableExpr($1),Times,$3)) }
     | variable DIVEQUALS expression           { Assignment($1,BinaryOp(VariableExpr($1),Divide,$3)) }
     | variable MODEQUALS expression           { Assignment($1,BinaryOp(VariableExpr($1),Modulo,$3)) }
-		| PLUSPLUS variable                       { Assignment($2,BinaryOp(VariableExpr($2),Plus,Value(IntegerValue(1)))) }
-    | MINUSMINUS variable                     { Assignment($2,BinaryOp(VariableExpr($2),Minus,Value(IntegerValue(1)))) }
-		| variable PLUSPLUS                       { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
+		| %prec PREFIX_INCDEC PLUSPLUS variable   { Assignment($2,BinaryOp(VariableExpr($2),Plus,Value(IntegerValue(1)))) }
+    | %prec PREFIX_INCDEC MINUSMINUS variable { Assignment($2,BinaryOp(VariableExpr($2),Minus,Value(IntegerValue(1)))) }
+		| %prec POSTFIX_INCDEC variable PLUSPLUS  { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
 			                                            ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
 																									ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Plus,Value(IntegerValue(1)))),get_env());
                                                   Return(VariableExpr(Name("x")),get_env()); ])])),[]) }																									
-    | variable MINUSMINUS                     { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
+    | %prec POSTFIX_INCDEC variable MINUSMINUS { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
                                                   ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
                                                   ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Minus,Value(IntegerValue(1)))),get_env());
                                                   Return(VariableExpr(Name("x")),get_env()); ])])),[]) } 
@@ -210,7 +220,7 @@ variable:
 ;
 ids:                                  
     | ID                                      { [Name($1)] (*TODO array ref*)}
-    | array_index                             { [$1] }
+    | %prec ARR_INDEX array_index             { [$1] }
     | ID DOT ids                              { Name($1)::$3 }
 ;
 array_index:                          
