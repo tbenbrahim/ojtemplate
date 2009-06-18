@@ -128,6 +128,14 @@ struct
 	and
 	evaluate_expression expr symbol_table =
 		match expr with
+		| Assignment(varname, expression) ->
+				let v = evaluate_expression expression symbol_table in
+				SymbolTable.assign (resolve_variable_name varname symbol_table) v symbol_table;
+				v
+		| Declaration(varname, expression) ->
+				let v = evaluate_expression expression symbol_table in
+				SymbolTable.declare (resolve_variable_name varname symbol_table) v symbol_table;
+				v
 		| BinaryOp(expr1 , operator , expr2) ->
 				let value1 = evaluate_expression expr1 symbol_table in
 				let value2 = evaluate_expression expr2 symbol_table in
@@ -271,43 +279,35 @@ struct
 	and
 	interpret_stmt statement symbol_table =
 		match statement with
-		| Assignment(varname, expression, env) ->
-				symbol_table.env.current_stmt <- env;
-				SymbolTable.assign (resolve_variable_name varname symbol_table)
-					(evaluate_expression expression symbol_table) symbol_table
-		| Declaration(varname, expression, env) ->
-				symbol_table.env.current_stmt <- env;
-				SymbolTable.declare (resolve_variable_name varname symbol_table)
-					(evaluate_expression expression symbol_table) symbol_table
 		| ExpressionStatement(expression, env) ->
 				symbol_table.env.current_stmt <- env;
 				let _ = evaluate_expression expression symbol_table in ()
 		| Noop -> ()
-		| For (preloop, condexpr, endstmt, stmtlist, env) ->
+		| For (preloop, condexpr, postloop, stmt, env) ->
 				symbol_table.env.current_stmt <- env;
 				(try
 					let symbol_table = SymbolTable.push_scope symbol_table in
-					interpret_statement preloop symbol_table;
+					let _ = evaluate_expression preloop symbol_table in
 					let runloop () =
 						match (evaluate_expression condexpr symbol_table) with
-						| BooleanValue(true) -> true
+						| BooleanValue(true) | Void -> true
 						| BooleanValue(false) -> false
 						| value ->
 								raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean")) in
 					let rec loop () = (
 							if runloop () then
 								((try
-										interpret_statements stmtlist symbol_table
+										interpret_statement stmt symbol_table
 									with
 										CFContinue -> ());
-									interpret_statement endstmt (SymbolTable.push_scope symbol_table);
+									let _ = evaluate_expression postloop symbol_table in
 									loop()
 								) else ()
 						) in loop ()
 				with
 					CFBreak -> ()
 				)
-		| ForEach (varname, expr, stmtlist, env) ->
+		| ForEach (varname, expr, stmt, env) ->
 				symbol_table.env.current_stmt <- env;
 				(try
 					let map = evaluate_expression expr symbol_table in
@@ -327,7 +327,7 @@ struct
 							let (continue, rest_list) = runloop lst in
 							if continue then
 								((try
-										interpret_statements stmtlist (SymbolTable.push_scope symbol_table)
+										interpret_statement stmt (SymbolTable.push_scope symbol_table)
 									with
 										CFContinue -> ());
 									loop rest_list
@@ -370,11 +370,11 @@ struct
 					interpret_statements stmts (SymbolTable.push_scope symbol_table)
 				with
 				| CFBreak -> ())
-		| If(condexpr, if_stmts, else_stmts, env) ->
+		| If(condexpr, if_stmt, else_stmt, env) ->
 				symbol_table.env.current_stmt <- env;
 				(try (match (evaluate_expression condexpr symbol_table) with
-						| BooleanValue(true) -> interpret_statements if_stmts (SymbolTable.push_scope symbol_table)
-						| BooleanValue(false) -> interpret_statements else_stmts (SymbolTable.push_scope symbol_table)
+						| BooleanValue(true) -> interpret_statement if_stmt (SymbolTable.push_scope symbol_table)
+						| BooleanValue(false) -> interpret_statement else_stmt (SymbolTable.push_scope symbol_table)
 						| value -> raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
 					)with
 				| CFBreak -> ())
@@ -393,8 +393,8 @@ struct
 							descr.loaded <- true;
 							symbol_table.env.loaded_imports <- filename:: symbol_table.env.loaded_imports;
 							match ast with
-							| StatementBlock(stmts) -> interpret_import stmts symbol_table
-							| _ -> raise (InternalError "expected a StatementBlock from parse")
+							| Program(stmts) -> interpret_import stmts symbol_table
+							| _ -> raise (InternalError "expected a Program from parse")
 						)
 					)
 		| Instructions(_, _, _, env) -> symbol_table.env.current_stmt <- env; ()
@@ -411,7 +411,7 @@ struct
 	and interpret_import stmts symbol_table = (* only import decl and imports *)
 		List.fold_left (fun _ stmt ->
 						match stmt with
-						| Declaration(_, _, _) | Import(_, _) -> interpret_statement stmt symbol_table
+						| ExpressionStatement( Declaration(_, _), _) | Import(_, _) -> interpret_statement stmt symbol_table
 						| _ -> ()) () stmts
 	
 end

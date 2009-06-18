@@ -1,0 +1,48 @@
+
+
+var testSuite={
+    description: 'Interpreter',
+    tests: 
+    [
+        {
+            description: 'Check that if then if then else evaluates correctly',
+            test: function(){
+                var a=1;
+                if (a==1)
+                    if (a==3)
+                        ;
+                    else 
+                        a=10; //would not run if this else was associated with first if!
+                return a==10;
+             }
+        },{
+            description: 'Post increment test',
+            test: function(){
+                 var a=1;
+                 var b=a++;
+                 return b==1 && a==2;
+            }
+        },{
+            description: 'Post decrement test',
+            test: function(){
+                 var a=1;
+                 var b=a--;
+                 return b==1 && a==0;
+            }
+        },{
+            description: 'Pre increment test',
+            test: function(){
+                 var a=1;
+                 var b=++a;
+                 return b==2 && a==2;
+            }
+        },{
+            description: 'Pre decrement test',
+            test: function(){
+                 var a=3;
+                 var b=--a;
+                 return b==2 && a==2;
+            }
+        }
+    ]
+};    

@@ -286,9 +286,9 @@ struct
 							For(Declaration(Name("i"), Value(IntegerValue(0)), ("", 0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
 								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))), ("", 0)),
-								[
+								StatementBlock([
 								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0));
-								], ("", 0))
+								]), ("", 0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(20000) &&
@@ -301,9 +301,9 @@ struct
 							For(Declaration(Name("i"), Value(IntegerValue(0)), ("", 0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(0))),
 								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))), ("", 0)),
-								[
+								StatementBlock([
 								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0));
-								], ("", 0))
+								]), ("", 0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(0)
@@ -315,10 +315,10 @@ struct
 							For(Declaration(Name("i"), Value(IntegerValue(0)), ("", 0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
 								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))), ("", 0)),
-								[
+								StatementBlock([
 								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))), ("", 0));
 								Break(("", 0));
-								], ("", 0))
+								]), ("", 0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(2) &&
@@ -331,11 +331,11 @@ struct
 							For(Declaration(Name("i"), Value(IntegerValue(0)),("",0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
 								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(1))),("",0)),
-								[
+								StatementBlock([
 								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))),("",0));
 								Continue(("",0));
 								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))),("",0));
-								],("",0))
+								]),("",0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(20000) &&
@@ -348,12 +348,12 @@ struct
 							For(Declaration(Name("i"), Value(IntegerValue(0)),("",0)),
 								CompOp(VariableExpr(Name("i")), LessThan, Value(IntegerValue(10000))),
 								Assignment(Name("i"), BinaryOp(VariableExpr(Name("i")), Plus, Value(IntegerValue(2))),("",0)),
-								[
+								StatementBlock([
 								If(CompOp(BinaryOp(VariableExpr(Name("i")), Modulo, Value(IntegerValue(1))),
 										Equal, Value(IntegerValue(1))),
-									[ Continue(("",0))],[ Noop ],("",0));
+									 Continue(("",0)), Noop ,("",0));
 								Assignment(Name("a"), BinaryOp(VariableExpr(Name("a")), Plus, Value(IntegerValue(2))),("",0));
-								],("",0))
+								]),("",0))
 							] in
 						Interpreter.interpret_statements stmts s;
 						SymbolTable.get_value (Name("a")) s = IntegerValue(10000) &&

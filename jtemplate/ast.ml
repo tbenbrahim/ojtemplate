@@ -87,20 +87,20 @@ and expression =
 	(* used internally for expansion of vararg in partially applied          *)
 	(* functions                                                             *)
 	| FunctionCallExpandVarArg of variable_name * expression list * string
+	| Assignment of variable_name * expression 
+	| Declaration of variable_name * expression
 
 and imported_statements ={ mutable loaded: bool }
 
 and statement =
-	| Assignment of variable_name * expression * (string * int)
-	| Declaration of variable_name * expression * (string * int)
-	| ForEach of variable_name * expression * statement list * (string * int)
-	| For of statement * expression * statement * statement list * (string * int)
+	| ForEach of variable_name * expression * statement * (string * int)
+	| For of expression * expression * expression * statement * (string * int)
 	| ExpressionStatement of expression * (string * int)
 	| Break of (string * int)
 	| Continue of (string * int)
 	| Noop
 	| Return of expression * (string * int)
-	| If of expression * statement list * statement list * (string * int)
+	| If of expression * statement * statement * (string * int)
 	| TemplateDef of variable_name * template_spec list * (string * int)
 	| Instructions of variable_name * variable_name list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
