@@ -70,6 +70,13 @@ rule main =	parse
 | "==" {COMPOP(Equal)}
 | "!=" {COMPOP(NotEqual)}
 | "..." {DOTDOTDOT}
+| "+=" {PLUSEQUALS}
+| "-=" {MINUSEQUALS}
+| "*=" {TIMESEQUALS}
+| "/=" {DIVEQUALS}
+| "%=" {MODEQUALS}
+| "++" {PLUSPLUS}
+| "--" {MINUSMINUS}
 | '=' {EQUALS} 
 | '.' {DOT}
 | '{' {LBRACE}
@@ -88,6 +95,7 @@ rule main =	parse
 | '*' {TIMES}
 | '/' {DIVIDE}
 | '%' {MODULO}
+| '@' {AT}
 | _ as c { syntax_exception ("Invalid character "^String.make 1 c) lexbuf} 
 | eof { EOF } 
 and single_quote_string s = parse

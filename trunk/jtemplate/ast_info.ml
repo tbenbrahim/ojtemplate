@@ -33,16 +33,6 @@ struct
 					((prefix level) ^"Statement block\n") stmts
 		| Ast.Import((filename, blk), env) ->
 				(prefix level) ^"Import "^filename^" ("^(string_of_bool false)^")\n"
-		| Ast.Assignment (var, expr, env) ->
-				(prefix level) ^
-				("Assignment\n" ^
-					((var_descriptionl (level + 1) var) ^
-						(expr_descriptionl (level + 1) expr)))
-		| Ast.Declaration (var, expr, env) ->
-				(prefix level) ^
-				("Declaration\n" ^
-					((var_descriptionl (level + 1) var) ^
-						(expr_descriptionl (level + 1) expr)))
 		| Ast.Instructions (var, varlist, specs, env) ->
 				(prefix level) ^
 				("Instructions\n" ^
@@ -119,8 +109,8 @@ struct
 				(prefix level) ^
 				("If/Else\n" ^
 					((expr_descriptionl (level + 1) expr) ^
-						((statement_list (level + 1) iflist) ^
-							(statement_list (level + 1) elselist))))
+						((statement_descriptionl (level + 1) iflist) ^
+							(statement_descriptionl (level + 1) elselist))))
 		| Ast.Return( expr, env) ->
 				(prefix level) ^
 				("Return\n" ^ (expr_descriptionl (level + 1) expr))
@@ -130,16 +120,16 @@ struct
 				("ForEach\n" ^
 					((var_descriptionl (level + 1) var) ^
 						((expr_descriptionl (level + 1) expr) ^
-							(statement_list (level + 1) stmt))))
+							(statement_descriptionl (level + 1) stmt))))
 		| Ast.Continue(env) -> (prefix level) ^ "Continue\n"
 		| Ast.Break(env) -> (prefix level) ^ "Break\n"
-		| Ast.For (stmt1, expr, stmt3, stmt_list, env) ->
+		| Ast.For (expr1, expr2, expr3, stmt_list, env) ->
 				(prefix level) ^
 				("For\n" ^
-					((statement_descriptionl (level + 1) stmt1) ^
-						((expr_descriptionl (level + 1) expr) ^
-							((statement_descriptionl (level + 1) stmt3) ^
-								(statement_list (level + 1) stmt_list)))))
+					((expr_descriptionl (level + 1) expr1) ^
+						((expr_descriptionl (level + 1) expr2) ^
+							((expr_descriptionl (level + 1) expr3) ^
+								(statement_descriptionl (level + 1) stmt_list)))))
 		| Ast.Noop -> (prefix level) ^ "Noop\n"
 	
 	and var_descriptionl level var =
@@ -159,6 +149,16 @@ struct
 				(List.fold_left (fun acc el -> acc ^ (var_descriptionl (level + 1) el)) "" lst)
 	and expr_descriptionl level expr =
 		match expr with
+		| Ast.Assignment (var, expr) ->
+				(prefix level) ^
+				("Assignment\n" ^
+					((var_descriptionl (level + 1) var) ^
+						(expr_descriptionl (level + 1) expr)))
+		| Ast.Declaration (var, expr) ->
+				(prefix level) ^
+				("Declaration\n" ^
+					((var_descriptionl (level + 1) var) ^
+						(expr_descriptionl (level + 1) expr)))
 		| Ast.BinaryOp (op1, op, op2) ->
 				(prefix level) ^
 				("BinOp " ^
@@ -194,7 +194,7 @@ struct
 		| Ast.FunctionValue (arglist, stmts) ->
 				(prefix level) ^
 				"Function " ^(SymbolTable.string_of_args arglist)^"\n"
-						^ (statement_list (level + 1) stmts)
+				^ (statement_list (level + 1) stmts)
 		| Ast.LibraryFunction(_, _, _) -> "" (* never in ast *)
 		| Ast.BooleanValue v ->
 				(prefix level) ^ ("Boolean " ^ ((string_of_bool v) ^ "\n"))

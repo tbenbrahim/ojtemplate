@@ -1,0 +1,45 @@
+
+var main=function(){
+    var results=[];
+
+    import 'suites/test_interpreter.jtp';
+    Array.push(results,runSuite(testSuite));
+
+    //summary
+    println('=======');
+    println('SUMMARY:');
+    println('=======');
+    var total=var pass=0;
+    foreach(result in results){
+        total=total+result.total;
+        pass=pass+result.pass;
+        println(result.name,': ',result.pass,'/',result.total,' ',status_descr(result.pass,result.total));
+    }
+    println();
+    println('ALL TESTS: ',pass,'/',total,' ',status_descr(pass,total));
+};
+
+var runSuite=function(suite){
+    var numPass=0;
+    var numTests=0;
+    println('Running test suite: ', suite.description);
+    foreach(test in suite.tests){
+        numTests = numTests + 1;
+        print('    Running test: ', test.description,' ');
+        var result=test.test();
+        if (result){
+            println('PASS');
+            numPass=numPass+1;
+        }else println('FAIL');
+    }
+    println(numPass,'/',numTests,' passed ',suite.description,' ',status_descr(numPass,numTests));
+    return {name: suite.description,pass: numPass,total: numTests};
+};
+
+var status_descr=function(x,y){
+    if(x==y) return 'PASS';
+    else return 'FAIL';
+};
+
+main();
+
