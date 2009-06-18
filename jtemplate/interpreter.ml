@@ -267,13 +267,13 @@ struct
 				prerr_string ("Called from line "^(string_of_int line)^" in file "^ (Filename.basename file)^":\n");
 				stack_trace tl
 	and
-	interpret_statement statement symbol_table =
+	interpret_program statement symbol_table =
 		try
-			interpret_stmt statement symbol_table
+			interpret_statement statement symbol_table
 		with
-		| CFReturn v -> raise (CFReturn(v))
+(**		| CFReturn v -> raise (CFReturn(v))
 		| CFContinue -> raise CFContinue
-		| CFBreak -> raise CFBreak
+		| CFBreak -> raise CFBreak*)
 		| FatalExit e -> raise (FatalExit e)
 		| e ->
 				flush_all ();
@@ -284,7 +284,7 @@ struct
 				flush_all();
 				raise (FatalExit e)
 	and
-	interpret_stmt statement symbol_table =
+	interpret_statement statement symbol_table =
 		match statement with
 		| ExpressionStatement(expression, env) ->
 				symbol_table.env.current_stmt <- env;
@@ -306,7 +306,7 @@ struct
 								((try
 										interpret_statement stmt symbol_table
 									with
-										CFContinue -> ());
+										| CFContinue -> ());
 									let _ = evaluate_expression postloop symbol_table in
 									loop()
 								) else ()
@@ -379,12 +379,11 @@ struct
 				| CFBreak -> ())
 		| If(condexpr, if_stmt, else_stmt, env) ->
 				symbol_table.env.current_stmt <- env;
-				(try (match (evaluate_expression condexpr symbol_table) with
+				(match (evaluate_expression condexpr symbol_table) with
 						| BooleanValue(true) -> interpret_statement if_stmt (SymbolTable.push_scope symbol_table)
 						| BooleanValue(false) -> interpret_statement else_stmt (SymbolTable.push_scope symbol_table)
 						| value -> raise (EInvalidCast(SymbolTable.string_of_symbol_value value,"boolean"))
-					)with
-				| CFBreak -> ())
+					)
 		| StatementBlock(statements) -> interpret_statements statements (SymbolTable.push_scope symbol_table)
 		| Program(statements) -> interpret_statements statements symbol_table
 		| Import((filename, descr), env) ->
@@ -410,7 +409,7 @@ struct
 				raise (CFReturn(evaluate_expression expression symbol_table))
 		| Continue(env) -> symbol_table.env.current_stmt <- env;
 				raise CFContinue
-		| Break(env) -> symbol_table.env.current_stmt <- env;
+		| Break(env) -> symbol_table.env.current_stmt <- env; 
 				raise CFBreak
 	and
 	interpret_statements statement_list symbol_table =

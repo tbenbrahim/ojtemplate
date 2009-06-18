@@ -43,7 +43,7 @@ let _ =
 			let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
 			in
 			try
-			 Interpreter.interpret_statement ast symbol_table
+			 Interpreter.interpret_program ast symbol_table
 			with
 				| FatalExit _ -> exit(-1)
 		)

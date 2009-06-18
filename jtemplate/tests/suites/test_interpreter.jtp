@@ -49,10 +49,46 @@ var testSuite={
                         a==11 && b==9 && c==20 && d==2 && e==1;
             }
         },{
+            description: 'ternary ?: tests',
+            test: function(){
+                 var a=10;
+                 return (a==10?true:false) && (a!=10?false:true);
+            }
+        },{
             description: 'arithmetic operator precendence',
             test: function(){
                 return 2*5+3==3+2*5 && 10-2-2==6 && 20/2/2==5
                 && 10/2+2==2+10/2;
+            }
+        },{
+            description: 'for loop test',
+            test: function(){
+                var a=0;
+                for (var i=0;i<100;++i){
+                    ++a;
+                }
+                return a==100;
+            }
+        },{
+            description: 'for loop test with continue',
+            test: function(){
+                var a=0;
+                for (var i=0;i<100;++i){
+                    if (i%2==0) continue;
+                    ++a;
+                }
+                return a==50;
+            }
+        },{
+            description: 'for loop test with break',
+            test: function(){
+                var a=0;
+                for (var i=0;i<20;++i){
+                    if (i>=10) break;
+                    ++a;
+                }
+                println(a);
+                return a==10;
             }
         }
     ]
