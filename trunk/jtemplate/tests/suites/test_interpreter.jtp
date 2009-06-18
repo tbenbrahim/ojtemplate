@@ -169,6 +169,11 @@ var testSuite={
         		}
         		return a==1;
         	}
+        },{
+        	description: 'System.command',
+        	test: function(){
+        		return System.command('whoami')==0;
+        	}
         }
     ]
 };    
