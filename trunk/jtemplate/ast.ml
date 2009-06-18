@@ -85,11 +85,11 @@ and expression =
 	| VariableExpr of variable_name
 	| Value of variable_value
 	| UnboundVar of variable_name
+	| Assignment of variable_name * expression 
+	| Declaration of variable_name * expression
 	(* used internally for expansion of vararg in partially applied          *)
 	(* functions                                                             *)
 	| FunctionCallExpandVarArg of variable_name * expression list * string
-	| Assignment of variable_name * expression 
-	| Declaration of variable_name * expression
 
 and imported_statements ={ mutable loaded: bool }
 
@@ -109,7 +109,10 @@ and statement =
 	| Import of (string * imported_statements) * (string * int)
 	| Switch of expression * statement list * (string * int)
 	| Case of expression option * (string * int)
-
+  | TryCatch of statement * variable_name * statement * (string * int)
+  | TryFinally of  statement * statement * (string * int)
+  | Throw of expression * (string * int)
+ 
 let is_vararg varname =
 	varname.[0]='['
 

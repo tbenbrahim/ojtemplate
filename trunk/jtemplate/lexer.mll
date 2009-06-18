@@ -42,6 +42,10 @@ let map_id name=
 	| "switch" -> SWITCH
 	| "case" -> CASE
 	| "default" -> DEFAULT
+  | "try" -> TRY
+  | "catch" -> CATCH
+  | "finally" -> FINALLY
+  | "throw" -> THROW
 	|	_ ->  ID(name)
 		
 }

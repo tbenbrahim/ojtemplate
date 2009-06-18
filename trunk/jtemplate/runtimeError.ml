@@ -78,6 +78,9 @@ exception UnexpectedUnboundVar of string (*name*)
 
 exception FatalExit of exn
 
+exception UserException of variable_value
+
+
 let string_of_error ex =
 	match ex with
 	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
@@ -99,5 +102,6 @@ let string_of_error ex =
 	| DefaultCaseShouldBeLast -> "Unexpected case statement found after a default statement"
 	| UnexpectedUnboundVar name -> "Unexpected unbound variable "^name^
 			". Unbound variables can only be used in function calls."
+  | UserException(value) -> "Unhandled user exception" 
 	| e -> "uncaught exception "^(Printexc.to_string e)
 
