@@ -5,7 +5,10 @@ var main=function(){
     import 'suites/test_interpreter.jtp';
     Array.push(results,runSuite(testSuite));
 
-    //summary
+    import 'suites/test_lib_builtin.jtp';
+    Array.push(results,runSuite(testSuite));
+
+    println();
     println('=======');
     println('SUMMARY:');
     println('=======');
@@ -22,6 +25,7 @@ var main=function(){
 var runSuite=function(suite){
     var numPass=0;
     var numTests=0;
+    println();
     println('Running test suite: ', suite.description);
     foreach(test in suite.tests){
         numTests = numTests + 1;

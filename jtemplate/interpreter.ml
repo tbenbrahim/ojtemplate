@@ -106,10 +106,13 @@ struct
   and
   restricted_compare v1 op v2 =
     BooleanValue(
-      match op with
-      | Equal -> v1 = v2
-      | NotEqual -> v1 <> v2
-      | _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
+      match v1 with
+      | MapValue(h, ArraySubtype) -> (SymbolTable.list_of_array v1)=(SymbolTable.list_of_array v2)
+      | _ ->
+          match op with
+          | Equal -> v1 = v2
+          | NotEqual -> v1 <> v2
+          | _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
     )
   and
   resolve_variable_name varname symbol_table =
