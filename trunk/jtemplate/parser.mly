@@ -43,7 +43,7 @@ let extract_stmt_list=function
 %token COMMA SEMICOLON COLON DOTDOTDOT DOT EQUALS NOT QUESTION PLUS MINUS TIMES
 %token DIVIDE MODULO AND OR VOID NAN SWITCH CASE DEFAULT PLUSEQUALS MINUSEQUALS
 %token TIMESEQUALS DIVEQUALS MODEQUALS PLUSPLUS MINUSMINUS AT TRY CATCH THROW
-%token FINALLY
+%token FINALLY PROTOTYPE
 
 
 %start program
@@ -112,7 +112,7 @@ statement:
                  opt_expression RPAREN statement { For($3,$5,$7,$9,get_env()) }		
     | TRY statement_block CATCH LPAREN ID RPAREN statement_block { TryCatch($2,Name($5),$7, get_env()) }
     | TRY statement_block FINALLY statement_block { TryFinally($2,$4,get_env()) }                 		
-    | THROW expression SEMICOLON              { Throw($2, get_env()) }																	
+    | THROW expression SEMICOLON              { Throw($2, get_env()) }
 ;
 switch_statement:
     | CASE expression COLON                   { Case(Some $2,get_env()) }
