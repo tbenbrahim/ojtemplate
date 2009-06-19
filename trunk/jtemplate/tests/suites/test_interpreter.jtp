@@ -3,18 +3,6 @@ var testSuite={
     tests: 
     [
         {
-            description: 'Check that if then if then else evaluates correctly',
-            test: function(){
-                var a=1;
-                if (a==1)
-                    if (a==3)
-                        ;
-                    else 
-                        a=10; // would not run if this else was associated
-								// with first if!
-                return a==10;
-             }
-        },{
             description: 'Post increment test',
             test: function(){
                  var a=1;
@@ -46,20 +34,14 @@ var testSuite={
             description: 'op= tests',
             test: function(){
                  var a=var b=var c=var d=var e=10;
-                 return a+=1==11 && b-=1==9 && c*=2==20 && d/=5==2 && e%=3==1 &&
+                 return (a+=1)==11 && (b-=1)==9 && (c*=2)==20 && (d/=5)==2 && (e%=3)==1 &&
                         a==11 && b==9 && c==20 && d==2 && e==1;
             }
         },{
             description: 'ternary ?: tests',
             test: function(){
                  var a=10;
-                 return (a==10?true:false) && (a!=10?false:true);
-            }
-        },{
-            description: 'arithmetic operator precendence',
-            test: function(){
-                return 2*5+3==3+2*5 && 10-2-2==6 && 20/2/2==5
-                && 10/2+2==2+10/2;
+                 return (a==10?true:false) && a!=10?false:true;
             }
         },{
             description: 'for loop test',
@@ -87,6 +69,38 @@ var testSuite={
                 for (var i=0;i<20;++i){
                     if (i>=10) break;
                     ++a;
+                }
+                return a==10;
+            }
+        },{
+            description: 'while loop test',
+            test: function(){
+                var a=var i=0;
+                while (i<100){
+                    ++a;
+                    ++i;
+                }
+                return a==100;
+            }
+        },{
+            description: 'while loop test with continue',
+            test: function(){
+        		var a=var i=0;
+                while (i<100){
+                	++i;
+                    if (i%2==0) continue;
+                    ++a;
+                }
+                return a==50;
+            }
+        },{
+            description: 'while loop test with break',
+            test: function(){
+                var a=var i=0;
+                while (i<100){
+                	++i;
+                    ++a;
+                    if (i>=10) break;
                 }
                 return a==10;
             }

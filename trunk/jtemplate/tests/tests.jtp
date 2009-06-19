@@ -2,6 +2,12 @@
 var main=function(){
     var results=[];
 
+    import 'suites/test_scope.jtp';
+    Array.push(results,runSuite(testSuite));
+
+    import 'suites/test_precedence.jtp';
+    Array.push(results,runSuite(testSuite));
+
     import 'suites/test_interpreter.jtp';
     Array.push(results,runSuite(testSuite));
 
