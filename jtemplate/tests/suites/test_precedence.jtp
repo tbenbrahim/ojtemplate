@@ -1,0 +1,31 @@
+var testSuite={
+    description: 'Precedence tests',
+    tests: 
+    [
+        {
+            description: 'Check that if then if then else evaluates correctly',
+            test: function(){
+                var a=1;
+                if (a==1)
+                    if (a==3)
+                        ;
+                    else 
+                        a=10; // would not run if this else was associated
+                                // with first if!
+                return a==10;
+             }
+        },{
+            description: 'Check that chained expr?expr:expr?expr:expr evaluates correctly',
+            test: function(){
+                var b=2;
+                var a=b==3?1:b==2?10:1;
+                return a==10;
+            }
+        },{
+        	description: 'Operator precedence tests',
+        	test: function(){
+        		return 10+2*30==70 && 10-5-5==0 && 2*30+10==70;
+            }
+        }
+    ]
+};

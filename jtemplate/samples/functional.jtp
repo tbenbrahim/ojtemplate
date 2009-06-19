@@ -106,5 +106,4 @@ var double_array=Array.map(function(x){return 2*x;},@arr);
     print_array(double_array([1,2,3,4]));
     print_array2(double_array([1,2,3,4]));
     
-    Debug.dumpSymbolTable(false);
 }

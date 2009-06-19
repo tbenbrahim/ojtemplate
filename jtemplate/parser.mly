@@ -57,18 +57,18 @@ let extract_stmt_list=function
 %nonassoc MAP
 %nonassoc EMPTYBLOCK
 
-
-
+%right PLUSEQUALS MINUSEQUALS 
+%right TIMESEQUALS DIVEQUALS MODEQUALS
+%right EQUALS
+%right QUESTION
+%right COLON
 %left OR
 %left AND 
 %left COMPOP
-%right TIMESEQUALS DIVEQUALS MODEQUALS
-%right PLUSEQUALS MINUSEQUALS 
-%right EQUALS 
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
-%right UMINUS
 %right NOT
+%right UMINUS
 %right PREFIX_INCDEC  
 %left POSTFIX_INCDEC
 %left ARR_INDEX
@@ -196,9 +196,9 @@ expression:
                                                   ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
                                                   ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Minus,Value(IntegerValue(1)))),get_env());
                                                   Return(VariableExpr(Name("x")),get_env()); ])])),[]) } 
-		| LPAREN expression QUESTION expression COLON expression RPAREN 
+		|  expression QUESTION expression COLON expression 
 		                                          {DirectFunctionCall(Value(FunctionValue([],[
-																								  If($2,Return($4,get_env()),Return($6,get_env()),get_env()) ])),[]) }                                                                                                   
+																								  If($1,Return($3,get_env()),Return($5,get_env()),get_env()) ])),[]) }                                                                                                   
 ;                           
 function_call:                        
     | variable LPAREN expr_list RPAREN        { FunctionCall($1,$3) }
