@@ -2,15 +2,16 @@ import 'imports/date.jtp';
 import 'imports/map.jtp';
 import 'imports/string.jtp';
 
-Map.print(Date.now());
+Date.now().print();
 println();
 
-Map.fold( function(k, v, acc) {
-	println(String.padLeft(k, 11, ' '), ': ', String.padLeft(v, 4, ' '));
-}, Date.now(),Void);
+Date.now().fold( function(k, v, acc) {
+	if (k!='prototype')
+		println(k.padLeft( 11, ' '), ': ', (v+'').padLeft( 4, ' '));
+}, Void);
 println();
 
-println('Today is ', Date.toString(Date.now()));
+println('Today is ', Date.now().toString());
 
 // test of varargs, foreach
 
@@ -31,42 +32,8 @@ function(f, elements...){
 }(function(x){print(x,' ');},'','Hello','world',1,2,3);
 
 var m1={a:1,b:'test',c:[1,2,3],d:{a:1,b:2}};
-var m2=Map.clone(m1);
+var m2=m1.clone();
 println(m1==m2);
-Map.print(m1);
-Map.print(m2);
-
-// switch test
-
-for (var i=0;i<10;i=i+1){
-	switch(i){
-	case 1: 
-		println('one');
-	case 2:
-		println('two');
-		break;
-	default:
-		println(i);
-	}
-}
-
-//partial application test
-
-var add=function(a,b){return a+b;};
-var inc=add(1,x?);
-var one=1;
-var inc2=add(one,x?);
-println(inc(10),' ',inc2(4));
-
-// that was easy, how about a function with varargs
-
-var println2=println('>>> ',value...?);
-
-println2('This is a test ',1,2,3);
-
-var bracket_print=println(prefix1?,prefix2?,value?...);
-
-bracket_print('JS',' > ',1,2,3,4,5);
-
-
+m1.print();println();
+m2.print();
 

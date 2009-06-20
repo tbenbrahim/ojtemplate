@@ -102,10 +102,10 @@ struct
 	let rec print_symbol_map map prefix incl_lib =
 		let _ = (Hashtbl.iter (fun key var ->
 								(match var with
-									| LibraryFunction(_, _, _) -> if incl_lib then print_string (prefix^key^"="^(string_of_symbol_value var)^"\n") else ()
+									| LibraryFunction(_, _, _) -> (if incl_lib then print_string (prefix^key^"="^(string_of_symbol_value var)^"\n") else ())
 									| _ ->	print_string (prefix^key^"="^(string_of_symbol_value var)^"\n"));
 								(match var with
-									| MapValue(map, _) -> let _ = print_symbol_map map (prefix^key^".") in ()
+									| MapValue(map, _) -> let _ = print_symbol_map map (prefix^key^".") incl_lib in ()
 									| _ -> ()
 								)) map) in ()
 	

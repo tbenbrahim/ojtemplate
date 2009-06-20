@@ -1,36 +1,33 @@
-/***
-Extensions to the Map map
-***/
+/*******************************************************************************
+ * Extensions to the Map type
+ ******************************************************************************/
 
 import 'array.jtp';
 
-var Map.print=function(m){
-    Map.fold(function(k,v,n){
-            println(k,': ',v);
-            },m,Void);
+var Map.prototype.print=function(){
+    this.fold(function(k,v,n){println(k,': ',v);},Void);
 };
 
-var Map.fold=function(f,m,acc){
-    var keys=Map.keys(m);
-    for (var i=0;i<Array.length(keys);i=i+1){
-        acc=f(keys[i], m[keys[i]],acc);
-    }
+var Map.prototype.fold=function(f,acc){
+    var keys=this.keys();
+    for (var i=0;i<keys.length();++i)
+        acc=f(keys[i], this[keys[i]],acc);
     return acc;
 };
 
-var Map.clone=function(m){
-    return Map.fold(function(key,v,map){
-        switch(typeof(v)){
+var Map.prototype.clone=function(){
+    return this.fold(function(key,v,map){
+    	switch(typeof(v)){
         case 'map': 
-            var map[key]=Map.clone(v);
+            var map[key]=v.clone();
             break;
         case 'array': 
-            var map[key]=Array.clone(v);
+            var map[key]=v.clone();
             break;
         default:
             var map[key]=v;
         }
         return map;
-    },m,{});
+    },{});
 };
 

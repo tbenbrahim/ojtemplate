@@ -4,18 +4,21 @@ Extensions to the Date map
 
 import 'string.jtp';
 
+
 var Date.days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-var Date.toString=function(dt){
+var Date.prototype={};
+
+var Date.prototype.toString=function(){
     var offset='';
-    if (dt.gmtOffset>0){
-        offset='+'+dt.gmtOffset;
+    if (this.gmtOffset>0){
+        offset='+'+this.gmtOffset;
     }else{
-        offset=dt.gmtOffset+'';
+        offset=this.gmtOffset+'';
     }
-    return Date.days[dt.dayOfWeek]+' '+dt.month+'/'+dt.dayOfMonth+'/'+
-        dt.year+' '+dt.hour+':'+String.padLeft(dt.minute,2,'0')+':'+
-        String.padLeft(dt.second,2,'0')+' (GMT'+ offset+')';
+    return Date.days[this.dayOfWeek]+' '+this.month+'/'+this.dayOfMonth+'/'+
+        this.year+' '+this.hour+':'+(this.minute+'').padLeft(2,'0')+':'+
+        (this.second+'').padLeft(2,'0')+' (GMT'+ offset+')';
 };
 
 

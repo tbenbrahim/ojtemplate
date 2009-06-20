@@ -5,9 +5,9 @@ Extensions to the String map
 //try to create a circular reference!
 import 'date.jtp';
 
-var String.padLeft=function(inp,len,pad){
-    var result=inp+'';
-    while (String.length(result)<len){
+var String.prototype.padLeft=function(len,pad){
+    var result=this+'';
+    while (result.length()<len){
         result=pad+result;
     }
     return result;
