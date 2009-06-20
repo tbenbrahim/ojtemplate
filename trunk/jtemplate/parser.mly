@@ -1,5 +1,10 @@
 %{
 	
+(** 
+    expression parsing adapted from ECMA-262 
+    http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf 
+*)
+
 open Ast
 open Symbol_table
 
@@ -86,15 +91,20 @@ opt_statements:
 		| /*nothing*/ { [] }
 ;
 statement_block:                      
-    | LBRACE opt_statements RBRACE  { StatementBlock($2) } 
+    | LBRACE statements RBRACE  { StatementBlock($2) }
+		| empty_statement_block     { $1 } 
 ;
+empty_statement_block:
+    | LBRACE RBRACE  { StatementBlock([]) }
+; 
 else_clause:                         
     | ELSE statement { $2 }
     | %prec LOWER_THAN_ELSE { Noop }
 ;
 statement:                                    
     | IF LPAREN expression RPAREN statement else_clause { If($3,$5,$6,get_env()) }
-		| expression_statement SEMICOLON   { ExpressionStatement($1, get_env()) }
+		| expression SEMICOLON { ExpressionStatement($1, get_env()) }
+    | SEMICOLON  { Noop }
     | statement_block { $1 }
     | FOREACH LPAREN ID IN expression RPAREN statement { ForEach(Name($3),$5,$7,get_env()) }
 		| WHILE LPAREN expression RPAREN statement { For(Value(Void),$3,Value(Void),$5,get_env()) }
@@ -123,7 +133,14 @@ switch_statements:
     | switch_statement                        { [$1] }
 		| switch_statement switch_statements      { $1::$2 }
 ;
-value:                                
+opt_expression:
+    | expression                              { $1 }
+		| empty_expression                        { Value(Void) }
+;
+empty_expression:
+    | /*nothing */                            { Value(Void) }
+;
+atom_expr:
     | INT                                     { Value(IntegerValue($1)) }
     | REAL                                    { Value(FloatValue($1)) }
     | %prec UMINUS MINUS INT                  { Value(IntegerValue(-$2)) }
@@ -132,116 +149,93 @@ value:
     | BOOLEAN                                 { Value(BooleanValue($1)) }
     | VOID                                    { Value(Void) }
     | NAN                                     { Value(NaN) }
-    | function_def                            { $1 }
     | LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
     | LBRACE prop_list RBRACE                 { MapExpr($2) }
-    | variable                                { VariableExpr($1) }
+		| ID                                      { Id($1) }
+		| LPAREN expression RPAREN                { $2 }
 ;
-opt_expression:
-    | expression                              { $1 }
-		| empty_expression                        { Value(Void) }
+member_expr:
+    | atom_expr                               {$1}
+    | FUNCTION LPAREN arglist RPAREN statement_block 
+		                                          { Value(FunctionValue($3,extract_stmt_list($5))) }
+    | member_expr  LBRACKET expression RBRACKET           
+		                                          { MemberExpr($1,IndexExpr($3)) }
+		| member_expr DOT ID                      { MemberExpr($1,Id($3)) }
 ;
-empty_expression:
-    | /*nothing */                            { Value(Void) }
+call_expr:
+    | member_expr LPAREN fexpr_list RPAREN    { FunctionCall($1,$3) }
+		| call_expr LPAREN fexpr_list RPAREN      { FunctionCall($1,$3) }
+		| call_expr LBRACKET expression RBRACKET  { MemberExpr($1,IndexExpr($3)) }
+    | call_expr DOT ID                        { MemberExpr($1,Id($3)) }
+; 
+lhs_expr:
+    | member_expr                             {$1}
+		| call_expr                               {$1}
 ;
-expression_statement: //expressions that can be statements when followed by semicolon
-    | function_call                           { $1 }
-		| empty_expression                        { Value(Void) }
-    | variable EQUALS expression              { Assignment($1,$3) } 
-    | VAR variable EQUALS expression          { Declaration($2,$4) }
-    | variable PLUSEQUALS expression          { Assignment($1,BinaryOp(VariableExpr($1),Plus,$3)) }
-    | variable MINUSEQUALS expression         { Assignment($1,BinaryOp(VariableExpr($1),Minus,$3)) }
-    | variable TIMESEQUALS expression         { Assignment($1,BinaryOp(VariableExpr($1),Times,$3)) }
-    | variable DIVEQUALS expression           { Assignment($1,BinaryOp(VariableExpr($1),Divide,$3)) }
-    | variable MODEQUALS expression           { Assignment($1,BinaryOp(VariableExpr($1),Modulo,$3)) }
-    | PLUSPLUS variable                       { Assignment($2,BinaryOp(VariableExpr($2),Plus,Value(IntegerValue(1)))) }
-    | MINUSMINUS variable                     { Assignment($2,BinaryOp(VariableExpr($2),Minus,Value(IntegerValue(1)))) }
-    | variable PLUSPLUS                       { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
-                                                  ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
-                                                  ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Plus,Value(IntegerValue(1)))),get_env());
-                                                  Return(VariableExpr(Name("x")),get_env()); ])])),[]) }                                                                                                    
-    | variable MINUSMINUS                     { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
-                                                  ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
-                                                  ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Minus,Value(IntegerValue(1)))),get_env());
-                                                  Return(VariableExpr(Name("x")),get_env()); ])])),[]) }                                                                                                    
+unary_expr:
+    | lhs_expr                                { $1 }
+    | %prec PREFIX_INCDEC PLUSPLUS lhs_expr   { Assignment($2,BinaryOp($2,Plus,Value(IntegerValue(1)))) }
+    | %prec PREFIX_INCDEC MINUSMINUS lhs_expr { Assignment($2,BinaryOp($2,Minus,Value(IntegerValue(1)))) }
+    | %prec POSTFIX_INCDEC lhs_expr PLUSPLUS  { PostFixSum($1,1) }
+    | %prec POSTFIX_INCDEC lhs_expr MINUSMINUS { PostFixSum($1,-1) }
+;
+op_expr:
+    | unary_expr                              {$1}
+    | op_expr PLUS op_expr              { BinaryOp($1,Plus,$3) }
+    | op_expr MINUS op_expr             { BinaryOp($1,Minus,$3) }
+    | op_expr TIMES op_expr             { BinaryOp($1,Times,$3) }
+    | op_expr DIVIDE op_expr            { BinaryOp($1,Divide,$3) }
+    | op_expr MODULO op_expr            { BinaryOp($1,Modulo,$3) }
+    | op_expr COMPOP op_expr            { CompOp($1,$2,$3) }
+    | NOT call_expr                     { Not($2) }
+    | op_expr  AND op_expr              { BinaryOp($1,And,$3) }
+    | op_expr OR op_expr                { BinaryOp($1,Or,$3) }
+;
+cond_expr:
+    | op_expr {$1}
+		| expression QUESTION expression COLON expression
+                                              {FunctionCall(Value(FunctionValue([],[
+                                              If($1,Return($3,get_env()),Return($5,get_env()),get_env()) ])),[]) }                                                                                                   
 ;
 expression:
-    | function_call                           { $1 }           
-    | value                                   { $1 }
-    | unbound_variable                        { $1 }
-    | LPAREN expression RPAREN                { $2 }
-    | expression PLUS expression              { BinaryOp($1,Plus,$3) }
-    | expression MINUS expression             { BinaryOp($1,Minus,$3) }
-    | expression TIMES expression             { BinaryOp($1,Times,$3) }
-    | expression DIVIDE expression            { BinaryOp($1,Divide,$3) }
-    | expression MODULO expression            { BinaryOp($1,Modulo,$3) }
-		| NOT expression                          { Not($2) }
-    | expression AND expression               { BinaryOp($1,And,$3) }
-    | expression OR expression                { BinaryOp($1,Or,$3) }
-    | expression COMPOP expression            { CompOp($1,$2,$3) }
-		| variable EQUALS expression              { Assignment($1,$3) } 
-    | VAR variable EQUALS expression          { Declaration($2,$4) }
-    | variable PLUSEQUALS expression          { Assignment($1,BinaryOp(VariableExpr($1),Plus,$3)) }
-    | variable MINUSEQUALS expression         { Assignment($1,BinaryOp(VariableExpr($1),Minus,$3)) }
-    | variable TIMESEQUALS expression         { Assignment($1,BinaryOp(VariableExpr($1),Times,$3)) }
-    | variable DIVEQUALS expression           { Assignment($1,BinaryOp(VariableExpr($1),Divide,$3)) }
-    | variable MODEQUALS expression           { Assignment($1,BinaryOp(VariableExpr($1),Modulo,$3)) }
-		| %prec PREFIX_INCDEC PLUSPLUS variable   { Assignment($2,BinaryOp(VariableExpr($2),Plus,Value(IntegerValue(1)))) }
-    | %prec PREFIX_INCDEC MINUSMINUS variable { Assignment($2,BinaryOp(VariableExpr($2),Minus,Value(IntegerValue(1)))) }
-		| %prec POSTFIX_INCDEC variable PLUSPLUS  { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
-			                                            ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
-																									ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Plus,Value(IntegerValue(1)))),get_env());
-                                                  Return(VariableExpr(Name("x")),get_env()); ])])),[]) }																									
-    | %prec POSTFIX_INCDEC variable MINUSMINUS { DirectFunctionCall(Value(FunctionValue([],[StatementBlock([
-                                                  ExpressionStatement(Declaration(Name("x"),VariableExpr($1)),get_env());
-                                                  ExpressionStatement(Assignment($1,BinaryOp(VariableExpr($1),Minus,Value(IntegerValue(1)))),get_env());
-                                                  Return(VariableExpr(Name("x")),get_env()); ])])),[]) } 
-		|  expression QUESTION expression COLON expression 
-		                                          {DirectFunctionCall(Value(FunctionValue([],[
-																								  If($1,Return($3,get_env()),Return($5,get_env()),get_env()) ])),[]) }                                                                                                   
-;                           
-function_call:                        
-    | variable LPAREN expr_list RPAREN        { FunctionCall($1,$3) }
-    | function_def LPAREN expr_list RPAREN    { DirectFunctionCall($1,$3) }
+    | cond_expr                               {$1}
+    | lhs_expr EQUALS expression              { Assignment($1,$3) } 
+		| lhs_expr EQUALS empty_statement_block   { Assignment($1,MapExpr([])) }
+    | VAR lhs_expr EQUALS expression          { Declaration($2,$4) }
+    | VAR lhs_expr EQUALS empty_statement_block { Declaration($2,MapExpr([])) }
+		| lhs_expr TIMESEQUALS expression         { Assignment($1,(BinaryOp($1,Times,$3))) }
+    | lhs_expr MODEQUALS expression           { Assignment($1,(BinaryOp($1,Modulo,$3))) } 
+    | lhs_expr DIVEQUALS expression           { Assignment($1,(BinaryOp($1,Divide,$3))) } 
+    | lhs_expr PLUSEQUALS expression          { Assignment($1,(BinaryOp($1,Plus,$3))) } 
+    | lhs_expr MINUSEQUALS expression         { Assignment($1,(BinaryOp($1,Minus,$3))) } 
 ;
-function_def:
-    | FUNCTION LPAREN arglist RPAREN statement_block { Value(FunctionValue($3,extract_stmt_list($5))) }
-;                                                                                                                                                           
 arglist:                              
     | ID                                      { [Name($1)] }
     | ID DOTDOTDOT                            { [Name("["^$1)] }
     | ID COMMA arglist                        { Name($1)::$3 }
-    | /* nothing */                            { [] }
-;
-variable:                             
-    | ids                                     {match $1 with
-                                                 Name(id) :: [] -> Name(id)
-                                                 | _ -> EvaluatedName($1) }
-;
-ids:                                  
-    | ID                                      { [Name($1)] (*TODO array ref*)}
-    | %prec ARR_INDEX array_index             { [$1] }
-    | ID DOT ids                              { Name($1)::$3 }
-;
-array_index:                          
-    | ID LBRACKET expression RBRACKET         { ArrayIndex($1,$3) }
-;
-unbound_variable:                    
-    | AT ID                                   { UnboundVar(Name($2)) }
-    | AT ID DOTDOTDOT                         { UnboundVar(Name("["^$2)) }
+    | /* nothing */                           { [] }
 ;
 expr_list:
     | expression                              { [$1] }
+		| empty_statement_block                   { [MapExpr([])] }
     | expression COMMA expr_list              { $1::$3 }
+    | /*nothing*/                             { [] }
+;
+fexpr_list:
+    | expression                              { [$1] }
+    | empty_statement_block                   { [MapExpr([])] }
+    | AT ID                                   { [UnboundVar(Name($2))] }
+    | AT ID DOTDOTDOT                         { [UnboundVar(Name("["^$2))] }
+    | expression COMMA fexpr_list             { $1::$3 }
     | /*nothing*/                             { [] }
 ;
 property:                             
     | ID COLON expression                     { ($1,$3) }
+		| ID COLON empty_statement_block          { ($1,MapExpr([])) }
 ;
 prop_list:                            
     | property                                { [$1] }
     | property COMMA prop_list                { $1::$3 }
-		| /*empty*/                               { [] }
 ;
 template_spec:                        
     | label TEXT                              { (Some $1,$2) }

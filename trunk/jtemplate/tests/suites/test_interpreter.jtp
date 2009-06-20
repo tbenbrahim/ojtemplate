@@ -148,7 +148,7 @@ var testSuite={
         			var b=a[10];
         			return false;
         		}catch(e){
-        			return String.startsWith(e,'Reference to undefined');
+        			return e.startsWith('Array index out of bounds');
         		}
         	}
         },{
@@ -189,6 +189,19 @@ var testSuite={
         		var a=[1,2,3,'4','5'];
         		var b=[1,2,3,'4','5'];
         		return a==b;
+        	}
+        },{
+        	description: 'prototype construction/usage',
+        	test: function(){
+        		var Foo={prototype:{getBar: function(){return 'bar';}}};
+        		var x={prototype:Foo};
+        		return x.getBar()=='bar';
+            }
+        },{
+        	description: 'function chaining',
+        	test: function(){
+    			var a='1.343.34.2'; 
+    			return a.replaceAll('.','').replaceAll('34','x')=='1x3x2';
         	}
         }
     ]

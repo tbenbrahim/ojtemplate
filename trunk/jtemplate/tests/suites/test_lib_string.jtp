@@ -1,0 +1,72 @@
+var testSuite={
+    description: 'String library tests',
+    tests: [
+            {
+            	description: 'toUppercase()',
+            	test: function(){
+            		var a='abcDef'; return a.toUppercase()=='ABCDEF';
+            	}
+            },{
+            	description: 'toLowercase()',
+            	test: function(){
+        			var a='abcDef'; return a.toLowercase()=='abcdef';
+            	}
+            },{
+            	description: 'toFirstUpper()',
+            	test: function(){
+        			var a='abcDef'; return a.toFirstUpper()=='AbcDef';
+            	}
+            },{
+            	description: 'toFirstLower()',
+            	test: function(){
+        			var a='AbcDef'; return a.toFirstLower()=='abcDef';
+            	}
+            },{
+            	description: 'length()',
+            	test: function(){
+        			var a='abcDef'; var b='';
+        			return a.length()==6 && b.length()==0;
+            	}
+            },{
+            	description: 'charAt()',
+            	test: function(){
+        			var a='AbcDef'; return a.charAt(3)=='D';
+            	}
+            },{
+            	description: 'indexOf()',
+            	test: function(){
+        			var a='AbcDef'; 
+        			return a.indexOf('X')==-1 &&
+        			a.indexOf('cD')==2;
+            	}
+            },{
+            	description: 'substr()',
+            	test: function(){
+        			var a='AbcDef'; return a.substr(2,3)=='cDe';
+            	}
+            },{
+            	description: 'startsWith()',
+            	test: function(){
+        			var a='AbcDef'; 
+        			return a.startsWith('Abc') && !a.startsWith('abc');
+            	}
+            },{
+            	description: 'endsWith()',
+            	test: function(){
+        			var a='AbcDef'; 
+        			return a.endsWith('ef') && !a.endsWith('def');
+            	}
+            },{
+            	description: 'replaceAll()',
+            	test: function(){
+        			var a='1.343.34.2'; 
+        			return a.replaceAll('.','')=='1343342';
+            	}
+            },{
+            	description: 'split()',
+            	test: function(){
+        			var a='1.343.34.2'; 
+        			return a.split('.')==['1','343','34','2'];
+            	}
+            }
+    ]};

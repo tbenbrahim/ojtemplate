@@ -12,17 +12,15 @@ open Ast
 open Filename_util
 open RuntimeError
 
-let rec register_args ind len symbol_table =
-	if ind = 1 then
-		SymbolTable.declare (Name("args")) (MapValue(Hashtbl.create (len - 1), ArraySubtype)) symbol_table
-	else ();
-	if ind = len then
-		SymbolTable.declare (CompoundName(["args";"length"])) (IntegerValue(len - 1)) symbol_table
-	else
-		(
-			SymbolTable.declare (CompoundName(["args"; string_of_int (ind - 1)])) (StringValue(Sys.argv.(ind))) symbol_table;
-			register_args (ind + 1) len symbol_table
-		)
+let register_args len symbol_table =
+	let h = Hashtbl.create (len - 1) in
+	SymbolTable.declare (Name("args")) (MapValue(h, ArraySubtype)) symbol_table;
+	Hashtbl.add h "length" (IntegerValue(len - 1));
+	let rec loop ind =
+		Hashtbl.add h (string_of_int (ind - 1)) (StringValue(Sys.argv.(ind)));
+		if ind > 1 then loop (ind - 1) else ()
+	in
+	loop (len - 1)
 
 let _ =
 	let symbol_table = SymbolTable.initialize_environment
@@ -38,12 +36,12 @@ let _ =
 		prerr_string ("Usage: "^(Filename.basename Sys.argv.(0))^" scriptfile [args...]\n")
 	else
 		(
-			register_args 1 argl symbol_table;
+			register_args argl symbol_table;
 			let filename = Sys.argv.(1) in
 			let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
 			in
 			try
-			 Interpreter.interpret_program ast symbol_table
+				Interpreter.interpret_program ast symbol_table
 			with
-				| FatalExit _ -> exit(-1)
+			| FatalExit _ -> exit(- 1)
 		)

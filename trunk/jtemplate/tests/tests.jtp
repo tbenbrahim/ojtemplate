@@ -2,6 +2,9 @@
 var main=function(){
     var results=[];
 
+    import 'suites/test_parser.jtp';
+    Array.push(results,runSuite(testSuite));
+
     import 'suites/test_scope.jtp';
     Array.push(results,runSuite(testSuite));
 
@@ -12,6 +15,9 @@ var main=function(){
     Array.push(results,runSuite(testSuite));
 
     import 'suites/test_lib_builtin.jtp';
+    Array.push(results,runSuite(testSuite));
+
+    import 'suites/test_lib_string.jtp';
     Array.push(results,runSuite(testSuite));
 
     println();
@@ -36,7 +42,13 @@ var runSuite=function(suite){
     foreach(test in suite.tests){
         numTests = numTests + 1;
         print('    -', test.description,' ');
-        var result=test.test();
+        var result=false;
+        try{
+        	result=test.test();
+        }catch(e){
+        	println(' *exception ',e,' thrown');
+        	result=false;
+        }
         if (typeof(result)!='boolean'){
         	println('FAIL');
         	println('         *test did not return a boolean value, but a ',typeof(result));

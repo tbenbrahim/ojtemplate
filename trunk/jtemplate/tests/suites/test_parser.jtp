@@ -1,0 +1,49 @@
+/*
+	regresstion tests for parser of some constructs that have failed with new parser
+ */
+
+var testSuite = {
+	description : 'Parser test',
+	tests : [ {
+		description : 'empty block {}',
+		test : function() {
+			var a = function() {
+			};
+			for ( var i = 0; i < 10; ++i) {
+			}
+			while (false) {
+			}
+			if (true) {
+			} else {
+			}
+			return true;
+		}
+	}, {
+		description : 'empty map {}',
+		test : function() {
+			var a = {};
+			a={};
+			function(x,y){}(1,{});
+			var b={a:{}};
+			return true;
+		}
+	}, {
+		description : 'empty statement ;',
+		test : function() {
+			;
+			;
+			;
+			;
+			;
+			for ( var i = 0; i < 10; ++i)
+				;
+			while (false)
+				;
+			if (true)
+				;
+			else
+				;
+			return true;
+		}
+	} ]
+};
