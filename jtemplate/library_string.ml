@@ -97,12 +97,23 @@ struct
 					let rec loop s ind =
 						match indexOf s substr with
 						| - 1 -> Hashtbl.add result (string_of_int ind) (StringValue(s));
-								Hashtbl.add result "length" (IntegerValue(ind+1));
-								raise (Interpreter.CFReturn (MapValue(result,ArraySubtype)))
+								Hashtbl.add result "length" (IntegerValue(ind + 1));
+								raise (Interpreter.CFReturn (MapValue(result, ArraySubtype)))
 						| i -> let offset = i + String.length substr in
 								Hashtbl.add result (string_of_int ind) (StringValue(String.sub s 0 i));
 								loop (String.sub s offset (String.length s - offset)) (ind + 1) in
 					loop str 0
 		);
+		(["String";"prototype";"parseInt"],[], fun stbl ->
+					let value = Interpreter.cast_to_string (SymbolTable.get_value (Name("this")) stbl) in
+					let result = try IntegerValue(int_of_string value) with Failure _ -> Void in
+					raise (Interpreter.CFReturn result)
+		);
+		(["String";"prototype";"parseFloat"],[], fun stbl ->
+					let value = Interpreter.cast_to_string (SymbolTable.get_value (Name("this")) stbl) in
+					let result = try FloatValue(float_of_string value) with Failure _ -> Void in
+					raise (Interpreter.CFReturn result)
+		);
+		
 		]
 end

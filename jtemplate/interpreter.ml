@@ -265,7 +265,7 @@ struct
 												if exists then (fv, Void)
 												else let (exists, fv) = mapExists h ["prototype";"prototype"; index] in
 													if exists then (fv, v)
-													else (evaluate_expression (MemberExpr(MemberExpr(MemberExpr(left, Id("prototype")), Id("prototype")), key)) symbol_table, v)
+													else (evaluate_expression (MemberExpr(MemberExpr(Id("Map"), Id("prototype")), key)) symbol_table, v) 
 									)
 							| _ -> (evaluate_expression expr symbol_table, Void)
 						)

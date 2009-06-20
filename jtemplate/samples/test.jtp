@@ -1,3 +1,0 @@
-import 'date.jtp';
-
-println('done');
