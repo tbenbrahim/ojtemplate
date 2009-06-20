@@ -8,7 +8,7 @@ var testSuite={
                 var a=1;
                 if (a==1)
                     if (a==3)
-                        ;
+                        a=20;
                     else 
                         a=10; // would not run if this else was associated
                                 // with first if!

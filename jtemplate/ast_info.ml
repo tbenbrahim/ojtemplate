@@ -135,21 +135,9 @@ struct
 	and var_descriptionl level var =
 		match var with
 		| Ast.Name(name) -> (prefix level) ^ ("Variable " ^ (name ^ "\n"))
-		| Ast.CompoundName (name_list) ->
-				(prefix level) ^
-				("MapReference " ^
-					((List.fold_left (fun acc el -> el ^ ("." ^ acc)) "" name_list)
-						^ "\n"))
-		| Ast.ArrayIndex(name, expr) ->
-				(prefix level) ^
-				"ArrayIndex " ^name^"[]\n"^
-				(expr_descriptionl (level + 1) expr)
-		| Ast.EvaluatedName(lst) ->
-				(prefix level) ^"EvaluatedName\n"^
-				(List.fold_left (fun acc el -> acc ^ (var_descriptionl (level + 1) el)) "" lst)
 	and expr_descriptionl level expr =
 		match expr with
-		| Ast.Assignment (var, expr) ->
+(**		| Ast.Assignment (var, expr) ->
 				(prefix level) ^
 				("Assignment\n" ^
 					((var_descriptionl (level + 1) var) ^
@@ -158,7 +146,7 @@ struct
 				(prefix level) ^
 				("Declaration\n" ^
 					((var_descriptionl (level + 1) var) ^
-						(expr_descriptionl (level + 1) expr)))
+						(expr_descriptionl (level + 1) expr)))        *)
 		| Ast.BinaryOp (op1, op, op2) ->
 				(prefix level) ^
 				("BinOp " ^
@@ -175,11 +163,11 @@ struct
 								(expr_descriptionl (level + 1) op2)))))
 		| Ast.Value value ->
 				(prefix level) ^ "Value reference\n" ^ value_descriptionl (level + 1) value
-		| Ast.FunctionCall (var, expr_list) ->
+(*		| Ast.FunctionCall (var, expr_list) ->
 				(prefix level) ^
 				("FunctionCall\n" ^
 					((var_descriptionl (level + 1) var) ^
-						(expression_list (level + 1) expr_list)))
+						(expression_list (level + 1) expr_list)))  *)
 		| Ast.MapExpr v ->
 				(prefix level) ^ ("Map\n" ^ ((property_list (level + 1) v) ^ "\n"))
 		| Ast.ArrayExpr v ->

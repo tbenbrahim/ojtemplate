@@ -45,7 +45,6 @@ and variable_value =
 	| FloatValue of float
 	| StringValue of string
 	| BooleanValue of bool
-	| ScopedFunctionValue of variable_name list * statement list * symbol_table
 	| FunctionValue of variable_name list * statement list
 	| LibraryFunction of variable_name list * (symbol_table -> unit) * symbol_table
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
@@ -70,26 +69,26 @@ symbol_table ={
 
 and variable_name =
 	| Name of string
-	| CompoundName of string list
-	| EvaluatedName of variable_name list
-	| ArrayIndex of string * expression
 
 and expression =
+	| Id of string
 	| BinaryOp of expression * operator * expression
 	| CompOp of expression * comparator * expression
 	| Not of expression
-	| FunctionCall of variable_name * expression list
-	| DirectFunctionCall of expression * expression list
+	| FunctionCall of expression * expression list
 	| MapExpr of (string * expression) list
 	| ArrayExpr of expression list
 	| VariableExpr of variable_name
 	| Value of variable_value
 	| UnboundVar of variable_name
-	| Assignment of variable_name * expression 
-	| Declaration of variable_name * expression
+	| Assignment of expression * expression
+	| Declaration of expression * expression
+	| MemberExpr of expression * expression
+	| IndexExpr of expression
+	| PostFixSum of expression * int
 	(* used internally for expansion of vararg in partially applied          *)
 	(* functions                                                             *)
-	| FunctionCallExpandVarArg of variable_name * expression list * string
+	| FunctionCallExpandVarArg of expression * expression list * string
 
 and imported_statements ={ mutable loaded: bool }
 
@@ -109,10 +108,10 @@ and statement =
 	| Import of (string * imported_statements) * (string * int)
 	| Switch of expression * statement list * (string * int)
 	| Case of expression option * (string * int)
-  | TryCatch of statement * variable_name * statement * (string * int)
-  | TryFinally of  statement * statement * (string * int)
-  | Throw of expression * (string * int)
- 
+	| TryCatch of statement * variable_name * statement * (string * int)
+	| TryFinally of statement * statement * (string * int)
+	| Throw of expression * (string * int)
+
 let is_vararg varname =
 	varname.[0]='['
 

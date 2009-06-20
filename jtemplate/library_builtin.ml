@@ -116,7 +116,7 @@ struct
                   | IntegerValue(_) -> "integer"
                   | BooleanValue(_) -> "boolean"
                   | FloatValue(_) -> "float"
-                  | LibraryFunction(_, _, _) | FunctionValue(_, _) | ScopedFunctionValue(_, _, _) -> "function"
+                  | LibraryFunction(_, _, _) | FunctionValue(_, _)  -> "function"
                   | MapValue(_, MapSubtype) -> "map"
                   | MapValue(_, ArraySubtype) -> "array"
                   | NaN -> "NaN"

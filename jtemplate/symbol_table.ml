@@ -33,10 +33,6 @@ struct
 	
 	exception EUnexpectedName
 	
-	exception EMismatchedArgsInCall
-	
-	exception EVarArgsMustbeLast
-	
 	exception EInvalidArrayIndex of string  (*key, map*)
 	
 	exception EUnexpected
@@ -46,7 +42,7 @@ struct
 		| FloatValue(f) -> string_of_float f
 		| BooleanValue(b) -> string_of_bool b
 		| StringValue(s) -> s
-		| FunctionValue(args, _) | ScopedFunctionValue(args, _, _) -> "function"^(string_of_args args)
+		| FunctionValue(args, _) -> "function"^(string_of_args args)
 		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
 		| MapValue(map, MapSubtype) -> "{}"
 		| MapValue(map, ArraySubtype _) -> "[]"
@@ -59,12 +55,7 @@ struct
 	@return a string specifying the variable name
 	*)
 	fullname = function
-			Ast.CompoundName(lst) ->
-				(match lst with
-					| el:: lst -> List.fold_left(fun acc el -> acc^"."^el) el lst
-					| [] -> "")
 		| Ast.Name(name) -> name
-		| Ast.ArrayIndex(_, _) | Ast.EvaluatedName(_) -> "unresolved name" (* will never get these *)
 	
 	and string_of_args args =
 		match args with
@@ -77,7 +68,7 @@ struct
 		| FloatValue(_) -> "float"
 		| BooleanValue(_) -> "boolean"
 		| StringValue(_) -> "string"
-		| FunctionValue(_, _) | ScopedFunctionValue(_, _, _) -> "function"
+		| FunctionValue(_, _) -> "function"
 		| LibraryFunction(_, _, _) -> "library call"
 		| MapValue(_, MapSubtype) -> "map"
 		| MapValue(_, ArraySubtype _) -> "array"
@@ -101,7 +92,7 @@ struct
 		| FloatValue(_) -> FloatType
 		| BooleanValue(_) -> BooleanType
 		| StringValue(_) -> StringType
-		| FunctionValue(_, _) | ScopedFunctionValue(_, _, _) -> FunctionType
+		| FunctionValue(_, _) -> FunctionType
 		| LibraryFunction(_, _, _) -> LibraryCallType
 		| MapValue(_, MapSubtype) -> MapType
 		| MapValue(_, ArraySubtype _) -> ArrayType
@@ -209,25 +200,6 @@ struct
 								else
 									Hashtbl.replace table.values varname value (* it is a declaration, always use current scope *)
 							)
-					| Ast.CompoundName(lst) -> (
-								(match lst with
-									| [] -> raise EUnexpectedCompoundName
-									| el:: lst ->
-									(* we must first find the declaration of the 1st element *)
-											try (* it is in the current scope *)
-												let v = Hashtbl.find table.values el in
-												match v with
-												| MapValue(_) -> replace_map_value assignment el lst v value
-												| _ -> raise (NotAMap (el, fullname name)) (* found something with same name, but wrong type *)
-											with
-											| Not_found -> resolve_replace assignment name table.parent_table value
-											| ENotAMap(comp) -> raise (NotAMap(comp, fullname name))
-											| ENotFound(comp) -> raise (ReferenceToUndefinedMapVariable(comp, fullname name))
-											| ETypeMismatchInAssignment(comp, old_type, new_type) -> raise (TypeMismatchInMapAssignment(comp, fullname name, old_type, new_type))
-											| EInvalidArrayIndex(comp) -> raise (InvalidArrayIndex(comp, fullname name))
-								)
-							)
-					| _ -> raise EUnexpectedName
 				)
 	
 	(**
@@ -258,34 +230,15 @@ struct
 	
 	let rec resolve name symbol_table =
 		match symbol_table with
-		| None ->
-				(match name with
-					| Ast.CompoundName(el:: _) -> raise (ReferenceToUndefinedMapVariable(el, fullname name))
-					| _ -> raise (ReferenceToUndefinedVariable (fullname name))
-				)
+		| None -> raise (ReferenceToUndefinedVariable (fullname name))
 		| Some table -> (
 					try
 						match name with
-						| Ast.EvaluatedName(_) | Ast.ArrayIndex(_, _) -> raise EUnexpectedName (* will never get these two *)
 						| Ast.Name(varname) ->
 								(try
-									let value = Hashtbl.find table.values varname in
-									match value with
-									| FunctionValue(args, stmts) -> ScopedFunctionValue(args, stmts, table)
-									| _ -> value
+									Hashtbl.find table.values varname
 								with
 									Not_found -> resolve name table.parent_table)
-						| Ast.CompoundName(lst) ->
-								(match lst with
-									| el:: tl -> (try
-												let value = get_map_value el (Hashtbl.find table.values el) tl in
-												match value with
-												| FunctionValue(args, stmts) -> ScopedFunctionValue(args, stmts, table)
-												| _ -> value
-											with
-												Not_found -> resolve name table.parent_table)
-									| _ -> raise EUnexpectedCompoundName
-								)
 					with
 						Not_found -> raise (ReferenceToUndefinedVariable (fullname name))
 					| ENotFound ename -> raise (ReferenceToUndefinedMapVariable (ename , fullname name))
@@ -309,10 +262,6 @@ struct
 	*)
 	let get_value name symbol_table =
 		match name with (* handle of exception for dumpSymbolTable since we need the current table *)
-		| CompoundName(["Debug";"dumpSymbolTable"]) -> let res = resolve name (Some symbol_table) in
-				(match res with
-					| LibraryFunction(args, stmts, _) -> LibraryFunction(args, stmts, symbol_table)
-					| _ -> res)
 		| _ -> resolve name (Some symbol_table)
 	
 	let is_defined name symbol_table =
@@ -330,34 +279,29 @@ struct
 	
 	let rec put_args_in_scope args vals scope =
 		match args with
-		| [] -> if vals != [] then raise EMismatchedArgsInCall else ()
+		| [] -> if vals != [] then raise RuntimeError.MismatchedCallArgs else ()
 		| Name(last)::[] -> (* only place where vararg is allowed *)
 				if is_vararg last then
 					let h = (Hashtbl.create 10) in
 					Hashtbl.add h "length" (IntegerValue(add_vals_to_arr h vals 0));
 					declare (Name(vararg_formalname last)) (MapValue(h, ArraySubtype)) scope
 				else(
-					if vals =[] then raise EMismatchedArgsInCall (* ran out of values *)
+					if vals =[] then raise RuntimeError.MismatchedCallArgs (* ran out of values *)
 					else declare (Name last) (List.hd vals) scope; put_args_in_scope [] (List.tl vals) scope
 				)
 		| Name(el):: rest_args ->
 				if el.[0]='[' then
-					raise EVarArgsMustbeLast
+					raise RuntimeError.VarArgsMustbeLast
 				else(
-					if vals =[] then raise EMismatchedArgsInCall (* ran out of values *)
+					if vals =[] then raise RuntimeError.MismatchedCallArgs (* ran out of values *)
 					else(
 						declare (Name el) (List.hd vals) scope;
 						put_args_in_scope rest_args (List.tl vals) scope
 					))
-		| _ -> raise (RuntimeError.InternalError "put_args_in_scope called with something that is not a Name(_) list")
 	
-	let new_function_call_scope name scope arglist vallist =
+	let new_function_call_scope scope arglist vallist =
 		let scope =	push_scope scope in
-		try
-			put_args_in_scope arglist vallist scope; scope
-		with
-		| EMismatchedArgsInCall -> raise (MismatchedCallArgs(fullname name))
-		| EVarArgsMustbeLast -> raise (VarArgsMustbeLast(fullname name))
+		put_args_in_scope arglist vallist scope; scope
 	
 	let list_of_array arr =
 		match arr with
