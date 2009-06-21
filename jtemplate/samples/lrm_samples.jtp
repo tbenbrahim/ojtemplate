@@ -1,0 +1,51 @@
+try{
+	1=2;
+}catch(e){
+	println(e);
+}
+
+var a={x:'1',b:{c:{x:2}}};
+
+var foo=function(){return 'c';};
+
+let s='123
+456';
+println(s);
+
+println(a['b'][foo()].x);
+
+
+/*
+ * This is a multiline comment
+ */
+let i=1; // this is single line comment 
+
+let f0=.123;
+let f1=1.23;
+let f2=148.23e-34;
+let f3=1e+12;
+let f4=1e12;
+println(f0,' ',f1,' ',f2,' ',f3,' ',f4);
+
+'a string';
+'a multiline
+string';
+
+[1,2,3];
+[];
+[1,1.2,'abc',function(x,y){return x+y;}];
+
+let a={x:10,y:120,name:'test'};
+
+let b={add:function(x,y){return x+y;}, subtract:function(x,y){return x-y;}};
+
+var a=[1,2,3];
+println(a[2]);
+var a[2]='abc';
+println(a[2]);
+
+let x = 0;
+let f=function() { return x; };
+let g=function () { let x = 1; return f(); };
+println(g());
+

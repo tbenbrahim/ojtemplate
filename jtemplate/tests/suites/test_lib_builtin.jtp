@@ -17,16 +17,16 @@ var testSuite={
         	description: 'array push',
         	test: function(){
         		let a=[1,2,'3'];
-        		Array.push(a,'4');
-        		Array.push(a,5);
+        		a.push('4');
+        		a.push(5);
         		return a==[1,2,'3','4',5];
         	}
         },{
         	description: 'array pop',
         	test: function(){
         		let arr=[1,2,'3','4',5];
-        		let a=Array.pop(arr);
-        		let b=Array.pop(arr);
+        		let a=arr.pop();
+        		let b=arr.pop();
         		return arr==[1,2,'3'] && a==5 && b=='4';
         	}
         },{
@@ -34,28 +34,28 @@ var testSuite={
         	test: function(){
         		let arr1=[1,2,'3','4',5];
         		let arr2=[];
-        		return Array.length(arr1)==5 &&
-        		       Array.length(arr2)==0 &&
-        		       Array.length([1,2,'3','4',5])==5;
+        		return arr1.length()==5 &&
+        		       arr2.length()==0 &&
+        		       [1,2,'3','4',5].length()==5;
         	}
         },{
         	description: 'integer parse',
         	test: function(){
-        		return Integer.parse('15')==15 &&
-        			   Integer.parse('15.4')==Void &&
-        		       Integer.parse('1.5a')==Void;
+        		return '15'.parseInt()==15 &&
+        			   '15.4'.parseInt()==Void &&
+        		       '1.5a'.parseInt()==Void;
         	}
         },{
         	description: 'float parse',
         	test: function(){
-        		return Float.parse('1.5')==1.5 &&
-        		       Float.parse('1.5a')==Void;
+        		return '1.5'.parseFloat()==1.5 &&
+        		       '1.5a'.parseFloat()==Void;
         	}
         },{
         	description: 'float round',
         	test: function(){
-        		return Float.round(12.34)==12 &&
-        		       Float.round(12.64)==13;
+        		return 12.34.round()==12 &&
+        		       12.64.round()==13;
         	}
         },
 	]

@@ -26,6 +26,18 @@ var fact=function(n){
     return n*fact(n-1);
 };
 
+let odd=function(n){
+	return n==0? false: even(n-1);
+};
+
+let even=function(n){
+	return n==0? true: odd(n-1);
+};
+
+println(11,' is ',(even(11)?'':'not '),'even.' );
+println(11,' is ',(odd(11)?'':'not '),'odd.' );
+
+
 println('The GCD of 81 and 27 is '+ gcd(81,27));
 println('The GCD of 81 and 18 is '+ gcd(81,18));
 println('The GCD of 99 and 16 is '+ gcd(99,16));
