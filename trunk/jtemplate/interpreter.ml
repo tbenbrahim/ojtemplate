@@ -179,7 +179,9 @@ struct
 					| Id(name) -> SymbolTable.assign (Name(name)) v symbol_table; v
 					| MemberExpr(expr, key) ->
 							let (h, index) = get_lhs expr key symbol_table
-							in Hashtbl.replace h index v; v
+							in let oldvalue = Hashtbl.find h index
+							in (if SymbolTable.value_type oldvalue = SymbolTable.value_type v then (Hashtbl.replace h index v; v)
+								else raise ( TypeMismatchInAssignment(index, SymbolTable.string_of_symbol_type oldvalue, SymbolTable.string_of_symbol_type v)))
 					| _ -> raise LeftSideCannotBeAssigned
 				)
 		| Declaration(left, right) ->
@@ -207,22 +209,23 @@ struct
 								[Return(FunctionCallExpandVarArg(expr, exprlist, varargname), symbol_table.env.current_stmt)]
 							else
 								[Return(FunctionCall(expr, exprlist), symbol_table.env.current_stmt)]) in
-					FunctionValue(formal_args, stmts) 
+					ScopedFunctionValue(formal_args, stmts, symbol_table)
 				else
 					let run_func f this =
 						(match f with
-							| FunctionValue(arglist, stmts) ->
+							| FunctionValue(_, _) -> raise (InternalError "unscoped function invoked")
+							| ScopedFunctionValue(arglist, stmts, scope) ->
 									let old_stack = symbol_table.env.stack_trace in
 									(try
 										symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
-										interpret_statements stmts (SymbolTable.new_function_call_scope symbol_table (Name("this"):: arglist) (this:: value_list));
+										interpret_statements stmts (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
 										symbol_table.env.stack_trace <- old_stack;
 										Void
 									with
 									| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
 							| LibraryFunction( arglist , code, scope) ->
 									(try
-										code (SymbolTable.new_function_call_scope symbol_table (Name("this"):: arglist) (this:: value_list));
+										code (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
 										Void
 									with
 									| CFReturn value -> value)
@@ -243,7 +246,7 @@ struct
 										| BooleanValue(_) ->
 												(evaluate_expression (MemberExpr(MemberExpr(Id("Boolean"), Id("prototype")), Id(index))) symbol_table, v)
 										| Void -> (evaluate_expression (MemberExpr(MemberExpr(Id("Void"), Id("prototype")), Id(index))) symbol_table, Void)
-										| FunctionValue(_, _) | LibraryFunction(_, _, _) ->
+										| ScopedFunctionValue(_, _, _) | FunctionValue(_, _) | LibraryFunction(_, _, _) ->
 												(evaluate_expression (MemberExpr(MemberExpr(Id("Function"), Id("prototype")), Id(index))) symbol_table, v)
 										| MapValue(h, ArraySubtype) ->
 												(if not int then
@@ -265,7 +268,7 @@ struct
 												if exists then (fv, Void)
 												else let (exists, fv) = mapExists h ["prototype";"prototype"; index] in
 													if exists then (fv, v)
-													else (evaluate_expression (MemberExpr(MemberExpr(Id("Map"), Id("prototype")), key)) symbol_table, v) 
+													else (evaluate_expression (MemberExpr(MemberExpr(Id("Map"), Id("prototype")), key)) symbol_table, v)
 									)
 							| _ -> (evaluate_expression expr symbol_table, Void)
 						)
@@ -287,7 +290,9 @@ struct
 				MapValue(make_array expr_list symbol_table, ArraySubtype)
 		| VariableExpr(variable) ->
 				SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table
-		| Value(value) -> value
+		| Value(value) -> (match value
+					with
+					| FunctionValue(arglist, stmts) -> ScopedFunctionValue(arglist, stmts, symbol_table) | _ -> value)
 		| UnboundVar(name) -> raise (UnexpectedUnboundVar (SymbolTable.fullname name))
 		
 		| Not(expr) ->

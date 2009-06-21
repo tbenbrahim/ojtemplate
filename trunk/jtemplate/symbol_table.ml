@@ -42,7 +42,7 @@ struct
 		| FloatValue(f) -> string_of_float f
 		| BooleanValue(b) -> string_of_bool b
 		| StringValue(s) -> s
-		| FunctionValue(args, _) -> "function"^(string_of_args args)
+		| ScopedFunctionValue(args, _, _) | FunctionValue(args, _) -> "function"^(string_of_args args)
 		| LibraryFunction(args, _, _) -> "library call"^(string_of_args args)
 		| MapValue(map, MapSubtype) -> "{}"
 		| MapValue(map, ArraySubtype _) -> "[]"
@@ -68,7 +68,7 @@ struct
 		| FloatValue(_) -> "float"
 		| BooleanValue(_) -> "boolean"
 		| StringValue(_) -> "string"
-		| FunctionValue(_, _) -> "function"
+		| ScopedFunctionValue(_, _, _) | FunctionValue(_, _) -> "function"
 		| LibraryFunction(_, _, _) -> "library call"
 		| MapValue(_, MapSubtype) -> "map"
 		| MapValue(_, ArraySubtype _) -> "array"
@@ -92,7 +92,7 @@ struct
 		| FloatValue(_) -> FloatType
 		| BooleanValue(_) -> BooleanType
 		| StringValue(_) -> StringType
-		| FunctionValue(_, _) -> FunctionType
+		| ScopedFunctionValue(_, _, _) | FunctionValue(_, _) -> FunctionType
 		| LibraryFunction(_, _, _) -> LibraryCallType
 		| MapValue(_, MapSubtype) -> MapType
 		| MapValue(_, ArraySubtype _) -> ArrayType

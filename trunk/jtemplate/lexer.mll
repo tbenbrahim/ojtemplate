@@ -54,12 +54,13 @@ let digit = ['0'-'9']
 let id = ['a'-'z' 'A'-'Z' '_' '$']['A'-'Z' 'a'-'z' '0'-'9' '_' '$' ]*
 let whitespace = ['\r' '\t' ' ']
 let text = '#'[^'\n']*
+let float = (( (['0'-'9']+'.'['0'-'9']*) | (['0'-'9']*'.'['0'-'9']+) ) ('e'['+' '-']?['0'-'9']+)? ) | (['0'-'9']+ ('e'['+' '-']?['0'-'9']+))
 
 rule main =	parse 
 | whitespace { main lexbuf }
 | text as token { TEXT(String.sub token 1 ((String.length token) - 1))}
 | digit+ as token { INT( int_of_string token)}
-| digit+ '.' digit* | digit* '.' digit+ as token { REAL(float_of_string token)}
+| float as token { REAL(float_of_string token)}
 | id as token { (map_id token )}
 | '\'' { single_quote_string "" lexbuf } 
 | "//" [^'\n']* { main lexbuf}

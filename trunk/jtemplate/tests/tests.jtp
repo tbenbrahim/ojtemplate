@@ -3,22 +3,22 @@ var main=function(){
     var results=[];
 
     import 'suites/test_parser.jtp';
-    Array.push(results,runSuite(testSuite));
+    results.push(runSuite(testSuite));
 
     import 'suites/test_scope.jtp';
-    Array.push(results,runSuite(testSuite));
+    results.push(runSuite(testSuite));
 
     import 'suites/test_precedence.jtp';
-    Array.push(results,runSuite(testSuite));
+    results.push(runSuite(testSuite));
 
     import 'suites/test_interpreter.jtp';
-    Array.push(results,runSuite(testSuite));
+    results.push(runSuite(testSuite));
 
     import 'suites/test_lib_builtin.jtp';
-    Array.push(results,runSuite(testSuite));
+    results.push(runSuite(testSuite));
 
     import 'suites/test_lib_string.jtp';
-    Array.push(results,runSuite(testSuite));
+    results.push(runSuite(testSuite));
 
     println();
     println('=======');

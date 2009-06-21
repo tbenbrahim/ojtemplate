@@ -46,6 +46,7 @@ and variable_value =
 	| StringValue of string
 	| BooleanValue of bool
 	| FunctionValue of variable_name list * statement list
+	| ScopedFunctionValue of variable_name list * statement list * symbol_table
 	| LibraryFunction of variable_name list * (symbol_table -> unit) * symbol_table
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
