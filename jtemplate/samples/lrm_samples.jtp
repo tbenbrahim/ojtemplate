@@ -1,4 +1,15 @@
 try{
+	try{
+		println('entering the try block');
+		let a=1.2+true;
+	}finally{
+		println('entering the finally block');
+	}
+}catch(e){
+	println('Something went wrong: ',e);
+}
+
+try{
 	1=2;
 }catch(e){
 	println(e);
@@ -18,7 +29,7 @@ println(a['b'][foo()].x);
 /*
  * This is a multiline comment
  */
-let i=1; // this is single line comment 
+let i=1; // this is single line comment
 
 let f0=.123;
 let f1=1.23;
@@ -49,3 +60,210 @@ let f=function() { return x; };
 let g=function () { let x = 1; return f(); };
 println(g());
 
+let a=0;
+let b = ++a;   // both a and b are 1
+let b = a++;   // a is 2, b is 1, a's value before it was incremented
+a++;           // a is 3
+++a;          // a is 4
+
+a+=2 ; // equivalent to assigning a=a+2
+
+let arr=[1,2,'abc']; // define array arr
+let b=arr[0];        // declare b and initialize with the first element of
+						// arr
+let c=1;
+b=arr[c];			 // assign the second element of arr to b
+
+let m={a:124,point:{x:10,y: 120}};  // define map m
+let p=m['a'];                       // initialize p with member a of m
+let name='x';
+let q=m['point'][name];             // initialize q with member x of map point
+									// in map m
+
+let m={a:124,point:{x:10,y: 120}};  // define map m
+let p=m.a;                       // initialize p with member a of m
+let q=m.point.x;             // initialize q with member x of map point in
+								// map m
+
+
+let sum=function(a,b){return a+b; }; // declare a function and assign to sum
+let a=sum(1,2);                      // assign 1 to a, 2 to b then
+									 // evaluate the statements in sum
+println('Hello',' ','World');        // calls function assigned to println
+                                     // defined as function(items...){}
+function(a,b){return a*b;}(10,20);    // calling a function definition
+
+var increment = sum(@value,1);
+var b=increment(10);
+println(increment(10));
+
+let a=1;     // this expression assigns 1 to a
+1+2; 		 // this expression has no side effect
+;            // an empty expression, again with no side effect
+
+a<10 ? 'small' : 'large' // evaluates to the string 'small' if a<10
+						 // or 'large' if a>=10
+
+(2+3)*10;	// evaluates to 50
+2+(3*10);   // evaluates to 32
+
+-a;
+
+println(7-2-2);  // associates to the left
+				 // equivalent to (7-2)-2
+let a=let b=1;
+println(a-=b-=2); // associates to the right
+				  // equivalent to a-=(b-=2)
+{				  //a statement block
+	let a=1;
+	let b=2;
+}
+{}				  // an empty statement block
+
+for(var i=0;i<10;++i){
+	println('Hello');
+	println('World!');
+}
+
+let i=0;
+while(i<10){
+	println('Hello');
+	println('World!');
+	++i;
+}
+
+let i=0;
+for (;;){
+	++i;
+	if (i==10) break;
+}
+
+let a=[1,'abc',2];
+foreach(el in a) println(el);
+let b={a:1,b:'abc'};
+foreach (el in b) println(el );
+
+for(var i=0;i<10;++i){
+	if (i%2==1) continue;
+	println(i);
+}
+
+let sum=function(x,y){return x+y;};
+
+let foo=function(){
+	let x=10;
+	for (var i=0;i<10;++i){
+		x+=i;
+		if (x>10) return i;
+	}
+};
+
+let a=let b=10;
+if (a>b)
+	println('a is greater than b');
+else
+	if (a<b)
+		println('a is smaller than b');
+	else
+		println('a is equal to b');
+
+let arith=function(x,op,y){
+	switch(op){
+	case '+': 
+		println(x,op,y,' is ',x+y);
+		break;
+	case '*': 
+		println(x,op,y,' is ',x*y);
+		break;
+	default:
+		println('Only addition and multiplication are supported');
+	}
+};
+
+let safeDivide=function (x,y){
+	if (y==0)
+		throw 'Division by 0';
+	return x/y;
+};
+
+
+
+let safeAdd=function(x,y){
+	try{
+		return x+y;
+	}catch(e){
+		return Void;
+	}
+};
+println('the result is ',safeAdd(true,1.2));
+
+//try{
+//	println('entering the try block');
+//	let a=1.2+true;
+//}finally{
+//	println('entering the finally block');
+//}
+
+
+import 'myfile.jtp';
+
+println('The sign is ',multiplicationSign(-19,-20));
+
+let people={ labels: ['Name','Age'], data: [['John',42], ['Mary',38]] };
+
+//let text=htmlTable(people);
+
+let odd=function(n){
+	return n==0? false: even(n-1);
+};
+
+let even=function(n){
+	return n==0? true: odd(n-1);
+};
+
+println(11,' is ',(even(11)?'':'not '),'even.' );
+println(11,' is ',(odd(11)?'':'not '),'odd.' );
+
+let a=1;
+print(a,' ');
+{
+	print(a,' ');
+	let a=2;
+	print(a,' ');
+}
+println(a,' ');
+
+let printX=function(){println(x);};
+let x=0;
+
+{
+	let x=1;
+	printX();
+}
+
+let x={a:1, test: function(){println('hello world');}};
+x.test();
+
+let myString='hello world';
+let len=myString.length();
+
+let Array.prototype.join=function(){
+	let result='';
+	foreach(el in this) result+=el;
+	return result;
+};	
+
+let a=[1,2,'abc',1.2];
+println(a.join());
+
+let m={
+	   foo: 	   function(){print('hello');}, 
+	   prototype: {bar: function(){this.foo();println(' again');}}
+	};
+m.foo();println(); //using case 1
+m.bar();           //using case 2
+let a=m.keys();	   //using case 4
+
+let Foo={prototype: {print: function(){println('your value is ',this.value); }}};
+let m={value:10, prototype: Foo};
+m.print();			//using case 3
