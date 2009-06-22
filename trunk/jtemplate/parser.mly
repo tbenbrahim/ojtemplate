@@ -143,8 +143,6 @@ empty_expression:
 atom_expr:
     | INT                                     { Value(IntegerValue($1)) }
     | REAL                                    { Value(FloatValue($1)) }
-    | %prec UMINUS MINUS INT                  { Value(IntegerValue(-$2)) }
-    | %prec UMINUS MINUS REAL                 { Value(FloatValue(-.$2)) }
     | STRING                                  { Value(StringValue($1)) }
     | BOOLEAN                                 { Value(BooleanValue($1)) }
     | VOID                                    { Value(Void) }
@@ -190,6 +188,7 @@ op_expr:
     | NOT call_expr                     { Not($2) }
     | op_expr  AND op_expr              { BinaryOp($1,And,$3) }
     | op_expr OR op_expr                { BinaryOp($1,Or,$3) }
+    | %prec UMINUS MINUS op_expr        { BinaryOp(Value(IntegerValue(0)),Minus,$2) }
 ;
 cond_expr:
     | op_expr {$1}
@@ -221,12 +220,15 @@ expr_list:
     | expression COMMA expr_list              { $1::$3 }
     | /*nothing*/                             { [] }
 ;
+fexpr:
+    | expression                              { $1 }
+    | empty_statement_block                   { MapExpr([]) }
+    | AT ID                                   { UnboundVar(Name($2)) }
+    | AT ID DOTDOTDOT                         { UnboundVar(Name("["^$2)) }
+;
 fexpr_list:
-    | expression                              { [$1] }
-    | empty_statement_block                   { [MapExpr([])] }
-    | AT ID                                   { [UnboundVar(Name($2))] }
-    | AT ID DOTDOTDOT                         { [UnboundVar(Name("["^$2))] }
-    | expression COMMA fexpr_list             { $1::$3 }
+    | fexpr                                   { [$1] }
+    | fexpr COMMA fexpr_list                  { $1::$3 }
     | /*nothing*/                             { [] }
 ;
 property:                             
