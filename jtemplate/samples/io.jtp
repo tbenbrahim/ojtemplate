@@ -1,0 +1,27 @@
+if (args.length() != 3) {
+	println('Usage: ', args[0], ' source_file destination_file');
+	exit(-1);
+}
+if (!File.exists(args[1])) {
+	println('File ', args[1], ' does not exist.');
+	exit(-1);
+}
+File.openForReading('in', args[1]);
+try {
+	File.openForWriting('out', args[2]);
+	try {
+		let
+		lines = 0;
+		while (!File.eof('in')) {
+			let
+			s = File.readln('in');
+			File.writeln('out', s);
+			++lines;
+		}
+		println(lines, ' lines copied');
+	} finally {
+		File.close('out');
+	}
+} finally {
+	File.close('in');
+}
