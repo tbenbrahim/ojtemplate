@@ -126,15 +126,15 @@ struct
 		(["System";"command"],["command"], fun stbl ->
 					let command = Interpreter.cast_to_string (SymbolTable.get_value (Name "command") stbl) in
 					raise (Interpreter.CFReturn (IntegerValue(Sys.command command)))
-		);
-		(["apply"],["func";"this";"[args"], fun stbl ->
-					let func = SymbolTable.get_value (Name("func")) stbl
+		); 
+		(["Function";"prototype";"apply"],["targetThis";"[args"], fun stbl ->
+					let func = SymbolTable.get_value (Name("this")) stbl
 					in let _ = match func with
 						| ScopedFunctionValue(arglist, stmts, _) -> ()
 						| FunctionValue(arglist, stmts) -> ()
 						| LibraryFunction(arglist, stmts, _) -> ()
 						| _ -> raise (LibraryError "expected a function in first parameter of call to apply")
-					in let this = SymbolTable.get_value(Name("this")) stbl
+					in let this = SymbolTable.get_value(Name("targetThis")) stbl
 					in let args = SymbolTable.list_of_array (SymbolTable.get_value(Name("args")) stbl)
 					in raise (Interpreter.CFReturn (Interpreter.run_function func args this stbl))
 		);
