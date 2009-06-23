@@ -21,7 +21,7 @@ let Foo.prototype.foo=function(){
 let Bar=Foo.extend();
 let Bar.prototype.foo=function(){
 	print('bar ');
-	apply(Foo.prototype.foo,this);
+	Foo.prototype.foo.apply(this);
 };
 
 let Bar.prototype.bar=function(){
@@ -30,7 +30,7 @@ let Bar.prototype.bar=function(){
 let Fun=Bar.extend();
 let Fun.prototype.foo=function(){
 	print('fun ');
-	apply(Bar.prototype.foo,this);
+	Bar.prototype.foo.apply(this);
 };
 let foo={prototype: Foo};
 let bar={prototype: Bar};
@@ -47,7 +47,7 @@ fun.foo();
 
 let Point=Object.extend();
 let Point.prototype.new=function(x,y){
-	let point=apply(Object.prototype.new,this);
+	let point=Object.prototype.new.apply(this);
 	let point.x=x;
 	let point.y=y;
 	return point;
@@ -61,13 +61,13 @@ print('p.print(): ');p.print();
 
 let ThreeDPoint=Point.extend();
 let ThreeDPoint.prototype.new=function(x,y,z){
-	let point=apply(Point.prototype.new,this,x,y);
+	let point=Point.prototype.new.apply(this,x,y);
 	let point.z=z;
 	return point;
 };
 let ThreeDPoint.prototype.print=function(){
 	print('z: ',this.z,', ');
-	apply(Point.prototype.print,this);
+	Point.prototype.print.apply(this);
 };
 
 let p3=ThreeDPoint.new(5,42,10);
