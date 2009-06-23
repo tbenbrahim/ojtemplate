@@ -160,6 +160,26 @@ struct
 			| _ -> raise (LeftSideIsNotAMap(SymbolTable.string_of_symbol_type left,
 								cast_to_string left))
 		)
+	and run_function f value_list this symbol_table =
+		(match f with
+			| FunctionValue(_, _) -> raise (InternalError "unscoped function invoked")
+			| ScopedFunctionValue(arglist, stmts, scope) ->
+					let old_stack = symbol_table.env.stack_trace in
+					(try
+						symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
+						interpret_statements stmts (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
+						symbol_table.env.stack_trace <- old_stack;
+						Void
+					with
+					| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
+			| LibraryFunction( arglist , code, scope) ->
+					(try
+						code (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
+						Void
+					with
+					| CFReturn value -> value)
+			| _ -> raise RuntimeError.NotAFunction
+		)
 	and evaluate_expression expr symbol_table =
 		match expr with
 		| Id(name) -> SymbolTable.get_value (Name(name)) symbol_table
@@ -211,27 +231,7 @@ struct
 								[Return(FunctionCall(expr, exprlist), symbol_table.env.current_stmt)]) in
 					ScopedFunctionValue(formal_args, stmts, symbol_table)
 				else
-					let run_func f this =
-						(match f with
-							| FunctionValue(_, _) -> raise (InternalError "unscoped function invoked")
-							| ScopedFunctionValue(arglist, stmts, scope) ->
-									let old_stack = symbol_table.env.stack_trace in
-									(try
-										symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
-										interpret_statements stmts (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
-										symbol_table.env.stack_trace <- old_stack;
-										Void
-									with
-									| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
-							| LibraryFunction( arglist , code, scope) ->
-									(try
-										code (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
-										Void
-									with
-									| CFReturn value -> value)
-							| _ -> raise RuntimeError.NotAFunction
-						)
-					in let (f, this) =
+					let (f, this) =
 						(match expr with
 							| MemberExpr(left, key) ->
 									let (index, int) = evaluate_memb_expr_index key symbol_table in
@@ -274,7 +274,7 @@ struct
 									)
 							| _ -> (evaluate_expression expr symbol_table, Void)
 						)
-					in run_func f this
+					in run_function f value_list this symbol_table
 		| FunctionCallExpandVarArg(variable, exprlist, varargname) ->
 		(* get the vararg value array, remove the append the values to the     *)
 		(* expression list (minus the last, which is the vararg array name),   *)

@@ -1,0 +1,74 @@
+let Object={
+	prototype: {
+		extend: function(){
+			let obj={prototype:{}};
+			foreach(key in this.prototype.keys())
+				let obj.prototype[key]=this.prototype[key];
+			return obj;
+		},
+		new: function(){
+			return {prototype: this };
+		}
+	}
+};
+
+
+let Foo=Object.extend();
+let Foo.prototype.foo=function(){
+	println('foo!');
+};
+
+let Bar=Foo.extend();
+let Bar.prototype.foo=function(){
+	print('bar ');
+	apply(Foo.prototype.foo,this);
+};
+
+let Bar.prototype.bar=function(){
+	println('bar!');
+};
+let Fun=Bar.extend();
+let Fun.prototype.foo=function(){
+	print('fun ');
+	apply(Bar.prototype.foo,this);
+};
+let foo={prototype: Foo};
+let bar={prototype: Bar};
+let fun={prototype: Fun};
+print('foo.foo(): ');foo.foo();
+print('bar.bar(): ');bar.bar();
+print('bar.foo(): ');bar.foo();
+print('fun.bar(): ');fun.bar();
+print('fun.foo(): ');fun.foo();
+
+let fun=Fun.new();
+fun.bar();
+fun.foo();
+
+let Point=Object.extend();
+let Point.prototype.new=function(x,y){
+	let point=apply(Object.prototype.new,this);
+	let point.x=x;
+	let point.y=y;
+	return point;
+};
+let Point.prototype.print=function(){
+	println('x: ',this.x,', y: ',this.y);
+};
+
+let p=Point.new(42,10);
+print('p.print(): ');p.print();
+
+let ThreeDPoint=Point.extend();
+let ThreeDPoint.prototype.new=function(x,y,z){
+	let point=apply(Point.prototype.new,this,x,y);
+	let point.z=z;
+	return point;
+};
+let ThreeDPoint.prototype.print=function(){
+	print('z: ',this.z,', ');
+	apply(Point.prototype.print,this);
+};
+
+let p3=ThreeDPoint.new(5,42,10);
+print('p3.print(): ');p3.print();

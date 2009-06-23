@@ -116,7 +116,7 @@ struct
 									| IntegerValue(_) -> "integer"
 									| BooleanValue(_) -> "boolean"
 									| FloatValue(_) -> "float"
-									| LibraryFunction(_, _, _) | FunctionValue(_, _) -> "function"
+									| LibraryFunction(_, _, _) | ScopedFunctionValue(_, _, _) | FunctionValue(_, _) -> "function"
 									| MapValue(_, MapSubtype) -> "map"
 									| MapValue(_, ArraySubtype) -> "array"
 									| NaN -> "NaN"
@@ -126,6 +126,17 @@ struct
 		(["System";"command"],["command"], fun stbl ->
 					let command = Interpreter.cast_to_string (SymbolTable.get_value (Name "command") stbl) in
 					raise (Interpreter.CFReturn (IntegerValue(Sys.command command)))
+		);
+		(["apply"],["func";"this";"[args"], fun stbl ->
+					let func = SymbolTable.get_value (Name("func")) stbl
+					in let _ = match func with
+						| ScopedFunctionValue(arglist, stmts, _) -> ()
+						| FunctionValue(arglist, stmts) -> ()
+						| LibraryFunction(arglist, stmts, _) -> ()
+						| _ -> raise (LibraryError "expected a function in first parameter of call to apply")
+					in let this = SymbolTable.get_value(Name("this")) stbl
+					in let args = SymbolTable.list_of_array (SymbolTable.get_value(Name("args")) stbl)
+					in raise (Interpreter.CFReturn (Interpreter.run_function func args this stbl))
 		);
 		(["exit"],["exitcode"], fun stbl ->
 					match SymbolTable.get_value (Name("exitcode")) stbl with
