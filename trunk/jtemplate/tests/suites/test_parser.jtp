@@ -45,5 +45,14 @@ var testSuite = {
 				;
 			return true;
 		}
+	},{
+		description: 'precendence of ?: expressions',
+		test: function(){
+			let gcd = function(x, y) {
+				return x == y ? x : x < y ? gcd(x, y - x) : gcd(x - y, x); 
+				// will get casting error compare boolean to int if broken 
+			};
+			return gcd(24,6)==6;
+		}
 	} ]
 };
