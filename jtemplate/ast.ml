@@ -8,12 +8,9 @@ type comparator =
 	| GreaterThan
 	| NotEqual
 
-type label = | Label of string
-
-type text = string
 
 type replacement =
-	(text * expression)
+	(string * expression)
 
 and replacement_list =
 	replacement list
@@ -25,10 +22,10 @@ and conditional_spec =
 	| CondLoop of expression * string * expression
 
 and replacement_spec =
-	(label * conditional_spec * replacement_list)
+	(string * conditional_spec * replacement_list)
 
 and template_spec =
-	((label option) * text)
+	((string option) * string)
 
 and map_subtype = | MapSubtype | ArraySubtype
 
