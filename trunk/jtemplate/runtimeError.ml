@@ -50,7 +50,7 @@ exception TypeMismatchInMapAssignment of string * string * string * string
 (** This exception indicates that a vararg is not last in function definition
 @param field1 the name of the function
 *)
-exception VarArgsMustbeLast 
+exception VarArgsMustbeLast
 
 exception LibraryError of string
 
@@ -84,31 +84,31 @@ exception NotAFunction
 exception NotAnInteger of string
 
 let string_of_error ex =
-	match ex with
-	| ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
-	| ReferenceToUndefinedMapVariable(comp, varname) ->
-			"Reference to undefined field " ^ comp ^ " variable in " ^ varname
-	| NotAMap(comp, varname) -> comp ^ " is not a map in access of map " ^ varname
-	| TypeMismatchInAssignment(name, old_type, new_type) ->
-			"Cannot assign a "^new_type^" to variable "^name^" of type "^old_type
-	| TypeMismatchInMapAssignment(comp, name, old_type, new_type) ->
-			"Cannot assign a "^new_type^" to in "^comp^" of type "^old_type^" in map "^name
-	| MismatchedCallArgs ->
-			"The number of arguments do not match the number of formal parameters in function call "
-	| VarArgsMustbeLast->
-			"In the definition of a function, a vararg parameter must be the last formal parameter"
-	| LibraryError msg | InternalError msg | NotAnInteger msg -> msg
-	| InvalidArrayIndex(indtype, value) -> "Invalid array index of type "^indtype^" with value "^value
-	| ArrayIndexOutOfBounds index -> "Array index out of bounds ("^index^")"
-	| NotACollectionType(where, typename) -> "Expected a collection type for "^
-			where^", received a "^typename^" instead"
-	| DefaultCaseShouldBeLast -> "Unexpected case statement found after a default statement"
-	| UnexpectedUnboundVar name -> "Unexpected unbound variable "^name^
-			". Unbound variables can only be used in function calls."
-	| UserException(value) -> "Unhandled user exception"
-	| InvalidMember(typename, value) -> "Invalid member of type "^typename^" with value "^value
-	| UndefinedMapMember(value) -> "Undefined map member "^value
-	| LeftSideIsNotAMap(typename,value) -> "Expected a collection type but found type "^typename^" with value "^value
-	| LeftSideCannotBeAssigned -> "Left side cannot be assigned"
-	| e -> "uncaught exception "^(Printexc.to_string e)
+  match ex with
+  | ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
+  | ReferenceToUndefinedMapVariable(comp, varname) ->
+      "Reference to undefined field " ^ comp ^ " variable in " ^ varname
+  | NotAMap(comp, varname) -> comp ^ " is not a map in access of map " ^ varname
+  | TypeMismatchInAssignment(name, old_type, new_type) ->
+      "Cannot assign a "^new_type^" to variable "^name^" of type "^old_type
+  | TypeMismatchInMapAssignment(comp, name, old_type, new_type) ->
+      "Cannot assign a "^new_type^" to in "^comp^" of type "^old_type^" in map "^name
+  | MismatchedCallArgs ->
+      "The number of arguments do not match the number of formal parameters in function call "
+  | VarArgsMustbeLast ->
+      "In the definition of a function, a vararg parameter must be the last formal parameter"
+  | LibraryError msg | InternalError msg | NotAnInteger msg -> msg
+  | InvalidArrayIndex(indtype, value) -> "Invalid array index of type "^indtype^" with value "^value
+  | ArrayIndexOutOfBounds index -> "Array index out of bounds ("^index^")"
+  | NotACollectionType(where, typename) -> "Expected a collection type for "^
+      where^", received a "^typename^" instead"
+  | DefaultCaseShouldBeLast -> "Unexpected case statement found after a default statement"
+  | UnexpectedUnboundVar name -> "Unexpected unbound variable "^name^
+      ". Unbound variables can only be used in function calls."
+  | UserException(value) -> "Unhandled user exception"
+  | InvalidMember(typename, value) -> "Invalid member of type "^typename^" with value "^value
+  | UndefinedMapMember(value) -> "Undefined map member "^value
+  | LeftSideIsNotAMap(typename, value) -> "Expected a collection type but found type "^typename^" with value "^value
+  | LeftSideCannotBeAssigned -> "Left side cannot be assigned"
+  | e -> "uncaught exception "^(Printexc.to_string e)
 
