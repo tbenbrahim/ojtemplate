@@ -120,56 +120,9 @@ struct
 	let initialize_environment environment =
 		{ values = Hashtbl.create 10 ; parent_table = None ; env = environment }
 	
-	let valid_array_index ind =
-		(ind ="length") ||
-		(try let _ = int_of_string ind in true with Failure _ -> false)
-	
 	(** creates a new symbol table for a nested scope. *)
 	let push_scope symbol_table =
 		{ values = Hashtbl.create 10 ; parent_table = Some symbol_table; env = symbol_table.env	}
-	
-	let pop_scope symbol_table =
-		match symbol_table.parent_table with
-		| Some table -> table
-		| None -> raise ECannotPopTopmostScope
-	
-	let lookup hashtbl sname =
-		try
-			Hashtbl.find hashtbl sname
-		with Not_found ->
-				raise (ENotFound sname)
-	
-	let rec replace_map_value assignment containername namelist container value =
-		match namelist with
-			lastelem::[] ->
-		(* this is the last element, it must be a MapValue *)
-				(match container with
-						MapValue(hashtbl, subtype) ->
-							if subtype = ArraySubtype && not(valid_array_index lastelem)then
-								raise (EInvalidArrayIndex(lastelem))
-							else
-								();
-							if assignment then
-								try
-									let old_value = (Hashtbl.find hashtbl lastelem ) in
-									let old_value_type = value_type old_value in
-									let new_value_type = value_type value in
-									if new_value_type = old_value_type then
-										Hashtbl.replace hashtbl lastelem value
-									else
-										raise (ETypeMismatchInAssignment(lastelem, string_of_symbol_type old_value,
-													string_of_symbol_type value))
-								with
-								| Not_found -> raise (ENotFound lastelem)
-							else
-								Hashtbl.replace hashtbl lastelem value;
-					| _ -> raise (ENotAMap containername))
-		| [] -> raise EUnexpectedCompoundName (* my error, should never happen, could only happen if a coumpound name had fewer than 2 elements *)
-		| elem :: tail ->
-		(* middle element, it must be a MapValue *)
-				(match container with
-						MapValue(hashtbl, _) -> replace_map_value assignment elem tail (lookup hashtbl elem) value
-					| _ -> raise (ENotAMap containername))
 	
 	let rec resolve_replace assignment name symbol_table value =
 		match symbol_table with
@@ -189,33 +142,7 @@ struct
 					else
 						Hashtbl.replace table.values name value (* it is a declaration, always use current scope *)
 				)
-	
-	(**
-	module private function to recusively resolve a compound name list to a value in a map
-	@param name the name of the segment of the compound name being processed
-	@param value value the value of the segment of the compound name being processed
-	@param name_list the part of compound name list following name
-	@return the value of the last segment of the compound name list
-	@raise EUnexpectedCompoundName if the name_list is empty (should never happen)
-	@raise ENotFound if any intermediate name is not defined
-	@raise ENotAMap if any intermediate name is not a MapValue
-	*)
-	let rec get_map_value name value name_list =
-		match value with
-		| MapValue(map, subtype) ->
-				(match name_list with
-					| el::[] ->
-							if subtype = ArraySubtype && not(valid_array_index el) then
-								raise (EInvalidArrayIndex(el))
-							else
-								();
-							(try Hashtbl.find map el with Not_found -> raise (ENotFound el)) (* last element, return value *)
-					| el:: tl -> get_map_value el
-								(try Hashtbl.find map el with Not_found -> raise (ENotFound el)) tl (* intermediate element, recurse *)
-					| _ -> raise EUnexpectedCompoundName (* could only happen if compound name had less than 2 elements *)
-				)
-		| _ -> raise (ENotAMap name)
-	
+			
 	let rec resolve name symbol_table =
 		match symbol_table with
 		| None -> raise (ReferenceToUndefinedVariable name)
