@@ -3,29 +3,18 @@ var gcd = function(x, y) {
 };
 
 var fib = function(n) {
-	if (n == 0) {
-		return 0;
-	}
-	if (n == 1) {
-		return 1;
-	}
-	return fib(n - 1) + fib(n - 2);
+	return n == 0 ? 0 : n == 1 ? 1 : fib(n - 1) + fib(n - 2);
 };
 
 var fact = function(n) {
-	if (n == 0 || n == 1) {
-		return 1;
-	}
-	return n * fact(n - 1);
+	return n == 0 || n == 1 ? 1 : n * fact(n - 1);
 };
 
-let
-odd = function(n) {
+var odd = function(n) {
 	return n == 0 ? false : even(n - 1);
 };
 
-let
-even = function(n) {
+var even = function(n) {
 	return n == 0 ? true : odd(n - 1);
 };
 
