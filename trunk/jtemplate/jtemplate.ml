@@ -1,7 +1,6 @@
 open Lexer
 open Parser
 open Lexing
-open Ast_info
 open Symbol_table
 open Interpreter
 open Library_builtin
