@@ -106,21 +106,21 @@ statement:
 		| expression SEMICOLON { ExpressionStatement($1, get_env()) }
     | SEMICOLON  { Noop }
     | statement_block { $1 }
-    | FOREACH LPAREN ID IN expression RPAREN statement { ForEach(Name($3),$5,$7,get_env()) }
+    | FOREACH LPAREN ID IN expression RPAREN statement { ForEach($3,$5,$7,get_env()) }
 		| WHILE LPAREN expression RPAREN statement { For(Value(Void),$3,Value(Void),$5,get_env()) }
 		| CONTINUE SEMICOLON                      { Continue(get_env())}
     | BREAK SEMICOLON                         { Break(get_env())}
     | RETURN opt_expression SEMICOLON         { Return($2,get_env()) }
     | IMPORT STRING SEMICOLON                 { Import(resolve_import($2,$1,get_env()),get_env()) }
-		| TEMPLATE ID LBRACE template_specs RBRACE { TemplateDef(Name($2), $4,get_env()) }
+		| TEMPLATE ID LBRACE template_specs RBRACE { TemplateDef($2, $4,get_env()) }
     | INSTRUCTIONS FOR ID LPAREN arglist RPAREN LBRACE instruction_specs RBRACE
-                                              { Instructions(Name($3),$5,$8,get_env()) }
+                                              { Instructions($3,$5,$8,get_env()) }
     | SWITCH LPAREN expression RPAREN LBRACE switch_statements RBRACE
                                               { Switch($3,$6, get_env()) }		
     | FOR LPAREN opt_expression SEMICOLON 
                  opt_expression SEMICOLON 
                  opt_expression RPAREN statement { For($3,$5,$7,$9,get_env()) }		
-    | TRY statement_block CATCH LPAREN ID RPAREN statement_block { TryCatch($2,Name($5),$7, get_env()) }
+    | TRY statement_block CATCH LPAREN ID RPAREN statement_block { TryCatch($2,$5,$7, get_env()) }
     | TRY statement_block FINALLY statement_block { TryFinally($2,$4,get_env()) }                 		
     | THROW expression SEMICOLON              { Throw($2, get_env()) }
 ;
@@ -209,9 +209,9 @@ expression:
     | lhs_expr MINUSEQUALS expression         { Assignment($1,(BinaryOp($1,Minus,$3))) } 
 ;
 arglist:                              
-    | ID                                      { [Name($1)] }
-    | ID DOTDOTDOT                            { [Name("["^$1)] }
-    | ID COMMA arglist                        { Name($1)::$3 }
+    | ID                                      { [$1] }
+    | ID DOTDOTDOT                            { ["["^$1] }
+    | ID COMMA arglist                        { $1::$3 }
     | /* nothing */                           { [] }
 ;
 expr_list:
@@ -223,8 +223,8 @@ expr_list:
 fexpr:
     | expression                              { $1 }
     | empty_statement_block                   { MapExpr([]) }
-    | AT ID                                   { UnboundVar(Name($2)) }
-    | AT ID DOTDOTDOT                         { UnboundVar(Name("["^$2)) }
+    | AT ID                                   { UnboundVar($2) }
+    | AT ID DOTDOTDOT                         { UnboundVar("["^$2) }
 ;
 fexpr_list:
     | fexpr                                   { [$1] }
@@ -254,9 +254,9 @@ instruction_spec:
 repl_condition:                       
     | ONCE                                    { Once }
     | WHEN LPAREN expression RPAREN           { When($3) }
-    | FOREACH LPAREN ID IN expression RPAREN  { Loop(Name($3),$5) }
+    | FOREACH LPAREN ID IN expression RPAREN  { Loop($3,$5) }
     | FOREACH LPAREN ID IN expression RPAREN WHEN LPAREN expression RPAREN
-                                              { CondLoop($9,Name($3),$5) }  
+                                              { CondLoop($9,$3,$5) }  
 ;
 replacement:                          
     | ID EQUALS expression                    { ($1,$3) }

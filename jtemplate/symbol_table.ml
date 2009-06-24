@@ -48,19 +48,10 @@ struct
 		| MapValue(map, ArraySubtype _) -> "[]"
 		| Void -> "Void"
 		| NaN -> "NaN"
-	and
-	(**
-	returns the printable name of a variable name
-	@param name an Ast.variable_name type
-	@return a string specifying the variable name
-	*)
-	fullname = function
-		| Ast.Name(name) -> name
-	
 	and string_of_args args =
 		match args with
 		| [] -> "()"
-		| _ -> "(" ^ (let x = (List.fold_left (fun acc el -> acc^","^(fullname el)) "" args) in
+		| _ -> "(" ^ (let x = (List.fold_left (fun acc el -> acc^","^el) "" args) in
 					String.sub x 1 ((String.length x) - 1)) ^")"
 	
 	let string_of_symbol_type = function
@@ -182,24 +173,21 @@ struct
 	
 	let rec resolve_replace assignment name symbol_table value =
 		match symbol_table with
-		| None -> raise (ReferenceToUndefinedVariable (fullname name))
+		| None -> raise (ReferenceToUndefinedVariable name)
 		| Some table -> (
-					match name with
-					| Ast.Name(varname) -> (
-								if assignment then( (* it is an assignment we must find the original scope of the declaration *)
-									try (* it is in the current scope *)
-										let old_value_type = string_of_symbol_type (Hashtbl.find table.values varname ) in
-										let new_value_type = string_of_symbol_type value in
-										if new_value_type = old_value_type then
-											Hashtbl.replace table.values varname value
-										else
-											raise ( TypeMismatchInAssignment(varname, old_value_type, new_value_type))
-									with
-										Not_found -> resolve_replace assignment name table.parent_table value
-								)
-								else
-									Hashtbl.replace table.values varname value (* it is a declaration, always use current scope *)
-							)
+					if assignment then( (* it is an assignment we must find the original scope of the declaration *)
+						try (* it is in the current scope *)
+							let old_value_type = string_of_symbol_type (Hashtbl.find table.values name ) in
+							let new_value_type = string_of_symbol_type value in
+							if new_value_type = old_value_type then
+								Hashtbl.replace table.values name value
+							else
+								raise ( TypeMismatchInAssignment(name, old_value_type, new_value_type))
+						with
+							Not_found -> resolve_replace assignment name table.parent_table value
+					)
+					else
+						Hashtbl.replace table.values name value (* it is a declaration, always use current scope *)
 				)
 	
 	(**
@@ -230,20 +218,18 @@ struct
 	
 	let rec resolve name symbol_table =
 		match symbol_table with
-		| None -> raise (ReferenceToUndefinedVariable (fullname name))
+		| None -> raise (ReferenceToUndefinedVariable name)
 		| Some table -> (
 					try
-						match name with
-						| Ast.Name(varname) ->
-								(try
-									Hashtbl.find table.values varname
-								with
-									Not_found -> resolve name table.parent_table)
+						(try
+							Hashtbl.find table.values name
+						with
+							Not_found -> resolve name table.parent_table)
 					with
-						Not_found -> raise (ReferenceToUndefinedVariable (fullname name))
-					| ENotFound ename -> raise (ReferenceToUndefinedMapVariable (ename , fullname name))
-					| ENotAMap ename -> raise (NotAMap (ename, fullname name))
-					| EInvalidArrayIndex comp -> raise (InvalidArrayIndex (comp, fullname name))
+						Not_found -> raise (ReferenceToUndefinedVariable name)
+					| ENotFound ename -> raise (ReferenceToUndefinedMapVariable (ename , name))
+					| ENotAMap ename -> raise (NotAMap (ename, name))
+					| EInvalidArrayIndex comp -> raise (InvalidArrayIndex (comp, name))
 				)
 	
 	let declare name value symbol_table = resolve_replace false name (Some symbol_table) value
@@ -280,22 +266,22 @@ struct
 	let rec put_args_in_scope args vals scope =
 		match args with
 		| [] -> if vals != [] then raise RuntimeError.MismatchedCallArgs else ()
-		| Name(last)::[] -> (* only place where vararg is allowed *)
+		| last::[] -> (* only place where vararg is allowed *)
 				if is_vararg last then
 					let h = (Hashtbl.create 10) in
 					Hashtbl.add h "length" (IntegerValue(add_vals_to_arr h vals 0));
-					declare (Name(vararg_formalname last)) (MapValue(h, ArraySubtype)) scope
+					declare (vararg_formalname last) (MapValue(h, ArraySubtype)) scope
 				else(
 					if vals =[] then raise RuntimeError.MismatchedCallArgs (* ran out of values *)
-					else declare (Name last) (List.hd vals) scope; put_args_in_scope [] (List.tl vals) scope
+					else declare last (List.hd vals) scope; put_args_in_scope [] (List.tl vals) scope
 				)
-		| Name(el):: rest_args ->
+		| el:: rest_args ->
 				if el.[0]='[' then
 					raise RuntimeError.VarArgsMustbeLast
 				else(
 					if vals =[] then raise RuntimeError.MismatchedCallArgs (* ran out of values *)
 					else(
-						declare (Name el) (List.hd vals) scope;
+						declare el (List.hd vals) scope;
 						put_args_in_scope rest_args (List.tl vals) scope
 					))
 	

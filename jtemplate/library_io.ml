@@ -28,19 +28,19 @@ struct
 		[
 		(["print"],["[value"], fun (stbl) ->
 					let _ = List.map (fun el -> print_string (Interpreter.cast_to_string el))
-							(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in ()
+							(SymbolTable.list_of_array (SymbolTable.get_value "value" stbl)) in ()
 		);
 		(["println"],["[value"], fun (stbl) ->
 					let _ = List.map (fun el -> print_string (Interpreter.cast_to_string el))
-							(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in
+							(SymbolTable.list_of_array (SymbolTable.get_value "value" stbl)) in
 					print_newline()
 		);
 		(["readln"],[], fun (stbl) ->
 					raise (Interpreter.CFReturn(StringValue(read_line())))
 		);
 		(["File";"openForWriting"],["handle"; "filename"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
-					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
+					let filename = Interpreter.cast_to_string (SymbolTable.get_value "filename" stbl) in
 					try
 						if Hashtbl.mem descriptors handle then
 							raise (EIOPassthrough("handle "^handle^" is already opened in call to openForWriting"))
@@ -52,8 +52,8 @@ struct
 					| _ -> raise (LibraryError ("error opening file "^filename^" in openFileForWriting"))
 		);
 		(["File";"openForReading"],["handle"; "filename"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
-					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
+					let filename = Interpreter.cast_to_string (SymbolTable.get_value "filename" stbl) in
 					try
 						if Hashtbl.mem descriptors handle then
 							raise (EIOPassthrough("handle "^handle^" is already opened in call to openForReading"))
@@ -65,7 +65,7 @@ struct
 					| _ -> raise (LibraryError ("error opening file "^filename^" in openFileForReading"))
 		);
 		(["File";"close"],["handle"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
 					let (c, _ ) = get_descriptor handle "closeFile" in
 					try
 						(match c with
@@ -77,26 +77,26 @@ struct
 					| Sys_error msg -> raise (LibraryError ("System error on closeFile:" ^ msg ))
 		);
 		(["File";"write"],["handle"; "[value"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
 					let (c, filename) = get_descriptor handle "write" in
 					match c with
 					| OutChannel(ch) ->
 							( try
 								let _ = List.map (fun el -> output_string ch (Interpreter.cast_to_string el))
-										(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in ()
+										(SymbolTable.list_of_array (SymbolTable.get_value "value" stbl)) in ()
 							with
 							| EIOPassthrough(msg) -> raise (LibraryError msg)
 							| _ -> raise (LibraryError ("error writing file "^filename^" in write")))
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
 		(["File";"writeln"],["handle"; "[value"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
 					let (c, filename) = get_descriptor handle "writeln" in
 					match c with
 					| OutChannel(ch) ->
 							(try
 								let _ = List.map (fun el -> output_string ch (Interpreter.cast_to_string el))
-										(SymbolTable.list_of_array (SymbolTable.get_value (Name("value")) stbl)) in
+										(SymbolTable.list_of_array (SymbolTable.get_value "value" stbl)) in
 								output_string ch ( "\n")
 							with
 							| EIOPassthrough(msg) -> raise (LibraryError msg)
@@ -104,7 +104,7 @@ struct
 					| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		);
 		(["File";"readln"],["handle"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
 					let (c, filename) = get_descriptor handle "readln" in
 					match c with
 					| OutChannel(ch) -> raise (EIOPassthrough ("invalid handle in call to readln. Handle "^handle^" was opened for writing "^filename))
@@ -118,14 +118,14 @@ struct
 							raise (Interpreter.CFReturn(StringValue(data)))
 		);
 		(["File";"eof"],["handle"], fun stbl ->
-					let handle = Interpreter.cast_to_string (SymbolTable.get_value (Name("handle")) stbl) in
+					let handle = Interpreter.cast_to_string (SymbolTable.get_value "handle" stbl) in
 					let (c, filename) = get_descriptor handle "eof" in
 					match c with
 					| OutChannel(ch) -> raise (EIOPassthrough("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
 					| InChannel(ch, (_, eof)) -> raise (Interpreter.CFReturn(BooleanValue(eof)))
 		);
 		(["File";"exists"],["filename"], fun stbl ->
-					let filename = Interpreter.cast_to_string (SymbolTable.get_value (Name("filename")) stbl) in
+					let filename = Interpreter.cast_to_string (SymbolTable.get_value "filename" stbl) in
 					(try
 						close_in (open_in filename)
 					with
@@ -133,7 +133,7 @@ struct
 					raise (Interpreter.CFReturn(BooleanValue(true)))
 		);
 		(["File";"delete"],["name"], fun stbl ->
-					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					let name = Interpreter.cast_to_string (SymbolTable.get_value "name" stbl) in
 					(try
 						unlink name
 					with
@@ -141,8 +141,8 @@ struct
 					raise (Interpreter.CFReturn(BooleanValue(true)))
 		);
 		(["File";"rename"],["fromname";"toname"], fun stbl ->
-					let fromname = Interpreter.cast_to_string (SymbolTable.get_value (Name("fromname")) stbl) in
-					let toname = Interpreter.cast_to_string (SymbolTable.get_value (Name("toname")) stbl) in
+					let fromname = Interpreter.cast_to_string (SymbolTable.get_value "fromname" stbl) in
+					let toname = Interpreter.cast_to_string (SymbolTable.get_value "toname" stbl) in
 					(try
 						rename fromname toname
 					with
@@ -150,7 +150,7 @@ struct
 					raise (Interpreter.CFReturn(BooleanValue(true)))
 		);
 		(["Directory";"create"],["name"], fun stbl ->
-					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					let name = Interpreter.cast_to_string (SymbolTable.get_value "name" stbl) in
 					(try
 						mkdir name 0o640
 					with
@@ -158,7 +158,7 @@ struct
 					raise (Interpreter.CFReturn(BooleanValue(true)))
 		);
 		(["Directory";"delete"],["name"], fun stbl ->
-					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					let name = Interpreter.cast_to_string (SymbolTable.get_value  "name" stbl) in
 					(try
 						rmdir name
 					with
@@ -166,7 +166,7 @@ struct
 					raise (Interpreter.CFReturn(BooleanValue(true)))
 		);
 		(["Directory";"list"],["name"], fun stbl ->
-					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					let name = Interpreter.cast_to_string (SymbolTable.get_value "name" stbl) in
 					let arr = (try
 							let handle = opendir name in
 							let h = Hashtbl.create 10
@@ -184,7 +184,7 @@ struct
 					in raise (Interpreter.CFReturn(MapValue(arr, ArraySubtype)));
 		);
 		(["Directory";"exists"],["name"], fun stbl ->
-					let name = Interpreter.cast_to_string (SymbolTable.get_value (Name("name")) stbl) in
+					let name = Interpreter.cast_to_string (SymbolTable.get_value "name" stbl) in
 					raise (Interpreter.CFReturn(BooleanValue((try
 										Sys.is_directory name
 									with

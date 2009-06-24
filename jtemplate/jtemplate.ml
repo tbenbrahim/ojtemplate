@@ -14,7 +14,7 @@ open RuntimeError
 
 let register_args len symbol_table =
 	let h = Hashtbl.create (len - 1) in
-	SymbolTable.declare (Name("args")) (MapValue(h, ArraySubtype)) symbol_table;
+	SymbolTable.declare "args" (MapValue(h, ArraySubtype)) symbol_table;
 	Hashtbl.add h "length" (IntegerValue(len - 1));
 	let rec loop ind =
 		Hashtbl.add h (string_of_int (ind - 1)) (StringValue(Sys.argv.(ind)));

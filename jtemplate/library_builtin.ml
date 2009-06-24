@@ -10,8 +10,8 @@ struct
 		Random.self_init();
 		[
 		(["Array";"prototype";"push"],["value"], fun stbl ->
-					let array = SymbolTable.get_value (Name("this")) stbl in
-					let value = SymbolTable.get_value (Name("value")) stbl in
+					let array = SymbolTable.get_value "this" stbl in
+					let value = SymbolTable.get_value "value" stbl in
 					try
 						match array with
 						| MapValue(hashtbl, ArraySubtype) ->
@@ -22,7 +22,7 @@ struct
 					with _ -> raise (LibraryError "First parameter is not an array in call to Array.push")
 		);
 		(["Array";"prototype";"pop"],[], fun stbl ->
-					let array = SymbolTable.get_value (Name("this")) stbl in
+					let array = SymbolTable.get_value "this" stbl in
 					match array with
 					| MapValue(hashtbl, ArraySubtype) ->
 							let len = Interpreter.cast_to_integer(Hashtbl.find hashtbl "length") in
@@ -36,7 +36,7 @@ struct
 					| _ -> raise (LibraryError "First parameter is not an array in call to Array.pop")
 		);
 		(["Array";"prototype";"length"],[], fun stbl ->
-					let array = SymbolTable.get_value (Name("this")) stbl in
+					let array = SymbolTable.get_value "this" stbl in
 					match array with
 					| MapValue(hashtbl, ArraySubtype) ->
 							(match Hashtbl.find hashtbl "length" with
@@ -45,21 +45,21 @@ struct
 					| _ -> raise (LibraryError "First parameter is not an array in call to Array.pop")
 		);
 		(["Map";"prototype";"remove"],["key"], fun stbl ->
-					let map = SymbolTable.get_value (Name("this")) stbl in
-					let key = Interpreter.cast_to_string(SymbolTable.get_value (Name("key")) stbl) in
+					let map = SymbolTable.get_value "this" stbl in
+					let key = Interpreter.cast_to_string(SymbolTable.get_value "key" stbl) in
 					match map with
 					| MapValue(hashtbl, MapSubtype) -> Hashtbl.remove hashtbl key
 					| _ -> raise (LibraryError "First parameter is not a map in call to Map.remove")
 		);
 		(["Map";"prototype";"contains"],["key"], fun stbl ->
-					let map = SymbolTable.get_value (Name("this")) stbl in
-					let key = Interpreter.cast_to_string(SymbolTable.get_value (Name("key")) stbl) in
+					let map = SymbolTable.get_value "this" stbl in
+					let key = Interpreter.cast_to_string(SymbolTable.get_value "key" stbl) in
 					match map with
 					| MapValue(hashtbl, MapSubtype) -> raise (Interpreter.CFReturn(BooleanValue(Hashtbl.mem hashtbl key)))
 					| _ -> raise (LibraryError "First parameter is not a map in call to Map.contains")
 		);
 		(["Map";"prototype";"keys"],[], fun stbl ->
-					let map = SymbolTable.get_value (Name("this")) stbl in
+					let map = SymbolTable.get_value "this" stbl in
 					let result = Hashtbl.create 10 in
 					match map with
 					| MapValue(hashtbl, MapSubtype) ->
@@ -71,14 +71,14 @@ struct
 		(["Integer";"random"],["upperBound"], fun stbl ->
 					let upperBound =
 						(try
-							Interpreter.cast_to_integer(SymbolTable.get_value (Name("upperBound")) stbl)
+							Interpreter.cast_to_integer(SymbolTable.get_value "upperBound" stbl)
 						with
 						| _ -> raise (LibraryError("upperBound must an integer in call to Integer.random")))
 					in
 					raise (Interpreter.CFReturn(IntegerValue(Random.int upperBound)))
 		);
 		(["Float";"prototype";"round"],[], fun stbl ->
-					match SymbolTable.get_value (Name("this")) stbl with
+					match SymbolTable.get_value "this" stbl with
 					| FloatValue(f) -> raise (Interpreter.CFReturn (IntegerValue(int_of_float(
 													let (frac, _) = modf f in (if frac >= 0.5 then ceil f else floor f)))))
 					| _ -> raise (LibraryError("parameter is not a float in call to Float.round"))
@@ -88,12 +88,12 @@ struct
 					(* FIX: below is not 100% reliable *)
 					let gmt_offset = (localtime (time())).tm_hour - (gmtime (time())).tm_hour in
 					let dateobj = (
-							if SymbolTable.is_undefined(Name("Date")) stbl then
+							if SymbolTable.is_undefined("Date") stbl then
 								let h = Hashtbl.create 10
 								in let v = MapValue(h, MapSubtype)
-								in SymbolTable.declare (Name("Date")) v stbl;
+								in SymbolTable.declare "Date" v stbl;
 								v
-							else SymbolTable.get_value (Name("Date")) stbl
+							else SymbolTable.get_value "Date" stbl
 						) in
 					let h = Hashtbl.create 10 in
 					Hashtbl.add h "prototype" (dateobj);
@@ -111,7 +111,7 @@ struct
 		);
 		(["typeof"],["value"], fun stbl ->
 					raise (Interpreter.CFReturn(StringValue(
-									match SymbolTable.get_value (Name("value")) stbl with
+									match SymbolTable.get_value "value" stbl with
 									| StringValue(_) -> "string"
 									| IntegerValue(_) -> "integer"
 									| BooleanValue(_) -> "boolean"
@@ -124,28 +124,28 @@ struct
 								)))
 		);
 		(["System";"command"],["command"], fun stbl ->
-					let command = Interpreter.cast_to_string (SymbolTable.get_value (Name "command") stbl) in
+					let command = Interpreter.cast_to_string (SymbolTable.get_value "command" stbl) in
 					raise (Interpreter.CFReturn (IntegerValue(Sys.command command)))
 		); 
 		(["Function";"prototype";"apply"],["targetThis";"[args"], fun stbl ->
-					let func = SymbolTable.get_value (Name("this")) stbl
+					let func = SymbolTable.get_value "this" stbl
 					in let _ = match func with
 						| ScopedFunctionValue(arglist, stmts, _) -> ()
 						| FunctionValue(arglist, stmts) -> ()
 						| LibraryFunction(arglist, stmts, _) -> ()
 						| _ -> raise (LibraryError "expected a function in first parameter of call to apply")
-					in let this = SymbolTable.get_value(Name("targetThis")) stbl
-					in let args = SymbolTable.list_of_array (SymbolTable.get_value(Name("args")) stbl)
+					in let this = SymbolTable.get_value "targetThis" stbl
+					in let args = SymbolTable.list_of_array (SymbolTable.get_value "args" stbl)
 					in raise (Interpreter.CFReturn (Interpreter.run_function func args this stbl))
 		);
 		(["exit"],["exitcode"], fun stbl ->
-					match SymbolTable.get_value (Name("exitcode")) stbl with
+					match SymbolTable.get_value "exitcode" stbl with
 					| IntegerValue(c) -> if c >= - 128 && c <= 127 then exit c else
 								raise (LibraryError("exitcode must be an integer between -128 and 127 in call to exit"))
 					| _ -> raise (LibraryError("exitcode must be an integer in call to exit"))
 		);
 		(["Debug";"dumpSymbolTable"],["includeLibraryCalls"], fun stbl ->
-					let incl_lib = (match SymbolTable.get_value (Name("includeLibraryCalls")) stbl with
+					let incl_lib = (match SymbolTable.get_value "includeLibraryCalls" stbl with
 							| BooleanValue(x) -> x
 							| _ -> raise (LibraryError "includeLibraryCalls must be a boolean in call to Debug.dumpSymbolTable") ) in
 					match stbl.parent_table with

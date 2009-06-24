@@ -21,8 +21,8 @@ and replacement_list =
 and conditional_spec =
 	| Once
 	| When of expression
-	| Loop of variable_name * expression
-	| CondLoop of expression * variable_name * expression
+	| Loop of string * expression
+	| CondLoop of expression * string * expression
 
 and replacement_spec =
 	(label * conditional_spec * replacement_list)
@@ -45,9 +45,9 @@ and variable_value =
 	| FloatValue of float
 	| StringValue of string
 	| BooleanValue of bool
-	| FunctionValue of variable_name list * statement list
-	| ScopedFunctionValue of variable_name list * statement list * symbol_table
-	| LibraryFunction of variable_name list * (symbol_table -> unit) * symbol_table
+	| FunctionValue of string list * statement list
+	| ScopedFunctionValue of string list * statement list * symbol_table
+	| LibraryFunction of string list * (symbol_table -> unit) * symbol_table
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
 	| NaN
@@ -67,10 +67,6 @@ symbol_table ={
 	parent_table: symbol_table option;
 	env: environment;
 }
-
-and variable_name =
-	| Name of string
-
 and expression =
 	| Id of string
 	| BinaryOp of expression * operator * expression
@@ -79,9 +75,9 @@ and expression =
 	| FunctionCall of expression * expression list
 	| MapExpr of (string * expression) list
 	| ArrayExpr of expression list
-	| VariableExpr of variable_name
+	| VariableExpr of string
 	| Value of variable_value
-	| UnboundVar of variable_name
+	| UnboundVar of string
 	| Assignment of expression * expression
 	| Declaration of expression * expression
 	| MemberExpr of expression * expression
@@ -94,7 +90,7 @@ and expression =
 and imported_statements ={ mutable loaded: bool }
 
 and statement =
-	| ForEach of variable_name * expression * statement * (string * int)
+	| ForEach of string * expression * statement * (string * int)
 	| For of expression * expression * expression * statement * (string * int)
 	| ExpressionStatement of expression * (string * int)
 	| Break of (string * int)
@@ -102,14 +98,14 @@ and statement =
 	| Noop
 	| Return of expression * (string * int)
 	| If of expression * statement * statement * (string * int)
-	| TemplateDef of variable_name * template_spec list * (string * int)
-	| Instructions of variable_name * variable_name list * replacement_spec list * (string * int)
+	| TemplateDef of string * template_spec list * (string * int)
+	| Instructions of string * string list * replacement_spec list * (string * int)
 	| StatementBlock of statement list
 	| Program of statement list (* like a statement block but does not push scope*)
 	| Import of (string * imported_statements) * (string * int)
 	| Switch of expression * statement list * (string * int)
 	| Case of expression option * (string * int)
-	| TryCatch of statement * variable_name * statement * (string * int)
+	| TryCatch of statement * string * statement * (string * int)
 	| TryFinally of statement * statement * (string * int)
 	| Throw of expression * (string * int)
 
