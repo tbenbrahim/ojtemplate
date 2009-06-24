@@ -5,58 +5,57 @@ open Ast
 
 (* from http://plus.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial.pdf , p.9 *)
 let incr_linenum lexbuf =
-	let pos = lexbuf.Lexing.lex_curr_p in
-	lexbuf.Lexing.lex_curr_p <- { pos with
-		Lexing.pos_lnum = pos.Lexing.pos_lnum + 1;
-		Lexing.pos_bol = pos.Lexing.pos_cnum;
-		}
+    let pos = lexbuf.Lexing.lex_curr_p in
+    lexbuf.Lexing.lex_curr_p <- { pos with
+        Lexing.pos_lnum = pos.Lexing.pos_lnum + 1;
+        Lexing.pos_bol = pos.Lexing.pos_cnum;
+        }
 
 let syntax_exception msg lexbuf=
-	raise (LexerException (msg, lexbuf.Lexing.lex_curr_p.Lexing.pos_lnum,
-					   lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum - lexbuf.Lexing.lex_curr_p.Lexing.pos_bol))
+    raise (LexerException (msg, lexbuf.Lexing.lex_curr_p.Lexing.pos_lnum,
+                       lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum - lexbuf.Lexing.lex_curr_p.Lexing.pos_bol))
 
 let map_id name=
-	match name with
-	  "foreach" -> FOREACH
-	| "in" -> IN
-	|	"while" -> WHILE
-	| "function" -> FUNCTION
-	|	"if" -> IF
-	| "else" -> ELSE
-	|	"template" -> TEMPLATE
-	|	"instructions" ->INSTRUCTIONS
-	| "continue" -> CONTINUE
-	| "break" -> BREAK
-	| "return" -> RETURN
-	| "for" -> FOR
-	| "once" -> ONCE
-	| "when" -> WHEN
-	| "var" -> VAR
-  | "let" -> VAR
-	| "true" -> BOOLEAN(true)
-	| "false" -> BOOLEAN(false)
-	| "Void"  -> VOID
-	| "NaN" -> NAN 
-  | "import" -> IMPORT(false)
-  | "use" -> IMPORT(true)
-	| "switch" -> SWITCH
-	| "case" -> CASE
-	| "default" -> DEFAULT
-  | "try" -> TRY
-  | "catch" -> CATCH
-  | "finally" -> FINALLY
-  | "throw" -> THROW
-	|	_ ->  ID(name)
-		
+    match name with
+      "foreach" -> FOREACH
+    | "in" -> IN
+    | "while" -> WHILE
+    | "function" -> FUNCTION
+    | "if" -> IF
+    | "else" -> ELSE
+    | "template" -> TEMPLATE
+    | "instructions" ->INSTRUCTIONS
+    | "continue" -> CONTINUE
+    | "break" -> BREAK
+    | "return" -> RETURN
+    | "for" -> FOR
+    | "once" -> ONCE
+    | "when" -> WHEN
+    | "var" -> VAR
+    | "let" -> VAR
+    | "true" -> BOOLEAN(true)
+    | "false" -> BOOLEAN(false)
+    | "Void"  -> VOID
+    | "NaN" -> NAN 
+    | "import" -> IMPORT(false)
+    | "use" -> IMPORT(true)
+    | "switch" -> SWITCH
+    | "case" -> CASE
+    | "default" -> DEFAULT
+    | "try" -> TRY
+    | "catch" -> CATCH
+    | "finally" -> FINALLY
+    | "throw" -> THROW
+    | _ ->  ID(name)   
 }
-		
+        
 let digit = ['0'-'9']
 let id = ['a'-'z' 'A'-'Z' '_' '$']['A'-'Z' 'a'-'z' '0'-'9' '_' '$' ]*
 let whitespace = ['\r' '\t' ' ']
 let text = '#'[^'\n']*
 let float = (( (['0'-'9']+'.'['0'-'9']*) | (['0'-'9']*'.'['0'-'9']+) ) ('e'['+' '-']?['0'-'9']+)? ) | (['0'-'9']+ ('e'['+' '-']?['0'-'9']+))
 
-rule main =	parse 
+rule main = parse 
 | whitespace { main lexbuf }
 | text as token { TEXT(String.sub token 1 ((String.length token) - 1))}
 | digit+ as token { INT( int_of_string token)}
