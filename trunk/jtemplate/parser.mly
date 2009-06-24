@@ -65,8 +65,8 @@ let extract_stmt_list=function
 %right PLUSEQUALS MINUSEQUALS 
 %right TIMESEQUALS DIVEQUALS MODEQUALS
 %right EQUALS
-%right QUESTION
 %right COLON
+%right QUESTION
 %left OR
 %left AND 
 %left COMPOP

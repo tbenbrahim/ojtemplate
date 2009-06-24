@@ -1,48 +1,42 @@
-var gcd=function(x,y){
-    if (x==y){
-        return x;
-    }
-    if (x<y){
-        return gcd(x,y-x);
-    }else{
-        return gcd(x-y,x); 
-    }
+var gcd = function(x, y) {
+	return x == y ? x : x < y ? gcd(x, y - x) : gcd(x - y, x);
 };
 
-var fib=function(n){
-    if (n==0){
-        return 0;
-    }
-    if (n==1){
-        return 1;
-    }
-    return fib(n-1)+fib(n-2);
+var fib = function(n) {
+	if (n == 0) {
+		return 0;
+	}
+	if (n == 1) {
+		return 1;
+	}
+	return fib(n - 1) + fib(n - 2);
 };
 
-var fact=function(n){
-    if (n==0 || n==1){
-        return 1;
-    }
-    return n*fact(n-1);
+var fact = function(n) {
+	if (n == 0 || n == 1) {
+		return 1;
+	}
+	return n * fact(n - 1);
 };
 
-let odd=function(n){
-	return n==0? false: even(n-1);
+let
+odd = function(n) {
+	return n == 0 ? false : even(n - 1);
 };
 
-let even=function(n){
-	return n==0? true: odd(n-1);
+let
+even = function(n) {
+	return n == 0 ? true : odd(n - 1);
 };
 
-println(11,' is ',(even(11)?'':'not '),'even.' );
-println(11,' is ',(odd(11)?'':'not '),'odd.' );
+println(11, ' is ', (even(11) ? '' : 'not '), 'even.');
+println(11, ' is ', (odd(11) ? '' : 'not '), 'odd.');
 
-
-println('The GCD of 81 and 27 is '+ gcd(81,27));
-println('The GCD of 81 and 18 is '+ gcd(81,18));
-println('The GCD of 99 and 16 is '+ gcd(99,16));
+println('The GCD of 81 and 27 is ' + gcd(81, 27));
+println('The GCD of 81 and 18 is ' + gcd(81, 18));
+println('The GCD of 99 and 16 is ' + gcd(99, 16));
 println('');
-println('fib(12)='+fib(12));
+println('fib(12)=' + fib(12));
 println('');
-println('fact(20)='+fact(20));
+println('fact(20)=' + fact(20));
 println('');
