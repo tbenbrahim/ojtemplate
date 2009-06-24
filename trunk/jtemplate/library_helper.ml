@@ -23,7 +23,7 @@ let create_namespace namelist symbol_table =
 let rec make_name_list strlist namelist=
     match strlist with
         | [] -> List.rev namelist
-        | hd::tl -> make_name_list tl (Name(hd)::namelist)
+        | hd::tl -> make_name_list tl (hd::namelist)
 
 let register_library defs symbol_table =
 	let _ = List.map (fun def -> let (names, formal_args, code) = def in

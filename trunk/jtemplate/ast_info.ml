@@ -133,20 +133,19 @@ struct
 		| Ast.Noop -> (prefix level) ^ "Noop\n"
 	
 	and var_descriptionl level var =
-		match var with
-		| Ast.Name(name) -> (prefix level) ^ ("Variable " ^ (name ^ "\n"))
+		(prefix level) ^ ("Variable " ^ (var ^ "\n"))
 	and expr_descriptionl level expr =
 		match expr with
-(**		| Ast.Assignment (var, expr) ->
-				(prefix level) ^
-				("Assignment\n" ^
-					((var_descriptionl (level + 1) var) ^
-						(expr_descriptionl (level + 1) expr)))
+		(**		| Ast.Assignment (var, expr) ->
+		(prefix level) ^
+		("Assignment\n" ^
+		((var_descriptionl (level + 1) var) ^
+		(expr_descriptionl (level + 1) expr)))
 		| Ast.Declaration (var, expr) ->
-				(prefix level) ^
-				("Declaration\n" ^
-					((var_descriptionl (level + 1) var) ^
-						(expr_descriptionl (level + 1) expr)))        *)
+		(prefix level) ^
+		("Declaration\n" ^
+		((var_descriptionl (level + 1) var) ^
+		(expr_descriptionl (level + 1) expr))) *)
 		| Ast.BinaryOp (op1, op, op2) ->
 				(prefix level) ^
 				("BinOp " ^
@@ -163,11 +162,9 @@ struct
 								(expr_descriptionl (level + 1) op2)))))
 		| Ast.Value value ->
 				(prefix level) ^ "Value reference\n" ^ value_descriptionl (level + 1) value
-(*		| Ast.FunctionCall (var, expr_list) ->
-				(prefix level) ^
-				("FunctionCall\n" ^
-					((var_descriptionl (level + 1) var) ^
-						(expression_list (level + 1) expr_list)))  *)
+		(* | Ast.FunctionCall (var, expr_list) -> (prefix level) ^                 *)
+		(* ("FunctionCall\n" ^ ((var_descriptionl (level + 1) var) ^               *)
+		(* (expression_list (level + 1) expr_list)))                               *)
 		| Ast.MapExpr v ->
 				(prefix level) ^ ("Map\n" ^ ((property_list (level + 1) v) ^ "\n"))
 		| Ast.ArrayExpr v ->

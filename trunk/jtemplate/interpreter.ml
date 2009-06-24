@@ -66,11 +66,10 @@ struct
 			| expr:: tl ->
 					match expr with
 					| UnboundVar(name) -> (*from this point on, valuelist is no longer valid *)
-							let varname = SymbolTable.fullname name in
-							let isvararg = is_vararg varname in
-							let formalname = (if isvararg then vararg_formalname varname else varname) in
+							let isvararg = is_vararg name in
+							let formalname = (if isvararg then vararg_formalname name else name) in
 							(if isvararg && tl <>[] then raise RuntimeError.VarArgsMustbeLast else ());
-							resolve tl (VariableExpr(Name(formalname)):: exprlist) (valuelist) (name:: formal_args) true isvararg
+							resolve tl (VariableExpr(formalname):: exprlist) (valuelist) (name:: formal_args) true isvararg
 					| _ ->
 							let value = evaluate_expression expr symbol_table
 							in resolve tl (Value(value):: exprlist) (value:: valuelist) formal_args has_unbound false
@@ -114,12 +113,6 @@ struct
 					| NotEqual -> v1 <> v2
 					| _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
 		)
-	and	resolve_variable_name varname symbol_table =
-		match varname with
-		| Name(_) -> varname
-	(* and addFunctionScope value symbol_table = match value with |          *)
-	(* FunctionValue(args, stmts) -> ScopedFunctionValue(args, stmts,        *)
-	(* symbol_table) | v -> v                                                *)
 	and evaluate_memb_expr_index index symbol_table =
 		(match index with
 			| Id(name) -> (name, false)
@@ -167,14 +160,14 @@ struct
 					let old_stack = symbol_table.env.stack_trace in
 					(try
 						symbol_table.env.stack_trace <- symbol_table.env.current_stmt:: symbol_table.env.stack_trace;
-						interpret_statements stmts (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
+						interpret_statements stmts (SymbolTable.new_function_call_scope scope ("this":: arglist) (this:: value_list));
 						symbol_table.env.stack_trace <- old_stack;
 						Void
 					with
 					| CFReturn value -> symbol_table.env.stack_trace <- old_stack; value)
 			| LibraryFunction( arglist , code, scope) ->
 					(try
-						code (SymbolTable.new_function_call_scope scope (Name("this"):: arglist) (this:: value_list));
+						code (SymbolTable.new_function_call_scope scope ("this":: arglist) (this:: value_list));
 						Void
 					with
 					| CFReturn value -> value)
@@ -182,7 +175,7 @@ struct
 		)
 	and evaluate_expression expr symbol_table =
 		match expr with
-		| Id(name) -> SymbolTable.get_value (Name(name)) symbol_table
+		| Id(name) -> SymbolTable.get_value name symbol_table
 		| IndexExpr(expr) -> raise (RuntimeError.InternalError "index expression evaluated outside of member expression")
 		| MemberExpr(expr, key) ->
 		(** left side has to evaluate to a map, right side must be a string or integer or Id *)
@@ -196,7 +189,7 @@ struct
 		| Assignment(left, right) ->
 				let v = evaluate_expression right symbol_table in
 				(match left with
-					| Id(name) -> SymbolTable.assign (Name(name)) v symbol_table; v
+					| Id(name) -> SymbolTable.assign name v symbol_table; v
 					| MemberExpr(expr, key) ->
 							let (h, index) = get_lhs expr key symbol_table
 							in let oldvalue = Hashtbl.find h index
@@ -207,7 +200,7 @@ struct
 		| Declaration(left, right) ->
 				let v = evaluate_expression right symbol_table in
 				(match left with
-					| Id(name) -> SymbolTable.declare (Name(name)) v symbol_table; v
+					| Id(name) -> SymbolTable.declare name v symbol_table; v
 					| MemberExpr(expr, key) ->
 							let (h, index) = get_lhs expr key symbol_table
 							in Hashtbl.replace h index v; v
@@ -225,7 +218,7 @@ struct
 				if has_unbound then
 					let stmts =
 						(if has_vararg then
-								let varargname = vararg_formalname (SymbolTable.fullname (List.hd (List.rev formal_args))) in
+								let varargname = vararg_formalname (List.hd (List.rev formal_args)) in
 								[Return(FunctionCallExpandVarArg(expr, exprlist, varargname), symbol_table.env.current_stmt)]
 							else
 								[Return(FunctionCall(expr, exprlist), symbol_table.env.current_stmt)]) in
@@ -282,7 +275,7 @@ struct
 				let (last, start) = match List.rev exprlist with
 					| [] -> raise (InternalError "expected at least the vararg variable in the expression list")
 					| last:: start -> (last, start) in
-				let arr = SymbolTable.get_value (Name varargname) symbol_table in
+				let arr = SymbolTable.get_value varargname symbol_table in
 				let value_list = SymbolTable.list_of_array arr in
 				let v_exprlist = List.map (fun value -> Value(value)) value_list in
 				evaluate_expression (FunctionCall(variable, (List.append (List.rev start) v_exprlist))) symbol_table
@@ -291,11 +284,11 @@ struct
 		| ArrayExpr(expr_list) ->
 				MapValue(make_array expr_list symbol_table, ArraySubtype)
 		| VariableExpr(variable) ->
-				SymbolTable.get_value (resolve_variable_name variable symbol_table) symbol_table
+				SymbolTable.get_value variable symbol_table
 		| Value(value) -> (match value
 					with
 					| FunctionValue(arglist, stmts) -> ScopedFunctionValue(arglist, stmts, symbol_table) | _ -> value)
-		| UnboundVar(name) -> raise (UnexpectedUnboundVar (SymbolTable.fullname name))
+		| UnboundVar(name) -> raise (UnexpectedUnboundVar name)
 		
 		| Not(expr) ->
 				let v = evaluate_expression expr symbol_table in
