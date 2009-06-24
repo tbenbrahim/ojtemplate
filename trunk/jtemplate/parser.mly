@@ -270,7 +270,7 @@ instruction_specs:
     | instruction_spec instruction_specs      { $1::$2 }
 ; 
 label:
-    | ID                                      { Label($1) }
-    | INT                                     { Label(string_of_int($1)) }
-;
+    | ID                                      { $1 }
+    | INT                                     { string_of_int($1) }
+; 
 %%

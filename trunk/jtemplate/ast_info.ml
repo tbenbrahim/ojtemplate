@@ -41,7 +41,7 @@ struct
 							^
 							(List.fold_left
 									(fun acc el ->
-												let (Ast.Label label, condspec, repllist) = el
+												let (label, condspec, repllist) = el
 												in
 												acc ^
 												((prefix (level + 1)) ^
@@ -101,7 +101,7 @@ struct
 											let (optlabel, text) = el
 											in
 											match optlabel with
-											| Some (Ast.Label label) ->
+											| Some label ->
 													acc ^ (label ^ (":\t" ^ (text ^ "\n")))
 											| None -> acc ^ (":\t" ^ (text ^ "\n")))
 								"" specs)))
