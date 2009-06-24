@@ -5,17 +5,7 @@ struct
   open Ast
   
   (** Implementation of a symbol table.
-  
-  Usage:
-  The initial symbol table is created by calling SymbolTable.initialize
-  scopes are entered and exited thusly:
-  
-  let symbol_table = SymbolTable.push_scope symbol_table
-  in process_nested_block symbol_table
-  in let symbol_table = SymbolTable.pop_scope symbol_table
-  
-  function calls get the same scope as the scope the function is declared in (static scoping). Example:
-  
+ 
   @author tbenbrahim
   *)
   
@@ -165,7 +155,7 @@ struct
   
   (**
   retrieve a name's value from a symbol table
-  @param name an Ast.Name or Ast.CompoundName for which to retrieve the value
+  @param name string variable name
   @param symbol_table the symbol from which to retrieve the value
   @return a SymbolTable.variable_value
   @raise ReferenceToUndefinedVariable if the variable is not defined
@@ -174,8 +164,7 @@ struct
   @raise EUnexpectedCompoundName if a coumpound name has fewer than 2 elements (should never happen)
   *)
   let get_value name symbol_table =
-    match name with (* handle of exception for dumpSymbolTable since we need the current table *)
-    | _ -> resolve name (Some symbol_table)
+    resolve name (Some symbol_table)
   
   let is_defined name symbol_table =
     try
