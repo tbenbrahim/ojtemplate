@@ -101,7 +101,7 @@ let a=1;     // this expression assigns 1 to a
 1+2; 		 // this expression has no side effect
 ;            // an empty expression, again with no side effect
 
-a<10 ? 'small' : 'large' // evaluates to the string 'small' if a<10
+a<10 ? 'small' : 'large'; // evaluates to the string 'small' if a<10
 						 // or 'large' if a>=10
 
 (2+3)*10;	// evaluates to 50
