@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <title>Code coverage for Jtemplate interpreter</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript">
+      <!--
+        function jump(id) {
+          document.body.scrollTop = document.all[id].offsetTop;
+        }
+      -->
+    </script>
+    <script language="javascript" src="file0009.js"></script>
+  </head>
+  <body>
+    <div class="section">File: build/filename_util.ml (<a href="index.html">return to index</a>)</div>
+    <br/>
+    <hr class="codeSep"/>
+    <br/>
+    <table>
+      <tr>
+        <td valign="top" class="section">Statistics:&nbsp;&nbsp;</td>
+        <td valign="top">
+          <table class="simple">
+            <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
+            <tr><td>binding</td><td width="16px">&nbsp;</td><td>3 / 3 (100 %)</td></tr>
+            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>for</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>if/then</td><td width="16px">&nbsp;</td><td>4 / 5 (80 %)</td></tr>
+            <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>3 / 6 (50 %)</td></tr>
+          </table>
+        </td>
+        <td valign="top">
+          <table class="simple">
+            <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
+            <tr><td>class expression</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>class initializer</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>class method</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>class value</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>toplevel expression</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>lazy operator</td><td width="16px">&nbsp;</td><td>2 / 2 (100 %)</td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <br/>
+    <hr class="codeSep"/>
+    <br/>
+    <div class="section">Source:</div>
+    <br/>
+<div style="font-size: smaller;"><a href="javascript:foldAll();">fold all</a> <a href="javascript:unfoldAll();">unfold all</a></div>
+    <code>
+      <div id="fold000001">
+      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| &nbsp;</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| (**&nbsp;removes&nbsp;..&nbsp;and&nbsp;.&nbsp;from&nbsp;paths&nbsp;*)</div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| (*&nbsp;works&nbsp;on&nbsp;windows,&nbsp;need&nbsp;to&nbsp;check&nbsp;on&nbsp;Unix&nbsp;*)</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| let&nbsp;resolve_filename&nbsp;dir&nbsp;filename&nbsp;=</div>
+      <div id="line000005" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;&nbsp;let&nbsp;(*[14]*)rec&nbsp;cleanup&nbsp;check&nbsp;ok&nbsp;=</div>
+      <div id="line000006" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000006| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;r(*[110]*)ight&nbsp;=&nbsp;Filename.basename&nbsp;check&nbsp;in</div>
+      <div id="line000007" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000007| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;le(*[110]*)ft&nbsp;=&nbsp;Filename.dirname&nbsp;check&nbsp;in</div>
+      <div id="line000008" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(rig(*[110]*)ht&nbsp;=(*[110]*)&quot;.&quot;&nbsp;&amp;&amp;&nbsp;Filenam(*[14]*)e.dirname&nbsp;left&nbsp;=&nbsp;left)&nbsp;then</div>
+      <div id="line000009" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Filename(*[14]*).concat&nbsp;left&nbsp;ok</div>
+      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;else</div>
+      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;right&nbsp;with</div>
+      </div>
+      <div id="line000012" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;.&quot;&nbsp;-&gt;&nbsp;cleanup&nbsp;lef(*[0]*)t&nbsp;ok</div>
+      <div id="line000013" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000013| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;..&quot;&nbsp;-&gt;&nbsp;cleanup&nbsp;(Fil(*[0]*)ename.dirname&nbsp;left)&nbsp;ok</div>
+      <div id="fold000014">
+      <div id="line000014" class="lineNone"><a href="javascript:fold('fold000014');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000014| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;&quot;&nbsp;-&gt;&nbsp;ok</div>
+      </div>
+      <div id="line000015" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000015| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;(*[0]*)-&gt;&nbsp;cleanup&nbsp;left&nbsp;((*[96]*)if&nbsp;ok&nbsp;=&quot;&quot;&nbsp;then&nbsp;right&nbsp;else&nbsp;Fil(*[14]*)ename.conca(*[82]*)t&nbsp;right&nbsp;ok)</div>
+      <div id="fold000016">
+      <div id="line000016" class="lineNone"><a href="javascript:fold('fold000016');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000016| &nbsp;&nbsp;in</div>
+      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;if&nbsp;Filename.is_r(*[14]*)elative&nbsp;filename&nbsp;then</div>
+      <div id="line000018" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;&nbsp;&nbsp;cleanup&nbsp;(Filename(*[14]*).concat&nbsp;dir&nbsp;filename)&nbsp;&quot;&quot;</div>
+      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;else</div>
+      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;filename</div>
+      </div>
+    </code>
+    <br/>
+    <div id="navigator" style="border: solid black 1px; position: fixed; z-index:100; right: 10px; top: 10px; bottom: 10px; width: 16px;">
+      <table width="100%" height="100%" border="0" cellspacing="0">
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000012');" title="jump to line 12"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000013');" title="jump to line 13"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="yellow" style="cursor: pointer;" onclick="javascript:jump('line000015');" title="jump to line 15"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+      </table>
+    </div>
+    <div class="section">Legend:</div>
+    &nbsp;&nbsp;&nbsp;<span class="lineNone">some code</span>&nbsp;-&nbsp;line containing no point<br/>
+    &nbsp;&nbsp;&nbsp;<span class="lineAllVisited">some code</span>&nbsp;-&nbsp;line containing only visited points<br/>
+    &nbsp;&nbsp;&nbsp;<span class="lineAllUnvisited">some code</span>&nbsp;-&nbsp;line containing only unvisited points<br/>
+    &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
+    <br/>
+    <hr class="codeSep"/>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 18:49:14</p>
+  </body>
+</html>
