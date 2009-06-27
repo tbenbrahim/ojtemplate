@@ -106,7 +106,12 @@ struct
   restricted_compare v1 op v2 =
     BooleanValue(
       match v1 with
-      | MapValue(h, ArraySubtype) -> (SymbolTable.list_of_array v1) = (SymbolTable.list_of_array v2)
+      | MapValue(h, ArraySubtype) -> (
+            match op with
+            | Equal -> (SymbolTable.list_of_array v1) = (SymbolTable.list_of_array v2)
+            | NotEqual -> (SymbolTable.list_of_array v1) <> (SymbolTable.list_of_array v2)
+            | _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
+          )
       | _ ->
           match op with
           | Equal -> v1 = v2
