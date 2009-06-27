@@ -183,7 +183,7 @@ op_expr:
     | op_expr DIVIDE op_expr            { BinaryOp($1,Divide,$3) }
     | op_expr MODULO op_expr            { BinaryOp($1,Modulo,$3) }
     | op_expr COMPOP op_expr            { CompOp($1,$2,$3) }
-    | NOT call_expr                     { Not($2) }
+    | NOT lhs_expr                      { Not($2) }
     | op_expr  AND op_expr              { BinaryOp($1,And,$3) }
     | op_expr OR op_expr                { BinaryOp($1,Or,$3) }
     | %prec UMINUS MINUS op_expr        { BinaryOp(Value(IntegerValue(0)),Minus,$2) }
