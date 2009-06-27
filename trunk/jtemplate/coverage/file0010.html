@@ -12,7 +12,7 @@
     <script language="javascript" src="file0010.js"></script>
   </head>
   <body>
-    <div class="section">File: build/lexer.mll (<a href="index.html">return to index</a>)</div>
+    <div class="section">File: build/filename_util.ml (<a href="index.html">return to index</a>)</div>
     <br/>
     <hr class="codeSep"/>
     <br/>
@@ -22,13 +22,13 @@
         <td valign="top">
           <table class="simple">
             <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
-            <tr><td>binding</td><td width="16px">&nbsp;</td><td>5 / 7 (71 %)</td></tr>
-            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>4 / 6 (66 %)</td></tr>
+            <tr><td>binding</td><td width="16px">&nbsp;</td><td>3 / 3 (100 %)</td></tr>
+            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>for</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>if/then</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>if/then</td><td width="16px">&nbsp;</td><td>4 / 5 (80 %)</td></tr>
             <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>60 / 78 (76 %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>5 / 6 (83 %)</td></tr>
           </table>
         </td>
         <td valign="top">
@@ -39,7 +39,7 @@
             <tr><td>class method</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>class value</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>toplevel expression</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>lazy operator</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>lazy operator</td><td width="16px">&nbsp;</td><td>2 / 2 (100 %)</td></tr>
           </table>
         </td>
       </tr>
@@ -52,131 +52,28 @@
 <div style="font-size: smaller;"><a href="javascript:foldAll();">fold all</a> <a href="javascript:unfoldAll();">unfold all</a></div>
     <code>
       <div id="fold000001">
-      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| {</div>
-      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| open&nbsp;RuntimeError</div>
-      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| open&nbsp;Parser</div>
-      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| open&nbsp;Ast</div>
-      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;</div>
-      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| (*&nbsp;from&nbsp;http://plus.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial.pdf&nbsp;,&nbsp;p.9&nbsp;*)</div>
-      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| let&nbsp;incr_linenum&nbsp;lexbuf&nbsp;=</div>
-      <div id="line000008" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;pos&nbsp;=&nbsp;lexbuf.Lexing.lex_cu(*[1360]*)rr_p&nbsp;in</div>
-      <div id="line000009" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;&nbsp;&nbsp;lexbuf.Lexing.lex_curr_p&nbsp;&lt;-&nbsp;{&nbsp;p(*[1360]*)os&nbsp;with</div>
-      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lexing.pos_lnum&nbsp;=&nbsp;pos.Lexing.pos_lnum&nbsp;+&nbsp;1;</div>
-      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lexing.pos_bol&nbsp;=&nbsp;pos.Lexing.pos_cnum;</div>
-      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;</div>
-      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| let&nbsp;syntax_exception&nbsp;msg&nbsp;lexbuf=</div>
+      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| &nbsp;</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| (**&nbsp;removes&nbsp;..&nbsp;and&nbsp;.&nbsp;from&nbsp;paths&nbsp;*)</div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| (*&nbsp;works&nbsp;on&nbsp;windows,&nbsp;need&nbsp;to&nbsp;check&nbsp;on&nbsp;Unix&nbsp;*)</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| let&nbsp;resolve_filename&nbsp;dir&nbsp;filename&nbsp;=</div>
+      <div id="line000005" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;&nbsp;let&nbsp;(*[14]*)rec&nbsp;cleanup&nbsp;check&nbsp;ok&nbsp;=</div>
+      <div id="line000006" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000006| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;r(*[116]*)ight&nbsp;=&nbsp;Filename.basename&nbsp;check&nbsp;in</div>
+      <div id="line000007" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000007| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;le(*[116]*)ft&nbsp;=&nbsp;Filename.dirname&nbsp;check&nbsp;in</div>
+      <div id="line000008" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(rig(*[116]*)ht&nbsp;=(*[116]*)&quot;.&quot;&nbsp;&amp;&amp;&nbsp;Filenam(*[18]*)e.dirname&nbsp;left&nbsp;=&nbsp;left)&nbsp;then</div>
+      <div id="line000009" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Filename(*[14]*).concat&nbsp;left&nbsp;ok</div>
+      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;else</div>
+      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;right&nbsp;with</div>
+      <div id="line000012" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;.&quot;&nbsp;-&gt;&nbsp;cleanup&nbsp;lef(*[4]*)t&nbsp;ok</div>
+      <div id="line000013" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;..&quot;&nbsp;-&gt;&nbsp;cleanup&nbsp;(Fil(*[2]*)ename.dirname&nbsp;left)&nbsp;ok</div>
+      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;&quot;&nbsp;-&gt;&nbsp;ok</div>
       </div>
-      <div id="line000015" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000015| &nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(LexerException&nbsp;(msg,&nbsp;lexbuf.Le(*[0]*)xing.lex_curr_p.Lexing.pos_lnum,</div>
+      <div id="line000015" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000015| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;(*[0]*)-&gt;&nbsp;cleanup&nbsp;left&nbsp;((*[96]*)if&nbsp;ok&nbsp;=&quot;&quot;&nbsp;then&nbsp;right&nbsp;else&nbsp;Fil(*[14]*)ename.conca(*[82]*)t&nbsp;right&nbsp;ok)</div>
       <div id="fold000016">
-      <div id="line000016" class="lineNone"><a href="javascript:fold('fold000016');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000016| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lexbuf.Lexing.lex_curr_p.Lexing.pos_cnum&nbsp;-&nbsp;lexbuf.Lexing.lex_curr_p.Lexing.pos_bol))</div>
-      <div id="line000017" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;</div>
-      <div id="line000018" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000018| let&nbsp;map_id&nbsp;name=</div>
-      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;name&nbsp;with</div>
-      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;foreach&quot;&nbsp;-&gt;&nbsp;FOREACH</div>
-      <div id="line000021" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;in&quot;&nbsp;-&gt;&nbsp;IN</div>
-      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;while&quot;&nbsp;-&gt;&nbsp;(*[6]*)WHILE</div>
-      <div id="line000023" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;function&quot;&nbsp;(*[6]*)-&gt;&nbsp;FUNCTION</div>
-      <div id="line000024" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000024| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;if(*[10]*)&quot;&nbsp;-&gt;&nbsp;IF</div>
-      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;else&quot;&nbsp;-&gt;&nbsp;ELS(*[150]*)E</div>
-      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;template&quot;&nbsp;-&gt;&nbsp;TE(*[24]*)MPLATE</div>
-      <div id="line000027" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;instru(*[12]*)ctions&quot;&nbsp;-&gt;INSTRUCTIONS</div>
-      </div>
-      <div id="line000028" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000028| &nbsp;&nbsp;&nbsp;(*[0]*)&nbsp;|&nbsp;&quot;continue&quot;&nbsp;-&gt;&nbsp;CONTINUE</div>
-      <div id="line000029" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000029| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;(*[0]*)break&quot;&nbsp;-&gt;&nbsp;BREAK</div>
-      <div id="fold000030">
-      <div id="line000030" class="lineAllVisited"><a href="javascript:fold('fold000030');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000030| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;return&quot;&nbsp;-&gt;&nbsp;(*[4]*)RETURN</div>
-      <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;for&quot;&nbsp;-&gt;&nbsp;FOR</div>
-      <div id="line000032" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;(*[4]*)&nbsp;&nbsp;&nbsp;|&nbsp;&quot;once&quot;&nbsp;-&gt;&nbsp;ONCE</div>
-      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;&nbsp;&nbsp;|(*[176]*)&nbsp;&quot;when&quot;&nbsp;-&gt;&nbsp;WHEN</div>
-      <div id="line000034" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;(*[10]*)var&quot;&nbsp;-&gt;&nbsp;VAR</div>
-      </div>
-      <div id="line000035" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000035| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;le(*[0]*)t&quot;&nbsp;-&gt;&nbsp;VAR</div>
-      <div id="line000036" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000036| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;true&quot;(*[0]*)&nbsp;-&gt;&nbsp;BOOLEAN(true)</div>
-      <div id="fold000037">
-      <div id="line000037" class="lineAllVisited"><a href="javascript:fold('fold000037');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000037| &nbsp;&nbsp;&nbsp;(*[180]*)&nbsp;|&nbsp;&quot;false&quot;&nbsp;-&gt;&nbsp;BOOLEA(*[66]*)N(false)</div>
-      <div id="line000038" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;Void&quot;(*[40]*)&nbsp;&nbsp;-&gt;&nbsp;VOID</div>
-      <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;NaN&quot;&nbsp;-&gt;&nbsp;NAN&nbsp;</div>
-      <div id="line000040" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;&nbsp;(*[40]*)&nbsp;&nbsp;|&nbsp;&quot;import&quot;&nbsp;-&gt;&nbsp;IMPORT(false)</div>
-      </div>
-      <div id="line000041" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000041| &nbsp;&nbsp;&nbsp;(*[6]*)&nbsp;|&nbsp;&quot;use&quot;&nbsp;-&gt;&nbsp;IMPORT(tr(*[0]*)ue)</div>
-      <div id="fold000042">
-      <div id="line000042" class="lineAllVisited"><a href="javascript:fold('fold000042');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000042| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;switch&quot;&nbsp;-&gt;&nbsp;SW(*[12]*)ITCH</div>
-      <div id="line000043" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;case&quot;&nbsp;-&gt;&nbsp;CASE</div>
-      </div>
-      <div id="line000044" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000044| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)|&nbsp;&quot;default&quot;&nbsp;-&gt;&nbsp;DEFAULT</div>
-      <div id="line000045" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000045| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;tr(*[0]*)y&quot;&nbsp;-&gt;&nbsp;TRY</div>
-      <div id="line000046" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000046| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;catch&quot;&nbsp;(*[0]*)-&gt;&nbsp;CATCH</div>
-      <div id="line000047" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000047| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;finally&quot;&nbsp;(*[0]*)-&gt;&nbsp;FINALLY</div>
-      <div id="fold000048">
-      <div id="line000048" class="lineAllVisited"><a href="javascript:fold('fold000048');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000048| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;throw&quot;(*[40]*)&nbsp;-&gt;&nbsp;THROW</div>
-      <div id="line000049" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;&nbsp;(*[32]*)ID(name)&nbsp;&nbsp;&nbsp;</div>
-      <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| }</div>
-      <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div id="line000052" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000052| let(*[8]*)&nbsp;digit&nbsp;=&nbsp;['0'-'9']</div>
-      <div id="line000053" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000053| let&nbsp;id&nbsp;(*[2]*)=&nbsp;['a'-'z'&nbsp;'A'-'Z'&nbsp;(*[1290]*)'_'&nbsp;'$']['A'-'Z'&nbsp;'a'-'z'&nbsp;'0'-'9'&nbsp;'_'&nbsp;'$'&nbsp;]*</div>
-      <div id="line000054" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000054| let&nbsp;whitespace&nbsp;=&nbsp;['\r'&nbsp;'\t'&nbsp;'&nbsp;']</div>
-      <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| let&nbsp;text&nbsp;=&nbsp;'#'[^'\n']*</div>
-      <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| let&nbsp;float&nbsp;=&nbsp;((&nbsp;(['0'-'9']+'.'['0'-'9']*)&nbsp;|&nbsp;(['0'-'9']*'.'['0'-'9']+)&nbsp;)&nbsp;('e'['+'&nbsp;'-']?['0'-'9']+)?&nbsp;)&nbsp;|&nbsp;(['0'-'9']+&nbsp;('e'['+'&nbsp;'-']?['0'-'9']+))</div>
-      <div id="line000057" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000057| &nbsp;</div>
-      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| rule&nbsp;main&nbsp;=&nbsp;parse&nbsp;</div>
-      <div id="line000059" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000059| |&nbsp;whitespace&nbsp;{&nbsp;main&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000060" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000060| |&nbsp;text&nbsp;as&nbsp;token&nbsp;{&nbsp;TEXT(String.sub&nbsp;token&nbsp;1&nbsp;((String.length&nbsp;token)&nbsp;-&nbsp;1))}</div>
-      <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| |&nbsp;digit+&nbsp;as&nbsp;token&nbsp;{&nbsp;INT(&nbsp;int_of_string&nbsp;token)}</div>
-      <div id="line000062" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000062| |&nbsp;float&nbsp;as&nbsp;token&nbsp;{&nbsp;REAL(float_of_string&nbsp;token)}</div>
-      <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| |&nbsp;id&nbsp;as&nbsp;token&nbsp;{&nbsp;(map_id&nbsp;token&nbsp;)}</div>
-      <div id="line000064" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000064| |&nbsp;'\''&nbsp;{&nbsp;single_quote_string&nbsp;&quot;&quot;&nbsp;lexbuf&nbsp;}&nbsp;</div>
-      <div id="line000065" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000065| |&nbsp;&quot;//&quot;&nbsp;[^'\n']*&nbsp;{&nbsp;main&nbsp;lexbuf}</div>
-      <div id="line000066" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000066| |&nbsp;&quot;/*&quot;&nbsp;{multiline_comment&nbsp;lexbuf}</div>
-      <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| |&nbsp;'\n'&nbsp;{&nbsp;incr_linenum&nbsp;lexbuf;main&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000068" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000068| |&nbsp;&quot;&amp;&amp;&quot;&nbsp;{AND}</div>
-      <div id="line000069" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000069| |&nbsp;&quot;||&quot;&nbsp;{OR}</div>
-      <div id="line000070" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000070| |&nbsp;&quot;&lt;&quot;&nbsp;{COMPOP(LessThan)}</div>
-      <div id="line000071" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000071| |&nbsp;&quot;&gt;&quot;&nbsp;{COMPOP(GreaterThan)}</div>
-      <div id="line000072" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000072| |&nbsp;&quot;&lt;=&quot;&nbsp;{COMPOP(LessThanEqual)}</div>
-      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| |&nbsp;&quot;&gt;=&quot;&nbsp;{COMPOP(GreaterThanEqual)}</div>
-      <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| |&nbsp;&quot;==&quot;&nbsp;{COMPOP(Equal)}</div>
-      <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| |&nbsp;&quot;!=&quot;&nbsp;{COMPOP(NotEqual)}</div>
-      <div id="line000076" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000076| |&nbsp;&quot;...&quot;&nbsp;{DOTDOTDOT}</div>
-      <div id="line000077" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000077| |&nbsp;&quot;+=&quot;&nbsp;{PLUSEQUALS}</div>
-      <div id="line000078" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000078| |&nbsp;&quot;-=&quot;&nbsp;{MINUSEQUALS}</div>
-      <div id="line000079" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000079| |&nbsp;&quot;*=&quot;&nbsp;{TIMESEQUALS}</div>
-      <div id="line000080" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000080| |&nbsp;&quot;/=&quot;&nbsp;{DIVEQUALS}</div>
-      <div id="line000081" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000081| |&nbsp;&quot;%=&quot;&nbsp;{MODEQUALS}</div>
-      <div id="line000082" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000082| |&nbsp;&quot;++&quot;&nbsp;{PLUSPLUS}</div>
-      <div id="line000083" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000083| |&nbsp;&quot;--&quot;&nbsp;{MINUSMINUS}</div>
-      <div id="line000084" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000084| |&nbsp;'='&nbsp;{EQUALS}&nbsp;</div>
-      <div id="line000085" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000085| |&nbsp;'.'&nbsp;{DOT}</div>
-      <div id="line000086" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000086| |&nbsp;'{'&nbsp;{LBRACE}</div>
-      <div id="line000087" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000087| |&nbsp;'}'&nbsp;{RBRACE}</div>
-      <div id="line000088" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000088| |&nbsp;'('&nbsp;{LPAREN}</div>
-      <div id="line000089" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000089| |&nbsp;')'&nbsp;{RPAREN}</div>
-      <div id="line000090" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000090| |&nbsp;'['&nbsp;{LBRACKET}</div>
-      <div id="line000091" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000091| |&nbsp;']'&nbsp;{RBRACKET}</div>
-      <div id="line000092" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000092| |&nbsp;','&nbsp;{COMMA}&nbsp;</div>
-      <div id="line000093" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000093| |&nbsp;';'&nbsp;{SEMICOLON}</div>
-      <div id="line000094" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000094| |&nbsp;':'&nbsp;{COLON}</div>
-      <div id="line000095" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000095| |&nbsp;'!'&nbsp;{NOT}</div>
-      <div id="line000096" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000096| |&nbsp;'?'&nbsp;{QUESTION}</div>
-      <div id="line000097" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000097| |&nbsp;'+'&nbsp;{PLUS}</div>
-      <div id="line000098" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000098| |&nbsp;'-'&nbsp;{MINUS}</div>
-      <div id="line000099" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000099| |&nbsp;'*'&nbsp;{TIMES}</div>
-      <div id="line000100" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000100| |&nbsp;'/'&nbsp;{DIVIDE}</div>
-      <div id="line000101" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000101| |&nbsp;'%'&nbsp;{MODULO}</div>
-      <div id="line000102" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000102| |&nbsp;'@'&nbsp;{AT}</div>
-      <div id="line000103" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000103| |&nbsp;_&nbsp;as&nbsp;c&nbsp;{&nbsp;syntax_exception&nbsp;(&quot;Invalid&nbsp;character&nbsp;&quot;^String.make&nbsp;1&nbsp;c)&nbsp;lexbuf}&nbsp;</div>
-      <div id="line000104" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000104| |&nbsp;eof&nbsp;{&nbsp;EOF&nbsp;}&nbsp;</div>
-      <div id="line000105" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000105| and&nbsp;single_quote_string&nbsp;s&nbsp;=&nbsp;parse</div>
-      <div id="line000106" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000106| |&nbsp;'\n'&nbsp;&nbsp;{&nbsp;incr_linenum&nbsp;lexbuf;&nbsp;single_quote_string&nbsp;(s&nbsp;^&nbsp;&quot;\n&quot;)&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000107" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000107| |&nbsp;&quot;\\'&quot;&nbsp;&nbsp;{&nbsp;single_quote_string&nbsp;(s&nbsp;^&nbsp;&quot;\'&quot;)&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000108" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000108| |&nbsp;&quot;'&quot;&nbsp;&nbsp;{&nbsp;STRING(s)&nbsp;}</div>
-      <div id="line000109" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000109| |&nbsp;[^&nbsp;'\'']&nbsp;as&nbsp;c&nbsp;&nbsp;{&nbsp;single_quote_string&nbsp;(s&nbsp;^&nbsp;String.make&nbsp;1&nbsp;c)&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000110" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000110| |&nbsp;eof&nbsp;&nbsp;{&nbsp;syntax_exception&nbsp;&quot;Unterminated&nbsp;string&nbsp;constant&quot;&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000111" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000111| and&nbsp;multiline_comment&nbsp;=&nbsp;parse</div>
-      <div id="line000112" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000112| |&nbsp;'\n'&nbsp;{&nbsp;incr_linenum&nbsp;lexbuf;&nbsp;multiline_comment&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000113" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000113| |&nbsp;&quot;*/&quot;&nbsp;{&nbsp;main&nbsp;lexbuf&nbsp;}</div>
-      <div id="line000114" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000114| |&nbsp;[^&nbsp;'\n']&nbsp;{&nbsp;multiline_comment&nbsp;lexbuf}</div>
-      <div id="line000115" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000115| |&nbsp;eof&nbsp;{&nbsp;syntax_exception&nbsp;&quot;Unterminated&nbsp;multiline&nbsp;comment&quot;&nbsp;lexbuf&nbsp;}&nbsp;</div>
+      <div id="line000016" class="lineNone"><a href="javascript:fold('fold000016');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000016| &nbsp;&nbsp;in</div>
+      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;if&nbsp;Filename.is_r(*[14]*)elative&nbsp;filename&nbsp;then</div>
+      <div id="line000018" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;&nbsp;&nbsp;cleanup&nbsp;(Filename(*[14]*).concat&nbsp;dir&nbsp;filename)&nbsp;&quot;&quot;</div>
+      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;else</div>
+      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;filename</div>
       </div>
     </code>
     <br/>
@@ -196,102 +93,7 @@
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000015');" title="jump to line 15"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000028');" title="jump to line 28"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000029');" title="jump to line 29"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000035');" title="jump to line 35"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000036');" title="jump to line 36"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="yellow" style="cursor: pointer;" onclick="javascript:jump('line000041');" title="jump to line 41"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000044');" title="jump to line 44"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000045');" title="jump to line 45"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000046');" title="jump to line 46"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000047');" title="jump to line 47"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="yellow" style="cursor: pointer;" onclick="javascript:jump('line000015');" title="jump to line 15"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
@@ -306,6 +108,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 20:23:33</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-27 01:11:55</p>
   </body>
 </html>
