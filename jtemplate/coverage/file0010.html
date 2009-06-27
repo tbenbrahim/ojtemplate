@@ -28,7 +28,7 @@
             <tr><td>if/then</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>59 / 78 (75 %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>60 / 78 (76 %)</td></tr>
           </table>
         </td>
         <td valign="top">
@@ -59,8 +59,8 @@
       <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;</div>
       <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| (*&nbsp;from&nbsp;http://plus.kaist.ac.kr/~shoh/ocaml/ocamllex-ocamlyacc/ocamllex-tutorial.pdf&nbsp;,&nbsp;p.9&nbsp;*)</div>
       <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| let&nbsp;incr_linenum&nbsp;lexbuf&nbsp;=</div>
-      <div id="line000008" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;pos&nbsp;=&nbsp;lexbuf.Lexing.lex_cu(*[1062]*)rr_p&nbsp;in</div>
-      <div id="line000009" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;&nbsp;&nbsp;lexbuf.Lexing.lex_curr_p&nbsp;&lt;-&nbsp;{&nbsp;p(*[1062]*)os&nbsp;with</div>
+      <div id="line000008" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;pos&nbsp;=&nbsp;lexbuf.Lexing.lex_cu(*[1360]*)rr_p&nbsp;in</div>
+      <div id="line000009" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;&nbsp;&nbsp;lexbuf.Lexing.lex_curr_p&nbsp;&lt;-&nbsp;{&nbsp;p(*[1360]*)os&nbsp;with</div>
       <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lexing.pos_lnum&nbsp;=&nbsp;pos.Lexing.pos_lnum&nbsp;+&nbsp;1;</div>
       <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lexing.pos_bol&nbsp;=&nbsp;pos.Lexing.pos_cnum;</div>
       <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
@@ -75,11 +75,11 @@
       <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;name&nbsp;with</div>
       <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;foreach&quot;&nbsp;-&gt;&nbsp;FOREACH</div>
       <div id="line000021" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;in&quot;&nbsp;-&gt;&nbsp;IN</div>
-      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;while&quot;&nbsp;-&gt;&nbsp;(*[4]*)WHILE</div>
-      <div id="line000023" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;function&quot;&nbsp;(*[4]*)-&gt;&nbsp;FUNCTION</div>
+      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;while&quot;&nbsp;-&gt;&nbsp;(*[6]*)WHILE</div>
+      <div id="line000023" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;function&quot;&nbsp;(*[6]*)-&gt;&nbsp;FUNCTION</div>
       <div id="line000024" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000024| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;if(*[10]*)&quot;&nbsp;-&gt;&nbsp;IF</div>
-      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;else&quot;&nbsp;-&gt;&nbsp;ELS(*[122]*)E</div>
-      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;template&quot;&nbsp;-&gt;&nbsp;TE(*[22]*)MPLATE</div>
+      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;else&quot;&nbsp;-&gt;&nbsp;ELS(*[150]*)E</div>
+      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;template&quot;&nbsp;-&gt;&nbsp;TE(*[24]*)MPLATE</div>
       <div id="line000027" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;instru(*[12]*)ctions&quot;&nbsp;-&gt;INSTRUCTIONS</div>
       </div>
       <div id="line000028" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000028| &nbsp;&nbsp;&nbsp;(*[0]*)&nbsp;|&nbsp;&quot;continue&quot;&nbsp;-&gt;&nbsp;CONTINUE</div>
@@ -88,16 +88,16 @@
       <div id="line000030" class="lineAllVisited"><a href="javascript:fold('fold000030');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000030| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;return&quot;&nbsp;-&gt;&nbsp;(*[4]*)RETURN</div>
       <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;for&quot;&nbsp;-&gt;&nbsp;FOR</div>
       <div id="line000032" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;(*[4]*)&nbsp;&nbsp;&nbsp;|&nbsp;&quot;once&quot;&nbsp;-&gt;&nbsp;ONCE</div>
-      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;&nbsp;&nbsp;|(*[124]*)&nbsp;&quot;when&quot;&nbsp;-&gt;&nbsp;WHEN</div>
+      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;&nbsp;&nbsp;|(*[176]*)&nbsp;&quot;when&quot;&nbsp;-&gt;&nbsp;WHEN</div>
       <div id="line000034" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;(*[10]*)var&quot;&nbsp;-&gt;&nbsp;VAR</div>
       </div>
       <div id="line000035" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000035| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;le(*[0]*)t&quot;&nbsp;-&gt;&nbsp;VAR</div>
       <div id="line000036" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000036| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;true&quot;(*[0]*)&nbsp;-&gt;&nbsp;BOOLEAN(true)</div>
       <div id="fold000037">
-      <div id="line000037" class="lineAllVisited"><a href="javascript:fold('fold000037');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000037| &nbsp;&nbsp;&nbsp;(*[170]*)&nbsp;|&nbsp;&quot;false&quot;&nbsp;-&gt;&nbsp;BOOLEA(*[22]*)N(false)</div>
-      <div id="line000038" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;Void&quot;(*[14]*)&nbsp;&nbsp;-&gt;&nbsp;VOID</div>
+      <div id="line000037" class="lineAllVisited"><a href="javascript:fold('fold000037');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000037| &nbsp;&nbsp;&nbsp;(*[180]*)&nbsp;|&nbsp;&quot;false&quot;&nbsp;-&gt;&nbsp;BOOLEA(*[66]*)N(false)</div>
+      <div id="line000038" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;Void&quot;(*[40]*)&nbsp;&nbsp;-&gt;&nbsp;VOID</div>
       <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;NaN&quot;&nbsp;-&gt;&nbsp;NAN&nbsp;</div>
-      <div id="line000040" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;&nbsp;(*[16]*)&nbsp;&nbsp;|&nbsp;&quot;import&quot;&nbsp;-&gt;&nbsp;IMPORT(false)</div>
+      <div id="line000040" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;&nbsp;(*[40]*)&nbsp;&nbsp;|&nbsp;&quot;import&quot;&nbsp;-&gt;&nbsp;IMPORT(false)</div>
       </div>
       <div id="line000041" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000041| &nbsp;&nbsp;&nbsp;(*[6]*)&nbsp;|&nbsp;&quot;use&quot;&nbsp;-&gt;&nbsp;IMPORT(tr(*[0]*)ue)</div>
       <div id="fold000042">
@@ -109,12 +109,12 @@
       <div id="line000046" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000046| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;catch&quot;&nbsp;(*[0]*)-&gt;&nbsp;CATCH</div>
       <div id="line000047" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000047| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;finally&quot;&nbsp;(*[0]*)-&gt;&nbsp;FINALLY</div>
       <div id="fold000048">
-      <div id="line000048" class="lineAllVisited"><a href="javascript:fold('fold000048');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000048| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;throw&quot;(*[18]*)&nbsp;-&gt;&nbsp;THROW</div>
-      <div id="line000049" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;&nbsp;(*[10]*)ID(name)&nbsp;&nbsp;&nbsp;</div>
+      <div id="line000048" class="lineAllVisited"><a href="javascript:fold('fold000048');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000048| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;throw&quot;(*[40]*)&nbsp;-&gt;&nbsp;THROW</div>
+      <div id="line000049" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;&nbsp;(*[32]*)ID(name)&nbsp;&nbsp;&nbsp;</div>
       <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| }</div>
       <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
       <div id="line000052" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000052| let(*[8]*)&nbsp;digit&nbsp;=&nbsp;['0'-'9']</div>
-      <div id="line000053" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000053| let&nbsp;id&nbsp;(*[2]*)=&nbsp;['a'-'z'&nbsp;'A'-'Z'&nbsp;(*[1032]*)'_'&nbsp;'$']['A'-'Z'&nbsp;'a'-'z'&nbsp;'0'-'9'&nbsp;'_'&nbsp;'$'&nbsp;]*</div>
+      <div id="line000053" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000053| let&nbsp;id&nbsp;(*[2]*)=&nbsp;['a'-'z'&nbsp;'A'-'Z'&nbsp;(*[1290]*)'_'&nbsp;'$']['A'-'Z'&nbsp;'a'-'z'&nbsp;'0'-'9'&nbsp;'_'&nbsp;'$'&nbsp;]*</div>
       <div id="line000054" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000054| let&nbsp;whitespace&nbsp;=&nbsp;['\r'&nbsp;'\t'&nbsp;'&nbsp;']</div>
       <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| let&nbsp;text&nbsp;=&nbsp;'#'[^'\n']*</div>
       <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| let&nbsp;float&nbsp;=&nbsp;((&nbsp;(['0'-'9']+'.'['0'-'9']*)&nbsp;|&nbsp;(['0'-'9']*'.'['0'-'9']+)&nbsp;)&nbsp;('e'['+'&nbsp;'-']?['0'-'9']+)?&nbsp;)&nbsp;|&nbsp;(['0'-'9']+&nbsp;('e'['+'&nbsp;'-']?['0'-'9']+))</div>
@@ -306,6 +306,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 19:28:04</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 20:23:33</p>
   </body>
 </html>

@@ -28,7 +28,7 @@
             <tr><td>if/then</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>2 / 19 (10 %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>4 / 19 (21 %)</td></tr>
           </table>
         </td>
         <td valign="top">
@@ -163,7 +163,9 @@
       <div id="line000099" class="lineNone"><a href="javascript:fold('fold000099');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000099| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;In&nbsp;the&nbsp;definition&nbsp;of&nbsp;a&nbsp;function,&nbsp;a&nbsp;vararg&nbsp;parameter&nbsp;must&nbsp;be&nbsp;the&nbsp;last&nbsp;formal&nbsp;parameter&quot;</div>
       </div>
       <div id="line000100" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000100| &nbsp;&nbsp;|&nbsp;Librar(*[0]*)yError&nbsp;msg&nbsp;|&nbsp;InternalError&nbsp;msg&nbsp;|&nbsp;NotAnInteger&nbsp;msg&nbsp;-&gt;&nbsp;msg</div>
-      <div id="line000101" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000101| &nbsp;&nbsp;|&nbsp;InvalidArrayIndex(indtype,&nbsp;value)&nbsp;-&gt;&nbsp;&quot;Invalid&nbsp;array&nbsp;index&nbsp;of&nbsp;type&nbsp;&quot;^indtype^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^(*[0]*)value</div>
+      <div id="fold000101">
+      <div id="line000101" class="lineAllVisited"><a href="javascript:fold('fold000101');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000101| &nbsp;&nbsp;|&nbsp;InvalidArrayIndex(indtype,&nbsp;value)&nbsp;-&gt;&nbsp;&quot;Invalid&nbsp;array&nbsp;index&nbsp;of&nbsp;type&nbsp;&quot;^indtype^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^(*[12]*)value</div>
+      </div>
       <div id="line000102" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000102| &nbsp;&nbsp;|&nbsp;ArrayIndexOutOfBounds&nbsp;index&nbsp;-&gt;&nbsp;&quot;Arra(*[0]*)y&nbsp;index&nbsp;out&nbsp;of&nbsp;bounds&nbsp;(&quot;^index^&quot;)&quot;</div>
       <div id="fold000103">
       <div id="line000103" class="lineAllVisited"><a href="javascript:fold('fold000103');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000103| &nbsp;&nbsp;|&nbsp;NotACollectionType(where,&nbsp;typename)&nbsp;-&gt;&nbsp;&quot;Expected&nbsp;a&nbsp;collec(*[2]*)tion&nbsp;type&nbsp;for&nbsp;&quot;^</div>
@@ -177,9 +179,9 @@
       <div id="line000108" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000108| &nbsp;&nbsp;|&nbsp;(*[0]*)UserException(value)&nbsp;-&gt;&nbsp;&quot;Unhandled&nbsp;user&nbsp;exception&quot;</div>
       <div id="line000109" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000109| &nbsp;&nbsp;|&nbsp;InvalidMember(typename,&nbsp;value)&nbsp;-&gt;&nbsp;&quot;Invalid&nbsp;member&nbsp;of&nbsp;type&nbsp;&quot;^typename^&quot;&nbsp;with&nbsp;(*[0]*)value&nbsp;&quot;^value</div>
       <div id="line000110" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000110| &nbsp;&nbsp;|&nbsp;UndefinedMapMember(value)&nbsp;-&gt;&nbsp;&quot;Undefined&nbsp;map&nbsp;memb(*[0]*)er&nbsp;&quot;^value</div>
-      <div id="line000111" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000111| &nbsp;&nbsp;|&nbsp;LeftSideIsNotAMap(typename,&nbsp;value)&nbsp;-&gt;&nbsp;&quot;Expected&nbsp;a&nbsp;collection&nbsp;type&nbsp;but&nbsp;found(*[0]*)&nbsp;type&nbsp;&quot;^typename^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^value</div>
-      <div id="fold000112">
-      <div id="line000112" class="lineAllVisited"><a href="javascript:fold('fold000112');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000112| &nbsp;&nbsp;|&nbsp;LeftSideCannotBeAssigned&nbsp;-&gt;&nbsp;&quot;Le(*[4]*)ft&nbsp;side&nbsp;cannot&nbsp;be&nbsp;assigned&quot;</div>
+      <div id="fold000111">
+      <div id="line000111" class="lineAllVisited"><a href="javascript:fold('fold000111');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000111| &nbsp;&nbsp;|&nbsp;LeftSideIsNotAMap(typename,&nbsp;value)&nbsp;-&gt;&nbsp;&quot;Expected&nbsp;a&nbsp;collection&nbsp;type&nbsp;but&nbsp;found(*[10]*)&nbsp;type&nbsp;&quot;^typename^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^value</div>
+      <div id="line000112" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000112| &nbsp;&nbsp;|&nbsp;LeftSideCannotBeAssigned&nbsp;-&gt;&nbsp;&quot;Le(*[4]*)ft&nbsp;side&nbsp;cannot&nbsp;be&nbsp;assigned&quot;</div>
       <div id="line000113" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000113| &nbsp;&nbsp;|&nbsp;e&nbsp;-&gt;&nbsp;&quot;uncaught&nbsp;exception&nbsp;&quot;^(Printexc.to_string&nbsp;e)</div>
       <div id="line000114" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000114| &nbsp;</div>
       </div>
@@ -287,7 +289,7 @@
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000098');" title="jump to line 98"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000100');" title="jump to line 100"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000101');" title="jump to line 101"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000102');" title="jump to line 102"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
@@ -297,7 +299,7 @@
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000108');" title="jump to line 108"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000109');" title="jump to line 109"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000110');" title="jump to line 110"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000111');" title="jump to line 111"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
@@ -310,6 +312,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 19:28:04</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 20:23:33</p>
   </body>
 </html>

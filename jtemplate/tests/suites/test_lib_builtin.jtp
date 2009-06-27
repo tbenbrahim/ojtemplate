@@ -12,7 +12,7 @@ var testSuite={
         			File.exists(filename);
         		File.delete('testdir.txt');
         		return result;
-        	}
+         	}
         },{
         	description: 'array push',
         	test: function(){
@@ -20,6 +20,18 @@ var testSuite={
         		a.push('4');
         		a.push(5);
         		return a==[1,2,'3','4',5];
+        	}
+        },{
+        	description: 'array push on non array throws exception',
+        	test: function(){
+        		try{
+        			let a=12;
+        			a.push('4');
+        			a.push(5);
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
         	}
         },{
         	description: 'array pop',
@@ -30,6 +42,30 @@ var testSuite={
         		return arr==[1,2,'3'] && a==5 && b=='4';
         	}
         },{
+        	description: 'array pop on empty array throws exception',
+        	test: function(){
+        		try{
+        			let arr=[];
+        			let a=arr.pop();
+        			let b=arr.pop();
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'array pop on non array throws exception',
+        	test: function(){
+	    		try{
+	    			let arr=12;
+	    			let a=arr.pop();
+	    			let b=arr.pop();
+	    			return false;
+	    		}catch(e){
+	    			return true;
+	    		}
+        	}
+        },{
         	description: 'array length',
         	test: function(){
         		let arr1=[1,2,'3','4',5];
@@ -37,6 +73,19 @@ var testSuite={
         		return arr1.length()==5 &&
         		       arr2.length()==0 &&
         		       [1,2,'3','4',5].length()==5;
+        	}
+        },{
+        	description: 'array length on non array throws exception',
+        	test: function(){
+        		try{
+	        		let arr1=12;
+	        		let arr2='a';
+	        		let b=arr1.length();
+	        		let c=arr2.length();
+	        		return false;
+        		}catch(e){
+        			return true;
+        		}
         	}
         },{
         	description: 'integer parse',
@@ -57,6 +106,54 @@ var testSuite={
         		return 12.34.round()==12 &&
         		       12.64.round()==13;
         	}
-        },
+        },{
+        	description: 'map keys',
+        	test: function(){
+        		let m={a:1,b:'123',d:true};
+        		let a=m.keys();
+        		return a==['a','b','d'] || a==['a','d','b'] ||
+        			   a==['b','a','d'] || a==['b','d','a'] ||
+        		       a==['d','a','b'] || a==['d','b','a'];
+        	}
+        },{
+        	description: 'map keys on non map throws exception',
+        	test: function(){
+        		try{
+        			let m=[12,123,'a'];
+        			let a=m.keys();
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'map contains',
+        	test: function(){
+        		let m={a:1,b:'123',d:true};
+        		let a=m.keys();
+        		return m.contains('a') && !m.contains('c');
+        	}
+        },{
+        	description: 'map contains on non map throws exception',
+        	test: function(){
+        		try{
+        			let m=[12,123,'a'];
+        			let a=m.contains('a');
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'Date.now()',
+        	test: function(){
+        		let d=Date.now();
+        		foreach(f in ['second','minute','hour','dayOfMonth','month','year','dayOfWeek',
+        		              'dayOfYear','gmtOffset'])
+        		    if (!d.contains(f) || typeof(d[f])!='integer')
+        		    	return false;
+        		return d.contains('dst') && typeof(d.dst)=='boolean';
+        	}
+        }
 	]
 };
