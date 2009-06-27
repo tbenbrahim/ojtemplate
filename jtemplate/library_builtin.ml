@@ -153,7 +153,12 @@ struct
           | None -> raise (InternalError "should be in function's scope, so should have a parent")
     );
     (["Debug";"dumpStackTrace"],[], fun stbl ->
-          Interpreter.stack_trace stbl.env.stack_trace
+          let rec p = function
+            | [] -> ()
+            | (file, line):: tl ->
+                print_string ("Called from line "^(string_of_int line)^" in file "^ (Filename.basename file)^":\n");
+                p tl
+          in p stbl.env.stack_trace
     );
     ]
 end

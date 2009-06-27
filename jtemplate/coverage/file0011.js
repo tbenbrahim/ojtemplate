@@ -9,8 +9,8 @@ texts['fold000030'] = '<a href="javascript:fold(\'fold000030\');"><img border="0
 states['fold000030'] = false;
 texts['fold000037'] = '<a href="javascript:fold(\'fold000037\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 37 to line 43</i>';
 states['fold000037'] = false;
-texts['fold000048'] = '<a href="javascript:fold(\'fold000048\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 48 to line 115</i>';
-states['fold000048'] = false;
+texts['fold000045'] = '<a href="javascript:fold(\'fold000045\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 45 to line 115</i>';
+states['fold000045'] = false;
 
 function fold(id) {
   tmp = document.all[id].innerHTML;
