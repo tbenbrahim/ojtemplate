@@ -5,10 +5,10 @@ var main=function(){
     import 'suites/test_parser.jtp';
     results.push(runSuite(testSuite));
 
-    import 'suites/test_scope.jtp';
+    import './suites/test_scope.jtp';
     results.push(runSuite(testSuite));
 
-    import 'suites/test_precedence.jtp';
+    import '../tests/./suites/test_precedence.jtp';
     results.push(runSuite(testSuite));
 
     import 'suites/test_interpreter.jtp';
