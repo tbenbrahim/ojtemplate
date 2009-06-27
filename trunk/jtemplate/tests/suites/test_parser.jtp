@@ -54,5 +54,11 @@ var testSuite = {
 			};
 			return gcd(24,6)==6;
 		}
-	} ]
+	},{
+		description: '!(grouped expression)', //fixed in 114
+		test: function(){
+			let a=!(true==false);
+			return true;
+		}
+	}  ]
 };

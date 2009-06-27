@@ -1,6 +1,6 @@
 
-CFLAGS= -I +bisect -pp 'camlp4o bisect/instrument.cma'
-LINK_FLAGS= -I +bisect bisect/bisect.cma      
+CFLAGS= -g -I +bisect -pp 'camlp4o bisect/instrument.cma'
+LINK_FLAGS= -custom -g -I +bisect bisect/bisect.cma      
 
 default: env build/jtemplate-i.exe 
 
