@@ -33,6 +33,28 @@ var testSuite={
         			var a='AbcDef'; return a.charAt(3)=='D';
             	}
             },{
+            	description: 'charAt() with out of range index throws library error',
+            	test: function(){
+            		try{
+            			var a='AbcDef'; 
+            			let b=a.charAt(11);
+            			return false;
+            		}catch (e){
+            			return e.startsWith('invalid index');
+            		}
+            	}
+            },{
+            	description: 'charAt() with non integer index throws library error',
+            	test: function(){
+            		try{
+            			var a='AbcDef'; 
+            			let b=a.charAt(true);
+            			return false;
+            		}catch (e){
+            			return true;
+            		}
+            	}
+            },{
             	description: 'indexOf()',
             	test: function(){
         			var a='AbcDef'; 
@@ -43,6 +65,36 @@ var testSuite={
             	description: 'substr()',
             	test: function(){
         			var a='AbcDef'; return a.substr(2,3)=='cDe';
+            	}
+            },{
+            	description: 'substr() with invalid type start throws exception',
+            	test: function(){
+	        		try{
+	        			var a='AbcDef'.substr('a',3);
+	        			return false;
+	        		}catch(e){
+	        			return true;
+	        		}
+            	}
+            },{
+            	description: 'substr() with invalid type length throws exception',
+            	test: function(){
+	        		try{
+	        			var a='AbcDef'.substr(3,'a');
+	        			return false;
+	        		}catch(e){
+	        			return true;
+	        		}
+            	}
+            },{
+            	description: 'substr() with out of range start/length throws exception',
+            	test: function(){
+            		try{
+            			var a='AbcDef'.substr(10,3);
+            			return false;
+            		}catch(e){
+            			return true;
+            		}
             	}
             },{
             	description: 'startsWith()',
