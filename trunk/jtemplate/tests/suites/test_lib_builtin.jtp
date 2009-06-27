@@ -26,8 +26,7 @@ var testSuite={
         	test: function(){
         		try{
         			let a=12;
-        			a.push('4');
-        			a.push(5);
+        			Array.prototype.push.apply(a,'4');
         			return false;
         		}catch(e){
         			return true;
@@ -58,8 +57,7 @@ var testSuite={
         	test: function(){
 	    		try{
 	    			let arr=12;
-	    			let a=arr.pop();
-	    			let b=arr.pop();
+	    			Array.prototype.pop.apply(arr);
 	    			return false;
 	    		}catch(e){
 	    			return true;
@@ -79,9 +77,7 @@ var testSuite={
         	test: function(){
         		try{
 	        		let arr1=12;
-	        		let arr2='a';
-	        		let b=arr1.length();
-	        		let c=arr2.length();
+	    			Array.prototype.length.apply(arr1);
 	        		return false;
         		}catch(e){
         			return true;
@@ -107,6 +103,16 @@ var testSuite={
         		       12.64.round()==13;
         	}
         },{
+        	description: 'float round on non float throws exception',
+        	test: function(){
+        		try{
+        			Float.prototype.round.apply(1);
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
         	description: 'map keys',
         	test: function(){
         		let m={a:1,b:'123',d:true};
@@ -120,7 +126,7 @@ var testSuite={
         	test: function(){
         		try{
         			let m=[12,123,'a'];
-        			let a=m.keys();
+        			Map.prototype.keys.apply(m);
         			return false;
         		}catch(e){
         			return true;
@@ -138,7 +144,25 @@ var testSuite={
         	test: function(){
         		try{
         			let m=[12,123,'a'];
-        			let a=m.contains('a');
+        			Map.prototype.contains.apply(m,'a');
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'map remove',
+        	test: function(){
+        		let m={a:1,b:'123',d:true};
+        		m.remove('a');
+        		return m=={b:'123',d:true};
+        	}
+        },{
+        	description: 'map remove on non map throws exception',
+        	test: function(){
+        		try{
+        			let m=[12,123,'a'];
+        			Map.prototype.remove.apply(m);
         			return false;
         		}catch(e){
         			return true;
@@ -153,6 +177,59 @@ var testSuite={
         		    if (!d.contains(f) || typeof(d[f])!='integer')
         		    	return false;
         		return d.contains('dst') && typeof(d.dst)=='boolean';
+        	}
+        },{
+        	description: 'random()',
+        	test: function(){
+        		let i=0;
+        		let sum=0;
+        		while(i<1000){
+        			let r=Integer.random(101);
+        			if (r!=50){
+        				sum+=r;
+        				++i;
+        			}
+        		}
+        		let avg=sum/i;
+        		return avg>=46 && avg<=54;
+        	}
+        },{
+        	description: 'typeof()',
+        	test: function(){
+        		return typeof(1)=='integer' && typeof(1.2)=='float' && typeof('a')=='string' &&
+        		  typeof(true)=='boolean' && typeof(Void)=='void' && typeof(function(){})=='function' &&
+        		  typeof([])=='array' && typeof({})=='map' && typeof(NaN)=='NaN' &&
+        		  typeof(String.prototype.length)=='function';
+        	}
+        },{
+        	description: 'apply()',
+        	test: function(){
+        		let foo=function(){return this*2;};
+        		return String.prototype.length.apply('233')==3 &&
+        			foo.apply(2)==4 && function(){return this*2;}.apply(3)==6;
+        	}
+        },{
+        	description: 'apply() on non function throws exception',
+        	test: function(){
+        		try{
+        			let a=1.2;
+        			Function.prototype.apply(a,12);
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'debug dump symbol table',
+        	test: function(){
+        		Debug.dumpSymbolTable(true);
+        		return true;
+        	}
+        },{
+        	description: 'debug dump stack trace',
+        	test: function(){
+        		Debug.dumpStackTrace();
+        		return true;
         	}
         }
 	]

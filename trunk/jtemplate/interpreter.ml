@@ -248,9 +248,9 @@ struct
             )
           in run_function f value_list this symbol_table
     | FunctionCallExpandVarArg(variable, exprlist, varargname) ->
-    (* get the vararg value array, remove the append the values to the     *)
-    (* expression list (minus the last, which is the vararg array name),   *)
-    (* and call the function                                               *)
+    (* get the vararg value array, append the values to the expression     *)
+    (* list (minus the last, which is the vararg array name), and call the *)
+    (* function                                                            *)
         let (last, start) = match List.rev exprlist with
           | [] -> raise (InternalError "expected at least the vararg variable in the expression list")
           | last:: start -> (last, start) in

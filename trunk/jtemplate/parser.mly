@@ -208,7 +208,7 @@ expression:
 ;
 arglist:                              
     | ID                                      { [$1] }
-    | ID DOTDOTDOT                            { ["["^$1] }
+    | ID DOTDOTDOT                            { ["["^$1] } 
     | ID COMMA arglist                        { $1::$3 }
     | /* nothing */                           { [] }
 ;
