@@ -2,7 +2,7 @@
 CFLAGS= -I +bisect -pp 'camlp4o bisect/instrument.cma'
 LINK_FLAGS= -I +bisect bisect/bisect.cma      
 
-default: clean env build/jtemplate-i.exe 
+default: env build/jtemplate-i.exe 
 
 env: 
 	mkdir -p build
@@ -57,6 +57,9 @@ build/parser.mly: parser.mly
 	
 build/lexer.mll: lexer.mll
 	cp lexer.mll build/lexer.mll
+
+build/compare.ml: compare.ml
+	cp compare.ml build/compare.ml	
 	
 build/lexer.ml: build/lexer.mll
 	ocamllex -q -o build/lexer.ml build/lexer.mll
@@ -76,9 +79,12 @@ build/parser.cmi: build/parser.mli
 build/parser.cmo: build/parser.ml build/parser.cmi
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/parser.cmo build/parser.ml
 
-build/interpreter.cmo: build/symbol_table.cmo build/runtimeError.cmo build/ast.cmo build/interpreter.ml
+build/interpreter.cmo: build/symbol_table.cmo build/runtimeError.cmo build/ast.cmo build/compare.cmo build/interpreter.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/interpreter.cmo build/interpreter.ml
 	
+build/compare.cmo: build/symbol_table.cmo build/runtimeError.cmo build/ast.cmo build/compare.ml
+	ocamlc -c $(CFLAGS) -dtypes -I build -o build/compare.cmo build/compare.ml
+
 build/filename_util.cmo: build/filename_util.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/filename_util.cmo build/filename_util.ml
 	
@@ -113,8 +119,6 @@ build/jtemplate.cmo: build/symbol_table.cmo build/runtimeError.cmo build/parser_
 
 build/jtemplate-i.exe: build/ast.cmo build/filename_util.cmo build/runtimeError.cmo build/symbol_table.cmo \
 	build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library_helper.cmo \
-	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/jtemplate.cmo 
-	ocamlc $(LINK_FLAGS) unix.cma build/ast.cmo build/filename_util.cmo build/runtimeError.cmo build/symbol_table.cmo \
-	build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library_helper.cmo \
-	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/jtemplate.cmo -o build/jtemplate-i.exe
+	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/compare.cmo build/jtemplate.cmo 
+	ocamlc $(LINK_FLAGS) unix.cma build/ast.cmo build/filename_util.cmo build/runtimeError.cmo build/symbol_table.cmo build/compare.cmo build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library_helper.cmo build/library_io.cmo build/library_string.cmo	build/parser_util.cmo build/jtemplate.cmo -o build/jtemplate-i.exe
 

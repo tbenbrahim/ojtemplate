@@ -211,6 +211,170 @@ var testSuite={
         		let g=function () { let x = 1; return f(); };
         		return g()==0;
         	}
+        },{
+        	description: 'compare integers',
+        	test: function(){
+        		return 10==10 && 10!=6 && 10>6 && 10<12 && 10>=6 && 10<=12 &&
+        			10>=10 && 10<=10; 
+        	}
+        },{
+        	description: 'compare floats',
+        	test: function(){
+        		return 10.==10. && 10.!=6. && 10.>6. && 10.<12. && 10.>=6. && 10.<=12. &&
+        			10.>=10. && 10.<=10.; 
+        	}
+        },{
+        	description: 'compare strings',
+        	test: function(){
+        		return 'a'=='a' && 'a'!='b' && 'a'<'b' && 'a'<='b' && 'a'<='a'
+        			&& 'b'>'a' && 'bb'>='ba' && 'bb'>='bb';
+        	}
+        },{
+        	description: 'compare booleans',
+        	test: function(){
+        		return true==true && false==false && true!=false;
+        	}
+        },{
+        	description: 'compare Void',
+        	test: function(){
+        		let a=Void;
+        		let b=Void;
+        		let c=NaN;
+        		return a==b && b!=c && a!=c;
+        	}
+        },{
+        	description: 'compare NaN',
+        	test: function(){
+        		let a=NaN;
+        		let b=NaN;
+        		let c=Void;
+        		return a==b && b!=c && a!=c;
+        	}
+        },{
+        	description: 'compare functions',
+        	test: function(){
+        		let a=function(a,b){return a+b;};
+        		let b=[1,a];
+        		let c=function(a,b){return a-b;};
+        		return a==b[1] && b[1]!=c && a!=c;
+        	}
+        },{
+        	description: 'compare library functions',
+        	test: function(){
+        		let a=String.prototype.length;
+        		let b=[1,a];
+        		let c=String.prototype.substr;
+        		return a==b[1] && b[1]!=c && a!=c;
+        	}
+        },{
+        	description: 'compare maps',
+        	test: function(){
+        		let a={a:1,b:'2',c:3};
+        		let b={a:1,b:'2',c:3};
+        		let c={a:1,b:'2',c:4};
+        		return a==b && b!=c && a!=c;
+        	}
+        },{
+        	description: 'compare arrays',
+        	test: function(){
+        		let a=[1,'a',[1,2,['a','b',{a:true,b:34.5}]]];
+        		let b=[1,'a',[1,2,['a','b',{a:true,b:34.5}]]];
+        		let c=[1,'a',[1,2,['a','b',{a:true,b:34.6}]]];
+        		return a==b && b!=c && a!=c;
+        	}
+        },{
+        	description: 'compare integer and float',
+        	test: function(){
+        		return 10==10. && 10!=6. && 10>6. && 10<12. && 10>=6. && 10<=12. &&	10>=10. && 10<=10.
+        	        && 10.==10 && 10.!=6 && 10.>6 && 10.<12 && 10.>=6 && 10.<=12 && 10.>=10 && 10.<=10;
+        	}
+        },{
+        	description: 'compare integer and string',
+        	test: function(){
+        		return '10'==10 && '10'!=6 && '20'>10 && '10'<12 && '20'>=11 && '10'<=12 && '10'>=10 && '10'<=10        	
+        		&& 10=='10' && 10!='6' && 20>'16' && 10<'12' && 20>='16' && 10<='12' && 10>='10' && 10<='10';
+        	}
+        },{
+        	description: 'compare float and string',
+        	test: function(){
+        		return '10.'==10. && '10.'!=6. && '20.'>10. && '10.'<12. && '20.'>=11. && '10.'<=12. && '10.'>=10. && '10.'<=10.        	
+        		&& 10.=='10.' && 10.!='6.' && 20.>'16.' && 10.<'12.' && 20.>='16.' && 10.<='12.' && 10.>='10.' && 10.<='10.';
+        	}
+        },{
+        	description: 'mismatched type compare',
+        	test: function(){
+        		return !(true==1) && !(true==1.) && true!=1. && !(true=='1') && true!='1';
+        	}
+        },{
+        	description: 'invalid comparaison of booleans throws exception',
+        	test: function(){
+        		try{
+        			let a=true<false;
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'invalid comparaison of voids throws exception',
+        	test: function(){
+        		try{
+        			let a=void<void;
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'invalid comparaison of NaNs throws exception',
+        	test: function(){
+        		try{
+        			let a=NaN<NaN;
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'invalid comparaison of arrays throws exception',
+        	test: function(){
+        		try{
+        			let a=[1,2,3]<[4,5,6];
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'invalid comparaison of maps throws exception',
+        	test: function(){
+        		try{
+        			let a={a:1,b:'a'}<{a:10,b:'b'};
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'invalid comparaison of functions throws exception',
+        	test: function(){
+        		try{
+        			let a=function(a,b){return a-b;}<function(c){return c;};
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },{
+        	description: 'invalid comparaison of library functions throws exception',
+        	test: function(){
+        		try{
+        			let a=String.prototype.length<String.prototype.substr;
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
         }
         	
     ]

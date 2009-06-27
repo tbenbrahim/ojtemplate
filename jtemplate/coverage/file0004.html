@@ -12,7 +12,7 @@
     <script language="javascript" src="file0004.js"></script>
   </head>
   <body>
-    <div class="section">File: build/library_string.ml (<a href="index.html">return to index</a>)</div>
+    <div class="section">File: build/ast.ml (<a href="index.html">return to index</a>)</div>
     <br/>
     <hr class="codeSep"/>
     <br/>
@@ -22,13 +22,13 @@
         <td valign="top">
           <table class="simple">
             <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
-            <tr><td>binding</td><td width="16px">&nbsp;</td><td>32 / 32 (100 %)</td></tr>
-            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>5 / 5 (100 %)</td></tr>
+            <tr><td>binding</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>for</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>if/then</td><td width="16px">&nbsp;</td><td>4 / 4 (100 %)</td></tr>
-            <tr><td>try</td><td width="16px">&nbsp;</td><td>3 / 3 (100 %)</td></tr>
+            <tr><td>if/then</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>28 / 28 (100 %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>2 / 2 (100 %)</td></tr>
           </table>
         </td>
         <td valign="top">
@@ -52,147 +52,113 @@
 <div style="font-size: smaller;"><a href="javascript:foldAll();">fold all</a> <a href="javascript:unfoldAll();">unfold all</a></div>
     <code>
       <div id="fold000001">
-      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| open&nbsp;Interpreter</div>
-      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| open&nbsp;RuntimeError</div>
-      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| open&nbsp;Symbol_table</div>
-      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| open&nbsp;Ast</div>
-      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;</div>
-      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| module&nbsp;StringLibrary&nbsp;=</div>
-      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| struct</div>
-      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;</div>
-      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;let&nbsp;indexOf&nbsp;str&nbsp;substr&nbsp;=</div>
-      <div id="line000010" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;ssl&nbsp;=(*[34]*)&nbsp;String.length&nbsp;substr&nbsp;in</div>
-      <div id="line000011" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;max&nbsp;=&nbsp;(*[34]*)String.length&nbsp;str&nbsp;-&nbsp;ssl&nbsp;in</div>
-      <div id="line000012" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;rec&nbsp;loo(*[34]*)p&nbsp;i&nbsp;=</div>
-      <div id="line000013" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;i&nbsp;&gt;&nbsp;max&nbsp;t(*[152]*)hen&nbsp;-&nbsp;1</div>
-      <div id="line000014" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000014| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[10]*)else(</div>
-      <div id="line000015" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000015| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;String.sub&nbsp;(*[142]*)str&nbsp;i&nbsp;ssl&nbsp;=&nbsp;substr&nbsp;then&nbsp;i</div>
-      <div id="line000016" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el(*[24]*)se&nbsp;loop&nbsp;(i&nbsp;+&nbsp;1))</div>
-      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;(*[118]*)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;in&nbsp;loop&nbsp;0</div>
-      <div id="line000018" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;</div>
-      <div id="line000019" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;let&nbsp;(*[34]*)exported&nbsp;=[</div>
-      <div id="line000020" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototy(*[2]*)pe&quot;;&quot;toUppercase&quot;],[],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000021" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;SymbolTa(*[2]*)ble.get_value&nbsp;&quot;this&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CF(*[2]*)Return&nbsp;(StringValue(String.uppercase&nbsp;(Interpreter.cast_to_string&nbsp;value))))</div>
-      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;toLowercase&quot;],[],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;SymbolTable.(*[2]*)get_value&nbsp;&quot;this&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFRetu(*[2]*)rn&nbsp;(StringValue(String.lowercase&nbsp;(Interpreter.cast_to_string&nbsp;value))))</div>
-      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;toFirstUpper&quot;],[],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000029" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000029| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;SymbolTable.get_(*[2]*)value&nbsp;&quot;this&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000030" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000030| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;((*[2]*)StringValue(String.capitalize&nbsp;(Interpreter.cast_to_string&nbsp;value))))</div>
-      <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000032" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;toFirstLower&quot;],[],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;SymbolTable.get_valu(*[2]*)e&nbsp;&quot;this&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000034" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(Stri(*[2]*)ngValue(String.uncapitalize&nbsp;(Interpreter.cast_to_string&nbsp;value))))</div>
-      <div id="line000035" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000035| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000036" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000036| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;length&quot;],[],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000037" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000037| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;SymbolTable.get_value&nbsp;&quot;t(*[4]*)his&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000038" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(IntegerV(*[4]*)alue(String.length&nbsp;(Interpreter.cast_to_string&nbsp;value))))</div>
-      <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000040" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;charAt&quot;],[&quot;position&quot;],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000041" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000041| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;SymbolTable.get_value&nbsp;&quot;this&quot;(*[6]*)&nbsp;stbl&nbsp;in</div>
-      <div id="line000042" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000042| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;position&nbsp;=&nbsp;SymbolTable.get_value&nbsp;&quot;pos(*[6]*)ition&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000043" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;position&nbsp;with</div>
-      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;IntegerValue(intPos)&nbsp;-&gt;</div>
-      <div id="line000045" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000045| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(try</div>
-      <div id="line000046" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000046| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFRet(*[4]*)urn&nbsp;(StringValue&nbsp;(Str(*[4]*)ing.make&nbsp;1&nbsp;(String.get&nbsp;(Interpreter.cast_to_string&nbsp;value)&nbsp;intPos))))</div>
-      <div id="line000047" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000047| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with</div>
-      <div id="line000048" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000048| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Invalid_argument&nbsp;_&nbsp;-&gt;&nbsp;raise&nbsp;(LibraryError&nbsp;(&quot;invalid&nbsp;index&nbsp;&quot;^(string_o(*[2]*)f_int&nbsp;intPos)^&quot;&nbsp;in&nbsp;call&nbsp;to&nbsp;charAt&quot;)))</div>
-      <div id="line000049" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;raise&nbsp;(LibraryError&nbsp;&quot;second&nbsp;argument&nbsp;to&nbsp;charAt&nbsp;s(*[2]*)hould&nbsp;be&nbsp;an&nbsp;integer&quot;)</div>
-      <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;indexOf&quot;],[&quot;substring&quot;],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000052" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000052| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;s&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get(*[4]*)_value&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000053" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000053| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;ss&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get(*[4]*)_value&nbsp;&quot;substring&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000054" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000054| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(IntegerValue(indexOf&nbsp;s&nbsp;s(*[4]*)s)))</div>
-      <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;substr&quot;],[&quot;start&quot;;&nbsp;&quot;length&quot;],&nbsp;fun(stbl)&nbsp;-&gt;</div>
-      <div id="line000057" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000057| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;s&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_valu(*[8]*)e&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;start&nbsp;=&nbsp;SymbolTable.get_value&nbsp;&quot;start&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000059" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000059| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[8]*)&nbsp;&nbsp;&nbsp;let&nbsp;length&nbsp;=&nbsp;SymbolTable.get_value&nbsp;&quot;length&quot;&nbsp;stbl&nbsp;in</div>
-      <div id="line000060" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000060| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[8]*)&nbsp;&nbsp;&nbsp;&nbsp;try(</div>
-      <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;start&nbsp;with</div>
-      <div id="line000062" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000062| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Integer(*[8]*)Value(iStart)&nbsp;-&gt;</div>
-      <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(match&nbsp;length&nbsp;with</div>
-      <div id="line000064" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000064| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;IntegerValue(iLength)&nbsp;-&gt;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(StringValue(String.sub&nbsp;s&nbsp;iStart&nbsp;iL(*[4]*)ength)))</div>
-      <div id="line000065" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000065| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;raise&nbsp;(LibraryError&nbsp;&quot;third&nbsp;parameter&nbsp;(length)&nbsp;in&nbsp;substr&nbsp;must&nbsp;be&nbsp;(*[2]*)an&nbsp;integer&quot;))</div>
-      <div id="line000066" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000066| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;raise&nbsp;(LibraryError&nbsp;&quot;second&nbsp;parameter&nbsp;(start)&nbsp;in&nbsp;substr&nbsp;must&nbsp;be&nbsp;a(*[2]*)n&nbsp;integer&quot;))</div>
-      <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with</div>
-      <div id="line000068" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000068| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Invalid_argument&nbsp;_&nbsp;-&gt;&nbsp;raise&nbsp;(LibraryError&nbsp;&quot;Invalid&nbsp;start/length&nbsp;arguments&nbsp;in&nbsp;substr&quot;)</div>
-      <div id="line000069" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000069| &nbsp;&nbsp;&nbsp;(*[2]*)&nbsp;);</div>
-      <div id="line000070" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000070| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;startsWith&quot;],[&quot;substring&quot;],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000071" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000071| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;s&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;this&quot;&nbsp;stbl)(*[8]*)&nbsp;in</div>
-      <div id="line000072" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000072| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;ss&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;substring&quot;&nbsp;(*[8]*)stbl)&nbsp;in</div>
-      <div id="line000073" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000073| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(BooleanValue(ss&nbsp;=&nbsp;String.sub&nbsp;s&nbsp;0&nbsp;(String.le(*[8]*)ngth&nbsp;ss))))</div>
-      <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;endsWith&quot;],[&quot;substring&quot;],&nbsp;fun&nbsp;(stbl)&nbsp;-&gt;</div>
-      <div id="line000076" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000076| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;s&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000077" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000077| &nbsp;(*[4]*)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;ss&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;substring&quot;&nbsp;stbl)(*[4]*)&nbsp;in</div>
-      <div id="line000078" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000078| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(BooleanValue(ss&nbsp;=&nbsp;String.sub&nbsp;s&nbsp;(String.length&nbsp;s&nbsp;(*[4]*)-&nbsp;String.length&nbsp;ss)&nbsp;(String.length&nbsp;ss))))</div>
-      <div id="line000079" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000079| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000080" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000080| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;replaceAll&quot;],[&quot;substring&quot;;&quot;replacement&quot;],&nbsp;fun(stbl)&nbsp;-&gt;</div>
-      <div id="line000081" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000081| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;s&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000082" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000082| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[6]*)&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;substr&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;substring&quot;&nbsp;stbl)&nbsp;(*[6]*)in</div>
-      <div id="line000083" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000083| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;repl&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;replacement&quot;&nbsp;stbl)&nbsp;i(*[6]*)n</div>
-      <div id="line000084" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000084| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;ssl&nbsp;=&nbsp;String.length&nbsp;substr&nbsp;in</div>
-      <div id="line000085" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000085| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;rec&nbsp;loop&nbsp;str&nbsp;=</div>
-      <div id="line000086" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000086| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;in(*[6]*)dexOf&nbsp;str&nbsp;substr&nbsp;with</div>
-      <div id="line000087" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000087| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;-&nbsp;1&nbsp;-&gt;&nbsp;ra(*[6]*)ise&nbsp;(Interpreter.CFReturn(StringValue&nbsp;str))</div>
-      <div id="line000088" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000088| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;i&nbsp;-&gt;&nbsp;loop&nbsp;((String.sub&nbsp;str(*[6]*)&nbsp;0&nbsp;i)^&nbsp;repl&nbsp;^</div>
-      <div id="line000089" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000089| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(String.sub&nbsp;str&nbsp;(i&nbsp;+&nbsp;ssl)</div>
-      <div id="line000090" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000090| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[16]*)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(String.length&nbsp;str&nbsp;-&nbsp;ssl&nbsp;-&nbsp;i)))&nbsp;in</div>
-      <div id="line000091" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000091| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;s</div>
-      <div id="line000092" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000092| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000093" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000093| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;split&quot;],[&quot;delim&quot;],&nbsp;fun(stbl)&nbsp;-&gt;</div>
-      <div id="line000094" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000094| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;st(*[6]*)r&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000095" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000095| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;sub(*[2]*)str&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;delim&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000096" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000096| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;(*[2]*)result&nbsp;=&nbsp;Hashtbl.create&nbsp;10&nbsp;in</div>
-      <div id="line000097" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000097| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;rec&nbsp;loop&nbsp;s&nbsp;ind&nbsp;=</div>
-      <div id="line000098" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000098| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;indexOf&nbsp;s&nbsp;su(*[2]*)bstr&nbsp;with</div>
-      <div id="line000099" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000099| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;-&nbsp;1&nbsp;-&gt;&nbsp;Hashtbl.add&nbsp;re(*[2]*)sult&nbsp;(string_of_int&nbsp;ind)&nbsp;(StringValue(s));</div>
-      <div id="line000100" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000100| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hashtbl.add&nbsp;result&nbsp;&quot;lengt(*[2]*)h&quot;&nbsp;(IntegerValue(ind&nbsp;+&nbsp;1));</div>
-      <div id="line000101" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000101| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFReturn&nbsp;(M(*[2]*)apValue(result,&nbsp;ArraySubtype)))</div>
-      <div id="line000102" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000102| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;i&nbsp;-&gt;&nbsp;let&nbsp;offset&nbsp;=&nbsp;i&nbsp;+&nbsp;St(*[2]*)ring.length&nbsp;substr&nbsp;in</div>
-      <div id="line000103" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000103| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hashtbl.add&nbsp;result&nbsp;(string_of_int&nbsp;ind)&nbsp;(Stri(*[6]*)ngValue(String.sub&nbsp;s&nbsp;0&nbsp;i));</div>
-      <div id="line000104" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000104| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;(String.s(*[6]*)ub&nbsp;s&nbsp;offset&nbsp;(String.length&nbsp;s&nbsp;-&nbsp;offset))&nbsp;(ind&nbsp;+&nbsp;1)&nbsp;in</div>
-      <div id="line000105" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000105| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;str&nbsp;0</div>
-      <div id="line000106" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000106| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000107" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000107| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;S(*[6]*)tring&quot;;&quot;prototype&quot;;&quot;parseInt&quot;],[],&nbsp;fun&nbsp;stbl&nbsp;-&gt;</div>
-      <div id="line000108" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000108| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;value&nbsp;=&nbsp;Interpret(*[2]*)er.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000109" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000109| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;result&nbsp;=&nbsp;try&nbsp;In(*[6]*)tegerValue(int_of_string&nbsp;value)&nbsp;with&nbsp;Failure&nbsp;_&nbsp;-&gt;&nbsp;Void&nbsp;in</div>
-      <div id="line000110" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000110| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CF(*[6]*)Return&nbsp;result)</div>
-      <div id="line000111" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000111| &nbsp;&nbsp;(*[6]*)&nbsp;&nbsp;);</div>
-      <div id="line000112" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000112| &nbsp;&nbsp;&nbsp;&nbsp;([&quot;String&quot;;&quot;prototype&quot;;&quot;parseFloat&quot;],[],&nbsp;fu(*[4]*)n&nbsp;stbl&nbsp;-&gt;</div>
-      <div id="line000113" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000113| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[6]*)&nbsp;let&nbsp;value&nbsp;=&nbsp;Interpreter.cast_to_string&nbsp;(SymbolTable.get_value&nbsp;&quot;this&quot;&nbsp;stbl)&nbsp;in</div>
-      <div id="line000114" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000114| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;result&nbsp;=&nbsp;try&nbsp;FloatVa(*[4]*)lue(float_of_string&nbsp;value)&nbsp;with&nbsp;Failure&nbsp;_&nbsp;-&gt;&nbsp;Void&nbsp;in</div>
-      <div id="line000115" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000115| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(Interpreter.CFRetur(*[4]*)n&nbsp;result)</div>
-      <div id="line000116" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000116| &nbsp;&nbsp;&nbsp;&nbsp;);</div>
-      <div id="line000117" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000117| (*[4]*)&nbsp;&nbsp;&nbsp;&nbsp;</div>
-      <div id="line000118" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000118| &nbsp;&nbsp;&nbsp;&nbsp;]</div>
-      <div id="line000119" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000119| end</div>
+      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| type&nbsp;operator&nbsp;=&nbsp;|&nbsp;Plus&nbsp;|&nbsp;Minus&nbsp;|&nbsp;Times&nbsp;|&nbsp;Divide&nbsp;|&nbsp;Modulo&nbsp;|&nbsp;And&nbsp;|&nbsp;Or</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| &nbsp;</div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| type&nbsp;comparator&nbsp;=</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| &nbsp;&nbsp;|&nbsp;LessThan</div>
+      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;&nbsp;|&nbsp;LessThanEqual</div>
+      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| &nbsp;&nbsp;|&nbsp;Equal</div>
+      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| &nbsp;&nbsp;|&nbsp;GreaterThanEqual</div>
+      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;|&nbsp;GreaterThan</div>
+      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;|&nbsp;NotEqual</div>
+      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;</div>
+      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| type&nbsp;replacement&nbsp;=</div>
+      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;(string&nbsp;*&nbsp;expression)</div>
+      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| and&nbsp;replacement_list&nbsp;=</div>
+      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| &nbsp;&nbsp;replacement&nbsp;list</div>
+      <div id="line000015" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000015| and&nbsp;conditional_spec&nbsp;=</div>
+      <div id="line000016" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;&nbsp;|&nbsp;Once</div>
+      <div id="line000017" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;|&nbsp;When&nbsp;of&nbsp;expression</div>
+      <div id="line000018" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;|&nbsp;Loop&nbsp;of&nbsp;string&nbsp;*&nbsp;expression</div>
+      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;|&nbsp;CondLoop&nbsp;of&nbsp;expression&nbsp;*&nbsp;string&nbsp;*&nbsp;expression</div>
+      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| and&nbsp;replacement_spec&nbsp;=</div>
+      <div id="line000021" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;(string&nbsp;*&nbsp;conditional_spec&nbsp;*&nbsp;replacement_list)</div>
+      <div id="line000022" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000022| and&nbsp;template_spec&nbsp;=</div>
+      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;((string&nbsp;option)&nbsp;*&nbsp;string)</div>
+      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| and&nbsp;map_subtype&nbsp;=&nbsp;|&nbsp;MapSubtype&nbsp;|&nbsp;ArraySubtype</div>
+      <div id="line000025" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000025| (**&nbsp;type&nbsp;definition&nbsp;for&nbsp;the&nbsp;four&nbsp;scalar&nbsp;values&nbsp;(int,&nbsp;float,&nbsp;string,&nbsp;bool)</div>
+      <div id="line000026" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000026| for&nbsp;a&nbsp;function&nbsp;definition,&nbsp;and&nbsp;for&nbsp;maps.&nbsp;Arrays&nbsp;are&nbsp;syntactic&nbsp;sugar</div>
+      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| for&nbsp;maps,&nbsp;for&nbsp;example&nbsp;foo.bar[1]&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;foo.bar.1</div>
+      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| Map&nbsp;values&nbsp;are&nbsp;implemented&nbsp;as&nbsp;a&nbsp;recursive&nbsp;structure&nbsp;of&nbsp;Maps.&nbsp;To</div>
+      <div id="line000029" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000029| resolved&nbsp;foo.bar.1,&nbsp;foo&nbsp;is&nbsp;looked&nbsp;up&nbsp;in&nbsp;the&nbsp;symbol&nbsp;table.&nbsp;It&nbsp;must&nbsp;be</div>
+      <div id="line000030" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000030| a&nbsp;MapValue.&nbsp;In&nbsp;the&nbsp;MapValue&nbsp;hashtable,&nbsp;bar&nbsp;is&nbsp;looked&nbsp;up.&nbsp;It&nbsp;must&nbsp;be&nbsp;also</div>
+      <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| be&nbsp;a&nbsp;MapValue.&nbsp;Finally,&nbsp;the&nbsp;last&nbsp;component&nbsp;is&nbsp;looked&nbsp;up&nbsp;in&nbsp;the&nbsp;hashtable</div>
+      <div id="line000032" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000032| and&nbsp;it&nbsp;can&nbsp;be&nbsp;of&nbsp;any&nbsp;type.&nbsp;*)</div>
+      <div id="line000033" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000033| and&nbsp;variable_value&nbsp;=</div>
+      <div id="line000034" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;&nbsp;&nbsp;&nbsp;IntegerValue&nbsp;of&nbsp;int</div>
+      <div id="line000035" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000035| &nbsp;&nbsp;|&nbsp;FloatValue&nbsp;of&nbsp;float</div>
+      <div id="line000036" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000036| &nbsp;&nbsp;|&nbsp;StringValue&nbsp;of&nbsp;string</div>
+      <div id="line000037" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000037| &nbsp;&nbsp;|&nbsp;BooleanValue&nbsp;of&nbsp;bool</div>
+      <div id="line000038" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;|&nbsp;FunctionValue&nbsp;of&nbsp;string&nbsp;list&nbsp;*&nbsp;statement&nbsp;list</div>
+      <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;|&nbsp;ScopedFunctionValue&nbsp;of&nbsp;string&nbsp;list&nbsp;*&nbsp;statement&nbsp;list&nbsp;*&nbsp;symbol_table</div>
+      <div id="line000040" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;&nbsp;|&nbsp;LibraryFunction&nbsp;of&nbsp;string&nbsp;list&nbsp;*&nbsp;(symbol_table&nbsp;-&gt;&nbsp;unit)&nbsp;*&nbsp;symbol_table</div>
+      <div id="line000041" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000041| &nbsp;&nbsp;|&nbsp;MapValue&nbsp;of&nbsp;(string,&nbsp;variable_value)&nbsp;Hashtbl.t&nbsp;*&nbsp;map_subtype</div>
+      <div id="line000042" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000042| &nbsp;&nbsp;|&nbsp;Void</div>
+      <div id="line000043" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;&nbsp;|&nbsp;NaN</div>
+      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| (**</div>
+      <div id="line000045" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000045| Definition&nbsp;for&nbsp;a&nbsp;symbol&nbsp;table.</div>
+      <div id="line000046" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000046| *)</div>
+      <div id="line000047" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000047| and&nbsp;environment&nbsp;={</div>
+      <div id="line000048" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000048| &nbsp;&nbsp;parse_callback:&nbsp;string&nbsp;-&gt;&nbsp;statement;</div>
+      <div id="line000049" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;&nbsp;mutable&nbsp;loaded_imports:&nbsp;string&nbsp;list;</div>
+      <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| &nbsp;&nbsp;mutable&nbsp;current_stmt:&nbsp;string&nbsp;*&nbsp;int;</div>
+      <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| &nbsp;&nbsp;mutable&nbsp;stack_trace:&nbsp;(string&nbsp;*&nbsp;int)&nbsp;list;&nbsp;(*&nbsp;filename,&nbsp;line,&nbsp;repeat&nbsp;*)</div>
+      <div id="line000052" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000052| }</div>
+      <div id="line000053" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000053| and&nbsp;symbol_table&nbsp;={</div>
+      <div id="line000054" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000054| &nbsp;&nbsp;values:&nbsp;(string,&nbsp;variable_value)&nbsp;Hashtbl.t;&nbsp;(*&nbsp;variable&nbsp;values&nbsp;for&nbsp;this&nbsp;scope&nbsp;*)</div>
+      <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| &nbsp;&nbsp;parent_table:&nbsp;symbol_table&nbsp;option;</div>
+      <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| &nbsp;&nbsp;env:&nbsp;environment;</div>
+      <div id="line000057" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000057| }</div>
+      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| and&nbsp;expression&nbsp;=</div>
+      <div id="line000059" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000059| &nbsp;&nbsp;|&nbsp;Id&nbsp;of&nbsp;string</div>
+      <div id="line000060" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000060| &nbsp;&nbsp;|&nbsp;BinaryOp&nbsp;of&nbsp;expression&nbsp;*&nbsp;operator&nbsp;*&nbsp;expression</div>
+      <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| &nbsp;&nbsp;|&nbsp;CompOp&nbsp;of&nbsp;expression&nbsp;*&nbsp;comparator&nbsp;*&nbsp;expression</div>
+      <div id="line000062" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000062| &nbsp;&nbsp;|&nbsp;Not&nbsp;of&nbsp;expression</div>
+      <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| &nbsp;&nbsp;|&nbsp;FunctionCall&nbsp;of&nbsp;expression&nbsp;*&nbsp;expression&nbsp;list</div>
+      <div id="line000064" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000064| &nbsp;&nbsp;|&nbsp;MapExpr&nbsp;of&nbsp;(string&nbsp;*&nbsp;expression)&nbsp;list</div>
+      <div id="line000065" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000065| &nbsp;&nbsp;|&nbsp;ArrayExpr&nbsp;of&nbsp;expression&nbsp;list</div>
+      <div id="line000066" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000066| &nbsp;&nbsp;|&nbsp;VariableExpr&nbsp;of&nbsp;string</div>
+      <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| &nbsp;&nbsp;|&nbsp;Value&nbsp;of&nbsp;variable_value</div>
+      <div id="line000068" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000068| &nbsp;&nbsp;|&nbsp;UnboundVar&nbsp;of&nbsp;string</div>
+      <div id="line000069" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000069| &nbsp;&nbsp;|&nbsp;Assignment&nbsp;of&nbsp;expression&nbsp;*&nbsp;expression</div>
+      <div id="line000070" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000070| &nbsp;&nbsp;|&nbsp;Declaration&nbsp;of&nbsp;expression&nbsp;*&nbsp;expression</div>
+      <div id="line000071" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000071| &nbsp;&nbsp;|&nbsp;MemberExpr&nbsp;of&nbsp;expression&nbsp;*&nbsp;expression</div>
+      <div id="line000072" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000072| &nbsp;&nbsp;|&nbsp;IndexExpr&nbsp;of&nbsp;expression</div>
+      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| &nbsp;&nbsp;|&nbsp;PostFixSum&nbsp;of&nbsp;expression&nbsp;*&nbsp;int</div>
+      <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| &nbsp;&nbsp;(*&nbsp;used&nbsp;internally&nbsp;for&nbsp;expansion&nbsp;of&nbsp;vararg&nbsp;in&nbsp;partially&nbsp;applied&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</div>
+      <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| &nbsp;&nbsp;(*&nbsp;functions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</div>
+      <div id="line000076" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000076| &nbsp;&nbsp;|&nbsp;FunctionCallExpandVarArg&nbsp;of&nbsp;expression&nbsp;*&nbsp;expression&nbsp;list&nbsp;*&nbsp;string</div>
+      <div id="line000077" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000077| and&nbsp;imported_statements&nbsp;={&nbsp;mutable&nbsp;loaded:&nbsp;bool&nbsp;}</div>
+      <div id="line000078" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000078| and&nbsp;statement&nbsp;=</div>
+      <div id="line000079" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000079| &nbsp;&nbsp;|&nbsp;ForEach&nbsp;of&nbsp;string&nbsp;*&nbsp;expression&nbsp;*&nbsp;statement&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000080" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000080| &nbsp;&nbsp;|&nbsp;For&nbsp;of&nbsp;expression&nbsp;*&nbsp;expression&nbsp;*&nbsp;expression&nbsp;*&nbsp;statement&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000081" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000081| &nbsp;&nbsp;|&nbsp;ExpressionStatement&nbsp;of&nbsp;expression&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000082" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000082| &nbsp;&nbsp;|&nbsp;Break&nbsp;of&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000083" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000083| &nbsp;&nbsp;|&nbsp;Continue&nbsp;of&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000084" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000084| &nbsp;&nbsp;|&nbsp;Noop</div>
+      <div id="line000085" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000085| &nbsp;&nbsp;|&nbsp;Return&nbsp;of&nbsp;expression&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000086" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000086| &nbsp;&nbsp;|&nbsp;If&nbsp;of&nbsp;expression&nbsp;*&nbsp;statement&nbsp;*&nbsp;statement&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000087" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000087| &nbsp;&nbsp;|&nbsp;TemplateDef&nbsp;of&nbsp;string&nbsp;*&nbsp;template_spec&nbsp;list&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000088" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000088| &nbsp;&nbsp;|&nbsp;Instructions&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;list&nbsp;*&nbsp;replacement_spec&nbsp;list&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000089" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000089| &nbsp;&nbsp;|&nbsp;StatementBlock&nbsp;of&nbsp;statement&nbsp;list</div>
+      <div id="line000090" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000090| &nbsp;&nbsp;|&nbsp;Program&nbsp;of&nbsp;statement&nbsp;list&nbsp;(*&nbsp;like&nbsp;a&nbsp;statement&nbsp;block&nbsp;but&nbsp;does&nbsp;not&nbsp;push&nbsp;scope*)</div>
+      <div id="line000091" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000091| &nbsp;&nbsp;|&nbsp;Import&nbsp;of&nbsp;(string&nbsp;*&nbsp;imported_statements)&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000092" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000092| &nbsp;&nbsp;|&nbsp;Switch&nbsp;of&nbsp;expression&nbsp;*&nbsp;statement&nbsp;list&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000093" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000093| &nbsp;&nbsp;|&nbsp;Case&nbsp;of&nbsp;expression&nbsp;option&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000094" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000094| &nbsp;&nbsp;|&nbsp;TryCatch&nbsp;of&nbsp;statement&nbsp;*&nbsp;string&nbsp;*&nbsp;statement&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000095" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000095| &nbsp;&nbsp;|&nbsp;TryFinally&nbsp;of&nbsp;statement&nbsp;*&nbsp;statement&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000096" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000096| &nbsp;&nbsp;|&nbsp;Throw&nbsp;of&nbsp;expression&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
+      <div id="line000097" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000097| &nbsp;</div>
+      <div id="line000098" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000098| let&nbsp;is_vararg&nbsp;varname&nbsp;=</div>
+      <div id="line000099" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000099| &nbsp;&nbsp;varname.[0]='['</div>
+      <div id="line000100" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000100| &nbsp;</div>
+      <div id="line000101" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000101| let&nbsp;vararg_formalname&nbsp;varname&nbsp;=</div>
+      <div id="line000102" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000102| &nbsp;&nbsp;String.sub&nbsp;varname&nbsp;1&nbsp;((String.length&nbsp;varname)&nbsp;-(*[992]*)&nbsp;1)</div>
       </div>
     </code>
     <br/>
     <div id="navigator" style="border: solid black 1px; position: fixed; z-index:100; right: 10px; top: 10px; bottom: 10px; width: 16px;">
       <table width="100%" height="100%" border="0" cellspacing="0">
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
@@ -304,6 +270,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 20:23:33</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-27 01:11:55</p>
   </body>
 </html>

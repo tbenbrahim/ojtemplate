@@ -105,9 +105,9 @@
       <div id="line000046" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000046| %token&nbsp;FOREACH&nbsp;WHILE&nbsp;IF&nbsp;(*[0]*)&nbsp;FOR&nbsp;ELSE&nbsp;TEMPLATE&nbsp;INSTRUCTIONS&nbsp;FUNC(*[0]*)TION&nbsp;CONTINUE&nbsp;BREAK</div>
       <div id="line000047" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000047| %token&nbsp;RETURN&nbsp;(*[0]*)IN&nbsp;ONCE&nbsp;WHEN&nbsp;VAR&nbsp;EOF&nbsp;LBRACE&nbsp;RBRACE&nbsp;LPAREN&nbsp;RPAREN&nbsp;LBRACKET&nbsp;RBRA(*[0]*)CKET</div>
       <div id="line000048" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000048| %token&nbsp;COMMA&nbsp;SEMICO(*[0]*)LON&nbsp;COLON&nbsp;DOTDOTDOT&nbsp;DOT&nbsp;EQUALS&nbsp;NOT&nbsp;QUESTION&nbsp;PLUS&nbsp;MINUS&nbsp;TIMES(*[0]*)</div>
-      <div id="line000049" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000049| %token&nbsp;DIVIDE&nbsp;MODULO&nbsp;AN(*[0]*)D&nbsp;OR&nbsp;VOID&nbsp;NAN&nbsp;SWITCH&nbsp;CASE&nbsp;DEFAULT&nbsp;PLUSEQUALS&nbsp;M(*[664]*)INUSEQUALS</div>
+      <div id="line000049" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000049| %token&nbsp;DIVIDE&nbsp;MODULO&nbsp;AN(*[0]*)D&nbsp;OR&nbsp;VOID&nbsp;NAN&nbsp;SWITCH&nbsp;CASE&nbsp;DEFAULT&nbsp;PLUSEQUALS&nbsp;M(*[792]*)INUSEQUALS</div>
       <div id="fold000050">
-      <div id="line000050" class="lineAllVisited"><a href="javascript:fold('fold000050');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000050| %token&nbsp;TIMESEQUALS&nbsp;DIVEQUALS&nbsp;MODE(*[664]*)QUALS&nbsp;PLUSPLUS&nbsp;MINUSMINUS&nbsp;AT&nbsp;TRY&nbsp;CATCH&nbsp;THROW</div>
+      <div id="line000050" class="lineAllVisited"><a href="javascript:fold('fold000050');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000050| %token&nbsp;TIMESEQUALS&nbsp;DIVEQUALS&nbsp;MODE(*[792]*)QUALS&nbsp;PLUSPLUS&nbsp;MINUSMINUS&nbsp;AT&nbsp;TRY&nbsp;CATCH&nbsp;THROW</div>
       <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| %token&nbsp;FINALLY&nbsp;PROTOTYPE</div>
       <div id="line000052" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000052| &nbsp;</div>
       <div id="line000053" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000053| &nbsp;</div>
@@ -123,7 +123,7 @@
       <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| %nonassoc&nbsp;EMPTYBLOCK</div>
       <div id="line000064" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000064| &nbsp;</div>
       </div>
-      <div id="line000065" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000065| (*[150]*)%right&nbsp;PLUSEQUAL(*[0]*)S&nbsp;MINUSEQUALS&nbsp;</div>
+      <div id="line000065" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000065| (*[200]*)%right&nbsp;PLUSEQUAL(*[0]*)S&nbsp;MINUSEQUALS&nbsp;</div>
       <div id="fold000066">
       <div id="line000066" class="lineNone"><a href="javascript:fold('fold000066');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000066| %right&nbsp;TIMESEQUALS&nbsp;DIVEQUALS&nbsp;MODEQUALS</div>
       <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| %right&nbsp;EQUALS</div>
@@ -245,7 +245,7 @@
       <div id="line000183" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000183| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;op_expr&nbsp;DIVIDE&nbsp;op_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;BinaryOp($1,Divide,$3)&nbsp;}</div>
       <div id="line000184" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000184| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;op_expr&nbsp;MODULO&nbsp;op_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;BinaryOp($1,Modulo,$3)&nbsp;}</div>
       <div id="line000185" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000185| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;op_expr&nbsp;COMPOP&nbsp;op_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;CompOp($1,$2,$3)&nbsp;}</div>
-      <div id="line000186" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000186| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;NOT&nbsp;call_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;Not($2)&nbsp;}</div>
+      <div id="line000186" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000186| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;NOT&nbsp;lhs_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;Not($2)&nbsp;}</div>
       <div id="line000187" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000187| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;op_expr&nbsp;&nbsp;AND&nbsp;op_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;BinaryOp($1,And,$3)&nbsp;}</div>
       <div id="line000188" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000188| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;op_expr&nbsp;OR&nbsp;op_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;BinaryOp($1,Or,$3)&nbsp;}</div>
       <div id="line000189" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000189| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;%prec&nbsp;UMINUS&nbsp;MINUS&nbsp;op_expr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;BinaryOp(Value(IntegerValue(0)),Minus,$2)&nbsp;}</div>
@@ -622,6 +622,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-26 20:23:33</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-27 01:11:55</p>
   </body>
 </html>

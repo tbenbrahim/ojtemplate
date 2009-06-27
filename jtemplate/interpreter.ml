@@ -3,11 +3,11 @@ struct
   open Ast
   open Symbol_table
   open RuntimeError
+  open Compare
   
   exception EIncompatibleTypes of string * string (* type1, type2 *)
   exception EInvalidCast of string * string (* value, typename *)
   exception EInvalidOperation of Ast.operator * string  (* operator, typename *)
-  exception EInvalidComparaison of Ast.comparator * string (* comparator, typename *)
   exception EMismatchedTypeInCompare of string * string (* type1, type2 *)
   exception ENotAFunction of string (* variable name *)
   exception ENoScopeInFunctionCall
@@ -92,32 +92,6 @@ struct
               index + 1) 0 expr_list in
     Hashtbl.replace map "length" (IntegerValue(lastindex));
     map
-  and
-  compare_same_type v1 op v2 =
-    BooleanValue(
-      match op with
-      | Equal -> v1 = v2
-      | NotEqual -> v1 <> v2
-      | LessThan -> v1 < v2
-      | LessThanEqual -> v1 <= v2
-      | GreaterThan -> v1 > v2
-      | GreaterThanEqual -> v1 >= v2)
-  and
-  restricted_compare v1 op v2 =
-    BooleanValue(
-      match v1 with
-      | MapValue(h, ArraySubtype) -> (
-            match op with
-            | Equal -> (SymbolTable.list_of_array v1) = (SymbolTable.list_of_array v2)
-            | NotEqual -> (SymbolTable.list_of_array v1) <> (SymbolTable.list_of_array v2)
-            | _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
-          )
-      | _ ->
-          match op with
-          | Equal -> v1 = v2
-          | NotEqual -> v1 <> v2
-          | _ -> raise (EInvalidComparaison(op, SymbolTable.string_of_symbol_type v1))
-    )
   and evaluate_memb_expr_index index symbol_table =
     (match index with
       | Id(name) -> (name, false)
@@ -338,22 +312,7 @@ struct
     | CompOp (expr1, comparator, expr2) ->
         let value1 = evaluate_expression expr1 symbol_table in
         let value2 = evaluate_expression expr2 symbol_table in
-        let type1 = SymbolTable.value_type value1 in
-        let type2 = SymbolTable.value_type value2 in
-        (if type1 = type2 then
-            match type1 with
-            | SymbolTable.IntegerType | SymbolTable.StringType | SymbolTable.FloatType -> compare_same_type value1 comparator value2
-            | SymbolTable.BooleanType | SymbolTable.MapType | SymbolTable.FunctionType
-            | SymbolTable.LibraryCallType | SymbolTable.VoidType | SymbolTable.NaNType
-            | SymbolTable.ArrayType -> restricted_compare value1 comparator value2
-          else
-            try
-              match casting_type value1 value2 with
-              | FloatCast(f1, f2) -> compare_same_type (FloatValue(f1)) comparator (FloatValue(f2))
-              | _ ->	BooleanValue(false)
-            with
-            | EIncompatibleTypes(_, _) -> BooleanValue(false)
-        )
+        compare value1 comparator value2
   and
   evaluate_exprs exprlist symbol_table =
     List.map (fun expr -> evaluate_expression expr symbol_table ) exprlist

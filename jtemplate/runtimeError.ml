@@ -83,6 +83,8 @@ exception LeftSideCannotBeAssigned
 exception NotAFunction
 exception NotAnInteger of string
 
+exception InvalidComparaison of Ast.comparator * string * string (* comparator, typename *)
+
 let string_of_error ex =
   match ex with
   | ReferenceToUndefinedVariable(varname) -> "Reference to undefined variable " ^ varname
