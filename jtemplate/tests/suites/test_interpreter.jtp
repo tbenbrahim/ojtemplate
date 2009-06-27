@@ -240,7 +240,7 @@ var testSuite={
         		let a=Void;
         		let b=Void;
         		let c=NaN;
-        		return a==b && b!=c && a!=c;
+        		return a==b && b!=c && a!=c && !(a!=b);
         	}
         },{
         	description: 'compare NaN',
@@ -248,7 +248,7 @@ var testSuite={
         		let a=NaN;
         		let b=NaN;
         		let c=Void;
-        		return a==b && b!=c && a!=c;
+        		return a==b && b!=c && a!=c && !(a!=b);
         	}
         },{
         	description: 'compare functions',
@@ -256,7 +256,7 @@ var testSuite={
         		let a=function(a,b){return a+b;};
         		let b=[1,a];
         		let c=function(a,b){return a-b;};
-        		return a==b[1] && b[1]!=c && a!=c;
+        		return a==b[1] && b[1]!=c && a!=c && !(a!=b[1]);
         	}
         },{
         	description: 'compare library functions',
@@ -264,7 +264,7 @@ var testSuite={
         		let a=String.prototype.length;
         		let b=[1,a];
         		let c=String.prototype.substr;
-        		return a==b[1] && b[1]!=c && a!=c;
+        		return a==b[1] && b[1]!=c && a!=c && !(a!=b[1]);
         	}
         },{
         	description: 'compare maps',
@@ -272,7 +272,8 @@ var testSuite={
         		let a={a:1,b:'2',c:3};
         		let b={a:1,b:'2',c:3};
         		let c={a:1,b:'2',c:4};
-        		return a==b && b!=c && a!=c;
+        		let d={a:1,b:'2',x:3};
+        		return a==b && b!=c && a!=c && !(a!=b) && !(a==d);
         	}
         },{
         	description: 'compare arrays',
@@ -280,7 +281,7 @@ var testSuite={
         		let a=[1,'a',[1,2,['a','b',{a:true,b:34.5}]]];
         		let b=[1,'a',[1,2,['a','b',{a:true,b:34.5}]]];
         		let c=[1,'a',[1,2,['a','b',{a:true,b:34.6}]]];
-        		return a==b && b!=c && a!=c;
+        		return a==b && b!=c && a!=c && !(a!=b);
         	}
         },{
         	description: 'compare integer and float',
@@ -303,7 +304,10 @@ var testSuite={
         },{
         	description: 'mismatched type compare',
         	test: function(){
-        		return !(true==1) && !(true==1.) && true!=1. && !(true=='1') && true!='1';
+        		return !(true==1) && !(true==1.) && true!=1. && !(true=='1') && true!='1'
+        			&& 1!=true && 1.!=true && '1'!=true && Void!=NaN && NaN!=Void
+        			&& String.prototype.length!=true && function(){return 1;}!=true
+        			&& {a:1}!=true && [1,2]!=true;
         	}
         },{
         	description: 'invalid comparaison of booleans throws exception',
@@ -319,7 +323,7 @@ var testSuite={
         	description: 'invalid comparaison of voids throws exception',
         	test: function(){
         		try{
-        			let a=void<void;
+        			let a=Void<Void;
         			return false;
         		}catch(e){
         			return true;
@@ -375,7 +379,17 @@ var testSuite={
         			return true;
         		}
         	}
-        }
+        },{
+        	description: 'invalid comparaison of mismtached types throws exception',
+        	test: function(){
+        		try{
+        			let a=true<void;
+        			return false;
+        		}catch(e){
+        			return true;
+        		}
+        	}
+        },
         	
     ]
 };    

@@ -493,8 +493,7 @@ struct
         raise CFContinue
     | Break(env) -> symbol_table.env.current_stmt <- env;
         raise CFBreak
-  and
-  interpret_statements statement_list symbol_table =
+  and interpret_statements statement_list symbol_table =
     List.fold_left (fun _ stmt -> interpret_statement stmt symbol_table) () statement_list
   and interpret_import stmts symbol_table = (* only import decl and imports *)
     List.fold_left (fun _ stmt ->
