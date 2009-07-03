@@ -63,7 +63,6 @@ and expression =
   | FunctionCall of expression * expression list
   | MapExpr of (string * expression) list
   | ArrayExpr of expression list
-  | VariableExpr of string
   | Value of variable_value
   | UnboundVar of string
   | Assignment of expression * expression

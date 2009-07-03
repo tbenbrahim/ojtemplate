@@ -55,7 +55,7 @@ struct
             SymbolTable.string_of_symbol_type value2))
   
   (** given a function call's arglist, resolve to either a
-  list of values if the arglist has no unbound values, or	a list of expression (values are Value, UnboundVars are Variable)
+  list of values if the arglist has no unbound values, or	a list of expression (values are Value, UnboundVars are Id)
   if the arglist has unbound values. Invoked with arglist, returns (boolean, ((exprlist, formal_args, has_vararg), valuelist,)
   if the boolean is true, unbound names were found and exprlist	should be used. if the boolean is false, all names were bound
   and valuelist should be used. formal_args will contain a list of unbound names. has_vararg will be true if a vararg was found *)
@@ -69,7 +69,7 @@ struct
               let isvararg = is_vararg name in
               let formalname = (if isvararg then vararg_formalname name else name) in
               (if isvararg && tl <>[] then raise RuntimeError.VarArgsMustbeLast else ());
-              resolve tl (VariableExpr(formalname):: exprlist) (valuelist) (name:: formal_args) true isvararg
+              resolve tl (Id(formalname):: exprlist) (valuelist) (name:: formal_args) true isvararg
           | _ ->
               let value = evaluate_expression expr symbol_table
               in resolve tl (Value(value):: exprlist) (value:: valuelist) formal_args has_unbound false
@@ -262,8 +262,6 @@ struct
         MapValue(make_map str_expr_list symbol_table, MapSubtype)
     | ArrayExpr(expr_list) ->
         MapValue(make_array expr_list symbol_table, ArraySubtype)
-    | VariableExpr(variable) ->
-        SymbolTable.get_value variable symbol_table
     | Value(value) -> (match value
           with
           | FunctionValue(arglist, stmts) -> ScopedFunctionValue(arglist, stmts, symbol_table) | _ -> value)
