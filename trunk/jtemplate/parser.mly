@@ -156,13 +156,13 @@ member_expr:
     | atom_expr                               {$1}
     | FUNCTION LPAREN arglist RPAREN statement_block { Value(FunctionValue($3,extract_stmt_list($5))) }
     | member_expr  LBRACKET expression RBRACKET   { MemberExpr($1,IndexExpr($3)) }
-    | member_expr DOT ID                      { MemberExpr($1,Id($3)) }
+    | member_expr DOT ID                      { MemberExpr($1,IndexExpr(Value(StringValue($3)))) }
 ;
 call_expr:
     | member_expr LPAREN fexpr_list RPAREN    { FunctionCall($1,$3) }
     | call_expr LPAREN fexpr_list RPAREN      { FunctionCall($1,$3) }
     | call_expr LBRACKET expression RBRACKET  { MemberExpr($1,IndexExpr($3)) }
-    | call_expr DOT ID                        { MemberExpr($1,Id($3)) }
+    | call_expr DOT ID                        { MemberExpr($1,IndexExpr(Value(StringValue($3))) }
 ; 
 lhs_expr:
     | member_expr                             {$1}
