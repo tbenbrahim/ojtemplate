@@ -148,7 +148,7 @@ var testSuite={
         			var b=a[10];
         			return false;
         		}catch(e){
-        			return e.startsWith('Array index out of bounds');
+        			return true;
         		}
         	}
         },{

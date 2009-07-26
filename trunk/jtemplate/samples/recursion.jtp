@@ -25,7 +25,7 @@ println('The GCD of 81 and 27 is ' + gcd(81, 27));
 println('The GCD of 81 and 18 is ' + gcd(81, 18));
 println('The GCD of 99 and 16 is ' + gcd(99, 16));
 println('');
-println('fib(12)=' + fib(12));
+println('fib(32)=' + fib(32));
 println('');
 println('fact(20)=' + fact(20));
 println('');

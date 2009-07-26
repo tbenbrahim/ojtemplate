@@ -1,46 +1,48 @@
 open Lexer
 open Parser
 open Lexing
-open Symbol_table
-open Interpreter
-open Library_builtin
-open Library_string
-open Library_io
-open Library_helper
 open Ast
 open Filename_util
 open RuntimeError
+open Environment
+open Analysis
+open Ast_info
 
-let register_args len symbol_table =
-  let h = Hashtbl.create (len - 1) in
-  SymbolTable.declare "args" (MapValue(h, ArraySubtype)) symbol_table;
-  Hashtbl.add h "length" (IntegerValue(len - 1));
-  let rec loop ind =
-    Hashtbl.add h (string_of_int (ind - 1)) (StringValue(Sys.argv.(ind)));
-    if ind > 1 then loop (ind - 1) else ()
-  in
-  loop (len - 1)
+let register_args len env =
+	let h = Hashtbl.create (len - 1)
+	in let rec loop = function
+		| 0 -> ()
+		| ind -> Hashtbl.add h (string_of_int (ind - 1)) (RStringValue(Sys.argv.(ind))); loop (ind - 1)
+	in loop (len - 1);
+	Hashtbl.add h "length" (RIntegerValue(len - 1));
+	Environment.set_value env (RMapValue(h, ArraySubtype)) (GlobalVar(0, 0))
 
 let _ =
-  let symbol_table = SymbolTable.initialize_environment
-      { parse_callback = (Parser_util.parse_filename);
-        loaded_imports =[] ; current_stmt = ("", 0);
-        stack_trace = []; } in
-  register_library BuiltinLibrary.exported symbol_table;
-  register_library StringLibrary.exported symbol_table;
-  register_library IOLibrary.exported symbol_table;
-  let _ = Parsing.set_trace false in
-  let argl = Array.length Sys.argv in
-  if argl < 2 then
-    prerr_string ("Usage: "^(Filename.basename Sys.argv.(0))^" scriptfile [args...]\n")
-  else
-    (
-      register_args argl symbol_table;
-      let filename = Sys.argv.(1) in
-      let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
-      in
-      try
-        Interpreter.interpret_program ast symbol_table
-      with
-      | FatalExit _ -> exit(- 1)
-    )
+	let _ = Parsing.set_trace false in
+	let argl = Array.length Sys.argv in
+	if argl < 2 then
+		prerr_string ("Usage: "^(Filename.basename Sys.argv.(0))^" scriptfile [args...]\n")
+	else
+		(
+			let filename = Sys.argv.(1) in
+			let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
+			in let (ast, env) = Analysis.analyze ast
+			(**in AstInfo.print_ast ast;
+			let _ = List.fold_left (fun ind name -> print_int ind; print_string (" = "^name^"\n"); ind + 1) 0 (List.rev env.names)
+			*)
+			in let renv ={
+				heap = Array.make env.num_globals (- 1, RUndefined);
+				stackframes = Array.make (env.max_depth + 1) [||];
+				closure_vars = None;
+				gnames = Array.of_list (List.rev env.names);
+				current_line = ("", 0);
+				callstack =[];
+			}
+			in let _ = Library.register_for_runtime env renv
+			in let _ = register_args argl renv
+			in
+			try
+				Interpreter.interpret renv ast
+			with ex ->
+					RuntimeError.display_error ex renv.current_line; raise ex
+		)

@@ -52,58 +52,60 @@
 <div style="font-size: smaller;"><a href="javascript:foldAll();">fold all</a> <a href="javascript:unfoldAll();">unfold all</a></div>
     <code>
       <div id="fold000001">
-      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| open&nbsp;Lexer</div>
-      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| open&nbsp;Parser</div>
-      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| open&nbsp;Lexing</div>
-      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| open&nbsp;Symbol_table</div>
-      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| open&nbsp;Interpreter</div>
-      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| open&nbsp;Library_builtin</div>
-      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| open&nbsp;Library_string</div>
-      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| open&nbsp;Library_io</div>
-      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| open&nbsp;Library_helper</div>
-      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| open&nbsp;Ast</div>
-      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| open&nbsp;Filename_util</div>
-      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| open&nbsp;RuntimeError</div>
-      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;</div>
-      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| let&nbsp;register_args&nbsp;len&nbsp;symbol_table&nbsp;=</div>
-      <div id="line000015" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000015| &nbsp;&nbsp;let&nbsp;h&nbsp;=&nbsp;Hashtb(*[2]*)l.create&nbsp;(len&nbsp;-&nbsp;1)&nbsp;in</div>
-      <div id="line000016" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;&nbsp;SymbolTable.dec(*[2]*)lare&nbsp;&quot;args&quot;&nbsp;(MapValue(h,&nbsp;ArraySubtype))&nbsp;symbol_table;</div>
-      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;Hashtbl.add&nbsp;h&nbsp;&quot;l(*[2]*)ength&quot;&nbsp;(IntegerValue(len&nbsp;-&nbsp;1));</div>
-      <div id="line000018" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;let&nbsp;rec&nbsp;loop&nbsp;ind&nbsp;(*[2]*)=</div>
-      <div id="line000019" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;&nbsp;&nbsp;Hashtbl.add&nbsp;h&nbsp;(str(*[2]*)ing_of_int&nbsp;(ind&nbsp;-&nbsp;1))&nbsp;(StringValue(Sys.argv.(ind)));</div>
+      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| open&nbsp;Lexer</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| open&nbsp;Parser</div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| open&nbsp;Lexing</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| open&nbsp;Symbol_table</div>
+      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| open&nbsp;Interpreter</div>
+      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| open&nbsp;Library_builtin</div>
+      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| open&nbsp;Library_string</div>
+      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| open&nbsp;Library_io</div>
+      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| open&nbsp;Library_helper</div>
+      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| open&nbsp;Ast</div>
+      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| open&nbsp;Filename_util</div>
+      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| open&nbsp;RuntimeError</div>
+      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| </div>
+      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| let&nbsp;register_args&nbsp;len&nbsp;symbol_table&nbsp;=</div>
+      <div id="line000015" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000015| &nbsp;&nbsp;(*[2]*)let&nbsp;h&nbsp;=&nbsp;Hashtbl.create&nbsp;(len&nbsp;-&nbsp;1)&nbsp;in</div>
+      <div id="line000016" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;&nbsp;(*[2]*)SymbolTable.declare&nbsp;&quot;args&quot;&nbsp;(MapValue(h,&nbsp;ArraySubtype))&nbsp;symbol_table;</div>
+      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;(*[2]*)Hashtbl.add&nbsp;h&nbsp;&quot;length&quot;&nbsp;(IntegerValue(len&nbsp;-&nbsp;1));</div>
+      <div id="line000018" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;(*[2]*)let&nbsp;rec&nbsp;loop&nbsp;ind&nbsp;=</div>
+      <div id="line000019" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)Hashtbl.add&nbsp;h&nbsp;(string_of_int&nbsp;(ind&nbsp;-&nbsp;1))&nbsp;(StringValue(Sys.argv.(ind)));</div>
       </div>
-      <div id="line000020" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;ind&nbsp;&gt;&nbsp;1&nbsp;then&nbsp;loo(*[2]*)p&nbsp;(ind&nbsp;-&nbsp;1)&nbsp;else(*[0]*)&nbsp;()</div>
+      <div id="line000020" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)if&nbsp;ind&nbsp;&gt;&nbsp;1&nbsp;then&nbsp;(*[0]*)loop&nbsp;(ind&nbsp;-&nbsp;1)&nbsp;else&nbsp;(*[2]*)()</div>
       <div id="fold000021">
-      <div id="line000021" class="lineNone"><a href="javascript:fold('fold000021');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000021| &nbsp;&nbsp;in</div>
-      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;loop&nbsp;(len(*[2]*)&nbsp;-&nbsp;1)</div>
-      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;</div>
-      <div id="line000024" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000024| let&nbsp;_(*[2]*)&nbsp;=</div>
-      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;let&nbsp;symbol_table&nbsp;=&nbsp;Symbo(*[2]*)lTable.initialize_environment</div>
-      <div id="line000026" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;parse_callback&nbsp;=&nbsp;(Parser_util.parse_filename);</div>
-      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loaded_imports&nbsp;=[]&nbsp;;&nbsp;current_stmt&nbsp;=&nbsp;(&quot;&quot;,&nbsp;0);</div>
-      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack_trace&nbsp;=&nbsp;[];&nbsp;}&nbsp;in</div>
-      <div id="line000029" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000029| &nbsp;&nbsp;register_library&nbsp;BuiltinLibr(*[2]*)ary.exported&nbsp;symbol_table;</div>
-      <div id="line000030" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000030| &nbsp;&nbsp;register_library&nbsp;StringLibrar(*[2]*)y.exported&nbsp;symbol_table;</div>
-      <div id="line000031" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000031| &nbsp;&nbsp;register_library&nbsp;IOLibrary.exp(*[2]*)orted&nbsp;symbol_table;</div>
-      <div id="line000032" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;&nbsp;let&nbsp;_&nbsp;=&nbsp;Parsing.set_trace&nbsp;false(*[2]*)&nbsp;in</div>
-      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;let&nbsp;argl&nbsp;=&nbsp;Array.length&nbsp;Sys.argv(*[2]*)&nbsp;in</div>
-      <div id="line000034" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;&nbsp;if&nbsp;argl&nbsp;&lt;&nbsp;2&nbsp;then</div>
+      <div id="line000021" class="lineNone"><a href="javascript:fold('fold000021');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000021| &nbsp;&nbsp;in</div>
+      <div id="line000022" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;(*[2]*)loop&nbsp;(len&nbsp;-&nbsp;1)</div>
+      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| </div>
+      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| let&nbsp;_&nbsp;=</div>
+      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;(*[2]*)let&nbsp;symbol_table&nbsp;=&nbsp;SymbolTable.initialize_environment</div>
+      <div id="line000026" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;parse_callback&nbsp;=&nbsp;(Parser_util.parse_filename);</div>
+      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loaded_imports&nbsp;=[]&nbsp;;&nbsp;current_stmt&nbsp;=&nbsp;(&quot;&quot;,&nbsp;0);</div>
+      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack_trace&nbsp;=&nbsp;[];&nbsp;}&nbsp;in</div>
+      <div id="line000029" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000029| &nbsp;&nbsp;(*[2]*)register_library&nbsp;BuiltinLibrary.exported&nbsp;symbol_table;</div>
+      <div id="line000030" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000030| &nbsp;&nbsp;(*[2]*)register_library&nbsp;StringLibrary.exported&nbsp;symbol_table;</div>
+      <div id="line000031" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000031| &nbsp;&nbsp;(*[2]*)register_library&nbsp;IOLibrary.exported&nbsp;symbol_table;</div>
+      <div id="line000032" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;&nbsp;(*[2]*)let&nbsp;_&nbsp;=&nbsp;Parsing.set_trace&nbsp;false&nbsp;in</div>
+      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;(*[2]*)let&nbsp;argl&nbsp;=&nbsp;Array.length&nbsp;Sys.argv&nbsp;in</div>
+      <div id="line000034" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;&nbsp;(*[2]*)if&nbsp;argl&nbsp;&lt;&nbsp;2&nbsp;then</div>
       </div>
-      <div id="line000035" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000035| &nbsp;&nbsp;&nbsp;&nbsp;prerr_string(*[2]*)&nbsp;(&quot;Usage:&nbsp;&quot;^(Filename.(*[0]*)basename&nbsp;Sys.argv.(0))^&quot;&nbsp;scriptfile&nbsp;[args...]\n&quot;)</div>
+      <div id="line000035" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000035| &nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)prerr_string&nbsp;(&quot;Usage:&nbsp;&quot;^(Filename.basename&nbsp;Sys.argv.(0))^&quot;&nbsp;scriptfile&nbsp;[args...]\n&quot;)</div>
       <div id="fold000036">
-      <div id="line000036" class="lineNone"><a href="javascript:fold('fold000036');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000036| &nbsp;&nbsp;else</div>
-      <div id="line000037" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000037| &nbsp;&nbsp;&nbsp;&nbsp;(</div>
-      <div id="line000038" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;register_args&nbsp;argl&nbsp;symbol_table;</div>
-      <div id="line000039" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)&nbsp;&nbsp;let&nbsp;filename&nbsp;=&nbsp;Sys.argv.(1)&nbsp;in</div>
+      <div id="line000036" class="lineNone"><a href="javascript:fold('fold000036');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000036| &nbsp;&nbsp;else</div>
+      <div id="line000037" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000037| &nbsp;&nbsp;&nbsp;&nbsp;(</div>
+      <div id="line000038" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000038| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)register_args&nbsp;argl&nbsp;symbol_table;</div>
+      <div id="line000039" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000039| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)let&nbsp;filename&nbsp;=&nbsp;Sys.argv.(1)&nbsp;in</div>
       </div>
-      <div id="line000040" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000040| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l(*[2]*)et&nbsp;ast&nbsp;=&nbsp;if&nbsp;filename&nbsp;=&quot;-&quot;&nbsp;then&nbsp;Parser_(*[2]*)util.parse&nbsp;stdin&nbsp;&quot;stdin&quot;&nbsp;else&nbsp;Pa(*[0]*)rser_util.parse_filename&nbsp;(resolve_fil(*[2]*)ename&nbsp;(Unix.getcwd())&nbsp;filename)</div>
+      <div id="line000040" class="lineMixed"><img border="0" height="10" width="10"src="blank.png"/>000040| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)let&nbsp;ast&nbsp;=&nbsp;if&nbsp;filename&nbsp;=&quot;-&quot;&nbsp;then&nbsp;(*[0]*)Parser_util.parse&nbsp;stdin&nbsp;&quot;stdin&quot;&nbsp;else&nbsp;(*[2]*)Parser_util.parse_filename&nbsp;(resolve_filename&nbsp;(Unix.getcwd())&nbsp;filename)</div>
       <div id="fold000041">
-      <div id="line000041" class="lineNone"><a href="javascript:fold('fold000041');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000041| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in</div>
-      <div id="line000042" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000042| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try</div>
-      <div id="line000043" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Interpreter.interpret_program(*[2]*)&nbsp;ast&nbsp;symbol_t(*[2]*)able</div>
-      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with</div>
-      <div id="line000045" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000045| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FatalExit&nbsp;_&nbsp;-&gt;&nbsp;exit(-&nbsp;1)</div>
-      <div id="line000046" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000046| &nbsp;&nbsp;&nbsp;&nbsp;)</div>
+      <div id="line000041" class="lineNone"><a href="javascript:fold('fold000041');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000041| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in</div>
+      <div id="line000042" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000042| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)try</div>
+      <div id="line000043" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[2]*)Interpreter.interpret_program&nbsp;ast&nbsp;symbol_table</div>
+      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with</div>
+      </div>
+      <div id="line000045" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000045| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;FatalExit&nbsp;_&nbsp;-&gt;&nbsp;(*[0]*)exit(-&nbsp;1)</div>
+      <div id="fold000046">
+      <div id="line000046" class="lineNone"><a href="javascript:fold('fold000046');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000046| &nbsp;&nbsp;&nbsp;&nbsp;)</div>
       </div>
     </code>
     <br/>
@@ -143,7 +145,7 @@
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="yellow" style="cursor: pointer;" onclick="javascript:jump('line000035');" title="jump to line 35"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000035');" title="jump to line 35"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
@@ -153,7 +155,7 @@
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000045');" title="jump to line 45"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
       </table>
     </div>
@@ -164,6 +166,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-06-27 03:57:12</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-07-10 10:11:12</p>
   </body>
 </html>
