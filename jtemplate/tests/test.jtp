@@ -1,0 +1,120 @@
+let a=11;
+let b=a+1;
+
+let add=function(x,y){
+	return x+y;
+};
+
+println(a,'*',b,'=',a*b);
+
+println(a,'+',b,'=',add(a,b));
+
+let gcd = function(x, y) {
+	return x == y ? x : x < y ? gcd(x, y - x) : gcd(x - y, x);
+};
+
+var fib = function(n) {
+	return n == 0 ? 0 : n == 1 ? 1 : fib(n - 1) + fib(n - 2);
+};
+
+var fact = function(n) {
+	return n == 0 || n == 1 ? 1 : n * fact(n - 1);
+};
+
+var odd = function(n) {
+	return n == 0 ? false : even(n - 1);
+};
+
+var even = function(n) {
+	return n == 0 ? true : odd(n - 1);
+};
+
+println(11, ' is ', (even(11) ? '' : 'not '), 'even.');
+println(11, ' is ', (odd(11) ? '' : 'not '), 'odd.');
+
+println('The GCD of 81 and 27 is ' + gcd(81, 27));
+println('The GCD of 81 and 18 is ' + gcd(81, 18));
+println('The GCD of 99 and 16 is ' + gcd(99, 16));
+println('');
+println('fib(20)=' + fib(20));
+println('');
+println('fact(12)=' + fact(12));
+println('');
+
+for (var i=0;i<10;++i){
+	if (odd(i+1))
+		println('odd line ',i+1);
+	else
+		println('even line ',i+1);
+}
+
+let m={a:1,b:2, c:3, d:'abc'};
+
+foreach (k in m)
+	println(k);
+
+try{
+	try{
+		throw('test exception');
+	}finally{
+		println('finally #1');
+	}
+}catch(e){
+	println('caught exception ', e);
+}
+
+for (var i=0;i<10;++i){
+	switch(i){
+	case 0: println('zero');break;
+	case 2: println('two');break;
+	case 4: println('four');break;
+	case 6: println('six');break;
+	case 8: println('eight');break;
+	default: println(i);
+	}
+}
+
+let s='test';
+println('The length of string "',s,'" is ',s.length(),'.');
+
+let side=4;
+let area=function(s){
+	return s*s;
+};
+println(area(side));
+
+println(side*side);
+println(4*4);
+println(16);
+
+
+var gcd = function(x, y) {
+	return x == y ? x : x < y ? gcd(x, y - x) : gcd(x - y, x);
+};
+
+var gcd=function(x,y){
+	if (x==y)
+		return x;
+	if (x<y)
+		return gcd(x,y-x);
+	else
+		return gcd(x-y,x);
+};
+
+var gcd=function(x,y){
+	if (x==y)
+		return x;
+	if (x<y){
+		let a=x;		
+		let b=y-x;		let b=y-x;		
+		let x=a;		let x=x;			
+		let y=b;					let y=y-x
+		rerun gcd;
+	else {
+		let a=x-y;
+		let b=x;		
+		let x=a;		let x=x-y;
+		let y=b;		let y=x;
+		rerun gcd;
+	}
+};

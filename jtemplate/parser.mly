@@ -6,7 +6,6 @@
 *)
 
 open Ast
-open Symbol_table
 
 let parse_error s =
     let pos = Parsing.symbol_start_pos() in
@@ -25,9 +24,7 @@ let get_env ()=
 
         
 let resolve_import (filename, library, (inp_file, _))=
-    let fullname=Filename_util.resolve_filename (Filename.dirname inp_file) filename
-    in
-       (fullname, {loaded=false})
+    Filename_util.resolve_filename (Filename.dirname inp_file) filename
         
 let extract_stmt_list=function
     | StatementBlock(lst) -> lst
@@ -155,14 +152,14 @@ atom_expr:
 member_expr:
     | atom_expr                               {$1}
     | FUNCTION LPAREN arglist RPAREN statement_block { Value(FunctionValue($3,extract_stmt_list($5))) }
-    | member_expr  LBRACKET expression RBRACKET   { MemberExpr($1,IndexExpr($3)) }
-    | member_expr DOT ID                      { MemberExpr($1,IndexExpr(Value(StringValue($3)))) }
+    | member_expr  LBRACKET expression RBRACKET   { MemberExpr($1,$3) }
+    | member_expr DOT ID                      { MemberExpr($1,Value(StringValue($3))) }
 ;
-call_expr:
+call_expr: 
     | member_expr LPAREN fexpr_list RPAREN    { FunctionCall($1,$3) }
     | call_expr LPAREN fexpr_list RPAREN      { FunctionCall($1,$3) }
-    | call_expr LBRACKET expression RBRACKET  { MemberExpr($1,IndexExpr($3)) }
-    | call_expr DOT ID                        { MemberExpr($1,IndexExpr(Value(StringValue($3))) }
+    | call_expr LBRACKET expression RBRACKET  { MemberExpr($1,$3) }
+    | call_expr DOT ID                        { MemberExpr($1,Value(StringValue($3))) }
 ; 
 lhs_expr:
     | member_expr                             {$1}
@@ -189,10 +186,9 @@ op_expr:
     | %prec UMINUS MINUS op_expr        { BinaryOp(Value(IntegerValue(0)),Minus,$2) }
 ;
 cond_expr:
-    | op_expr {$1}
+    | op_expr {$1} 
     | expression QUESTION expression COLON expression
-                                        {FunctionCall(Value(FunctionValue([],[
-                                           If($1,Return($3,get_env()),Return($5,get_env()),get_env()) ])),[]) }                                                                                                   
+                                        { TernaryCond($1,$3,$5) }                                                                                                   
 ;
 expression:
     | cond_expr                               {$1}

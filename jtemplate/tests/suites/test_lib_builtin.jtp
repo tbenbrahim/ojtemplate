@@ -222,7 +222,7 @@ var testSuite={
         },{
         	description: 'debug dump symbol table',
         	test: function(){
-        		Debug.dumpSymbolTable(true);
+        		Debug.dumpSymbolTable();
         		return true;
         	}
         },{

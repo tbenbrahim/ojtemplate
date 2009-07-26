@@ -1,0 +1,15 @@
+
+let add=function(x,y){
+	return x+y;
+};
+
+let add1=add(1,@x);
+
+println(add1(10));
+
+
+let printc=println('> ',@x...);
+
+printc('This is a test.','ok');
+
+

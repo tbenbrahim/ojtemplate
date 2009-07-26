@@ -3,7 +3,8 @@ var main=function(){
     var results=[];
 
     import 'suites/test_parser.jtp';
-    results.push(runSuite(testSuite));
+    let x=runSuite(testSuite);
+    results.push(x);
 
     import './suites/test_scope.jtp';
     results.push(runSuite(testSuite));
