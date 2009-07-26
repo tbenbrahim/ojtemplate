@@ -2,7 +2,7 @@
 CFLAGS= -g -I +bisect -pp 'camlp4o bisect/instrument.cma'
 LINK_FLAGS= -custom -g -I +bisect bisect/bisect.cma      
 
-default: env build/jtemplate-i.exe 
+default: env build/jtemplate-i
 
 env: 
 	mkdir -p build
@@ -19,6 +19,18 @@ cleanup:
 build/ast.ml: ast.ml
 	cp ast.ml build/ast.ml
 	
+build/analysis.ml: analysis.ml
+	cp analysis.ml build/analysis.ml
+
+build/ast_info.ml: ast_info.ml
+	cp ast_info.ml build/ast_info.ml
+	
+build/environment.ml: environment.ml
+	cp environment.ml build/environment.ml
+	
+build/expression.ml: expression.ml
+	cp expression.ml build/expression.ml
+
 build/filename_util.ml: filename_util.ml
 	cp filename_util.ml build/filename_util.ml
 
@@ -31,8 +43,8 @@ build/jtemplate.ml: jtemplate.ml
 build/library_builtin.ml: library_builtin.ml
 	cp library_builtin.ml build/library_builtin.ml
 	
-build/library_helper.ml: library_helper.ml
-	cp library_helper.ml build/library_helper.ml
+build/library.ml: library.ml
+	cp library.ml build/library.ml
 	
 build/library_io.ml: library_io.ml
 	cp library_io.ml build/library_io.ml
@@ -46,24 +58,34 @@ build/parser_util.ml: parser_util.ml
 build/runtimeError.ml: runtimeError.ml
 	cp runtimeError.ml build/runtimeError.ml
 	
-build/symbol_table.ml: symbol_table.ml
-	cp symbol_table.ml build/symbol_table.ml
-	
 build/ast.cmo: build/ast.ml
 	ocamlc -c $(CFLAGS) -dtypes -o build/ast.cmo build/ast.ml
+
+build/ast_info.cmo: build/ast.cmo build/ast_info.ml
+	ocamlc -c $(CFLAGS) -dtypes  -I build -o build/ast_info.cmo build/ast_info.ml
+
+build/analysis.cmo: build/ast.cmo build/runtimeError.cmo build/analysis.ml \
+	build/parser_util.cmo build/library.cmo build/environment.cmo
+	ocamlc -c $(CFLAGS) -dtypes  -I build -o build/analysis.cmo build/analysis.ml
+	
+build/expression.cmo: build/ast.cmo build/runtimeError.cmo build/expression.ml
+	ocamlc -c $(CFLAGS) -dtypes  -I build -o build/expression.cmo build/expression.ml
+
+build/environment.cmo: build/ast.cmo build/runtimeError.cmo build/environment.ml
+	ocamlc -c $(CFLAGS) -dtypes  -I build -o build/environment.cmo build/environment.ml
+
+build/filename_util.cmo: build/filename_util.ml
+	ocamlc -c $(CFLAGS) -dtypes  -I build -o build/filename_util.cmo build/filename_util.ml
 
 build/parser.mly: parser.mly
 	cp parser.mly build/parser.mly
 	
 build/lexer.mll: lexer.mll
 	cp lexer.mll build/lexer.mll
-
-build/compare.ml: compare.ml
-	cp compare.ml build/compare.ml	
 	
 build/lexer.ml: build/lexer.mll
 	ocamllex -q -o build/lexer.ml build/lexer.mll
-	
+
 build/lexer.cmo: build/runtimeError.cmo build/parser.cmi build/ast.cmo build/lexer.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/lexer.cmo build/lexer.ml
 	
@@ -76,30 +98,26 @@ build/parser.ml: build/parser.mly
 build/parser.cmi: build/parser.mli
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/parser.cmi build/parser.mli
 	
-build/parser.cmo: build/parser.ml build/parser.cmi
+build/parser.cmo: build/filename_util.cmo build/parser.ml build/parser.cmi 
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/parser.cmo build/parser.ml
 
-build/interpreter.cmo: build/symbol_table.cmo build/runtimeError.cmo build/ast.cmo build/compare.cmo build/interpreter.ml
+build/interpreter.cmo: build/runtimeError.cmo build/ast.cmo build/interpreter.ml \
+	build/expression.cmo build/environment.cmo
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/interpreter.cmo build/interpreter.ml
-	
-build/compare.cmo: build/symbol_table.cmo build/runtimeError.cmo build/ast.cmo build/compare.ml
-	ocamlc -c $(CFLAGS) -dtypes -I build -o build/compare.cmo build/compare.ml
 
-build/filename_util.cmo: build/filename_util.ml
-	ocamlc -c $(CFLAGS) -dtypes -I build -o build/filename_util.cmo build/filename_util.ml
-	
-build/library_builtin.cmo: build/symbol_table.cmo build/runtimeError.cmo build/interpreter.cmo \
+build/library_builtin.cmo: build/runtimeError.cmo build/interpreter.cmo \
 	build/ast.cmo build/library_builtin.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/library_builtin.cmo build/library_builtin.ml
 	
-build/library_helper.cmo: build/symbol_table.cmo build/runtimeError.cmo build/ast.cmo build/library_helper.ml
-	ocamlc -c $(CFLAGS) -dtypes -I build -o build/library_helper.cmo build/library_helper.ml
+build/library.cmo: build/library_string.cmo build/library_io.cmo build/library_builtin.cmo \
+	build/runtimeError.cmo build/ast.cmo build/library.ml
+	ocamlc -c $(CFLAGS) -dtypes -I build -o build/library.cmo build/library.ml
 
-build/library_io.cmo: build/symbol_table.cmo build/runtimeError.cmo build/interpreter.cmo \
+build/library_io.cmo: build/runtimeError.cmo build/interpreter.cmo \
 	build/ast.cmo build/library_io.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/library_io.cmo build/library_io.ml
 
-build/library_string.cmo: build/symbol_table.cmo build/runtimeError.cmo build/interpreter.cmo \
+build/library_string.cmo: build/runtimeError.cmo build/interpreter.cmo \
 	build/ast.cmo build/library_string.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/library_string.cmo build/library_string.ml 
 
@@ -108,17 +126,21 @@ build/parser_util.cmo: build/runtimeError.cmo build/parser.cmi build/lexer.cmo b
 	
 build/runtimeError.cmo: build/ast.cmo build/runtimeError.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/runtimeError.cmo build/runtimeError.ml
-
-build/symbol_table.cmo: build/runtimeError.cmo build/ast.cmo build/symbol_table.ml
-	ocamlc -c $(CFLAGS) -dtypes -I build -o build/symbol_table.cmo build/symbol_table.ml
 	
-build/jtemplate.cmo: build/symbol_table.cmo build/runtimeError.cmo build/parser_util.cmo build/parser.cmo \
-    build/library_string.cmo build/library_io.cmo build/library_helper.cmo build/library_builtin.cmo \
-    build/lexer.cmo build/interpreter.cmo build/filename_util.cmo build/ast.cmo build/jtemplate.ml
+build/symbol_table.cmo: build/runtimeError.cmo build/ast.cmo build/symbol_table.ml
+	ocamlc -c $(CFLAGS) -dtypes -I build -o build/symbol_table.ml
+	
+build/jtemplate.cmo: build/runtimeError.cmo build/parser_util.cmo build/library.cmo \
+	build/Interpreter.cmo build/filename_util.cmo build/environment.cmo build/ast_info.cmo \
+	build/ast.cmo build/analysis.cmo build/jtemplate.ml
 	ocamlc -c $(CFLAGS) -dtypes -I build -o build/jtemplate.cmo build/jtemplate.ml
 
-build/jtemplate-i.exe: build/ast.cmo build/filename_util.cmo build/runtimeError.cmo build/symbol_table.cmo \
-	build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library_helper.cmo \
-	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/compare.cmo build/jtemplate.cmo 
-	ocamlc $(LINK_FLAGS) unix.cma build/ast.cmo build/filename_util.cmo build/runtimeError.cmo build/symbol_table.cmo build/compare.cmo build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library_helper.cmo build/library_io.cmo build/library_string.cmo	build/parser_util.cmo build/jtemplate.cmo -o build/jtemplate-i.exe
+build/jtemplate-i: build/ast.cmo build/runtimeError.cmo build/expression.cmo build/environment.cmo \
+	build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library.cmo \
+	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/analysis.cmo build/jtemplate.cmo\
+	build/ast_info.cmo 
+	ocamlc $(LINK_FLAGS) unix.cma build/ast.cmo build/runtimeError.cmo build/environment.cmo build/expression.cmo \
+	build/Interpreter.cmo build/library_builtin.cmo build/library_io.cmo build/library_string.cmo \
+	build/library.cmo build/filename_util.cmo build/parser.cmo build/lexer.cmo build/parser_util.cmo \
+	build/analysis.cmo build/ast_info.cmo build/jtemplate.cmo -o build/jtemplate-i
 
