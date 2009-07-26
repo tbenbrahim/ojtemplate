@@ -12,7 +12,7 @@
     <script language="javascript" src="file0015.js"></script>
   </head>
   <body>
-    <div class="section">File: build/library_helper.ml (<a href="index.html">return to index</a>)</div>
+    <div class="section">File: build/parser_util.ml (<a href="index.html">return to index</a>)</div>
     <br/>
     <hr class="codeSep"/>
     <br/>
@@ -23,12 +23,12 @@
           <table class="simple">
             <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
             <tr><td>binding</td><td width="16px">&nbsp;</td><td>5 / 5 (100 %)</td></tr>
-            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>2 / 2 (100 %)</td></tr>
+            <tr><td>sequence</td><td width="16px">&nbsp;</td><td>2 / 4 (50 %)</td></tr>
             <tr><td>for</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>if/then</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
+            <tr><td>try</td><td width="16px">&nbsp;</td><td>1 / 1 (100 %)</td></tr>
             <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>9 / 11 (81 %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>3 / 3 (100 %)</td></tr>
           </table>
         </td>
         <td valign="top">
@@ -52,43 +52,40 @@
 <div style="font-size: smaller;"><a href="javascript:foldAll();">fold all</a> <a href="javascript:unfoldAll();">unfold all</a></div>
     <code>
       <div id="fold000001">
-      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| open&nbsp;Symbol_table</div>
-      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| open&nbsp;Ast</div>
-      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| </div>
-      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| let&nbsp;create_namespace&nbsp;namelist&nbsp;symbol_table&nbsp;=</div>
-      <div id="line000005" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;&nbsp;(*[92]*)let&nbsp;rec&nbsp;create_member&nbsp;list&nbsp;h&nbsp;=</div>
-      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| &nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;list&nbsp;with</div>
+      <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| open&nbsp;RuntimeError</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| </div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| exception&nbsp;ParseException&nbsp;of&nbsp;string</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| </div>
+      <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| let&nbsp;get_ast&nbsp;lexbuf&nbsp;=</div>
+      <div id="line000006" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000006| &nbsp;&nbsp;(*[14]*)let&nbsp;_&nbsp;=&nbsp;Parsing.set_trace&nbsp;false&nbsp;in</div>
+      <div id="line000007" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000007| &nbsp;&nbsp;(*[14]*)try&nbsp;(*[14]*)Parser.program&nbsp;Lexer.main&nbsp;lexbuf</div>
+      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| &nbsp;&nbsp;with</div>
+      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;|&nbsp;RuntimeError.LexerException&nbsp;(msg,&nbsp;line,&nbsp;col)&nbsp;-&gt;</div>
       </div>
-      <div id="line000007" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000007| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;[]&nbsp;-&gt;&nbsp;(*[0]*)raise&nbsp;(RuntimeError.InternalError&nbsp;&quot;expected&nbsp;mapvalue&nbsp;in&nbsp;library&nbsp;namespace&quot;)</div>
-      <div id="fold000008">
-      <div id="line000008" class="lineAllVisited"><a href="javascript:fold('fold000008');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000008| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;hd::&nbsp;[]&nbsp;-&gt;&nbsp;((*[92]*)h,&nbsp;hd)</div>
-      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;hd::&nbsp;tl&nbsp;-&gt;</div>
-      <div id="line000010" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[126]*)let&nbsp;nh&nbsp;=</div>
-      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(try</div>
-      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(match&nbsp;Hashtbl.find&nbsp;h&nbsp;hd&nbsp;with</div>
-      <div id="line000013" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;MapValue(nh,&nbsp;MapSubtype)&nbsp;-&gt;&nbsp;(*[94]*)nh</div>
+      <div id="line000010" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000010| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((*[0]*)print_string</div>
+      <div id="fold000011">
+      <div id="line000011" class="lineNone"><a href="javascript:fold('fold000011');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000011| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(msg&nbsp;^</div>
+      <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;&nbsp;at&nbsp;line&nbsp;&quot;&nbsp;^</div>
+      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((string_of_int&nbsp;line)&nbsp;^</div>
+      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;&nbsp;col&nbsp;&quot;&nbsp;^&nbsp;((string_of_int&nbsp;col)&nbsp;^&nbsp;&quot;\n&quot;)))));</div>
       </div>
-      <div id="line000014" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000014| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;-&gt;&nbsp;(*[0]*)raise&nbsp;(RuntimeError.InternalError&nbsp;&quot;expected&nbsp;mapvalue&nbsp;in&nbsp;library&nbsp;namespace&quot;))</div>
-      <div id="fold000015">
-      <div id="line000015" class="lineNone"><a href="javascript:fold('fold000015');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000015| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with</div>
-      <div id="line000016" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Not_found&nbsp;-&gt;</div>
-      <div id="line000017" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000017| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[32]*)let&nbsp;nh&nbsp;=&nbsp;Hashtbl.create&nbsp;10&nbsp;in</div>
-      <div id="line000018" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[32]*)Hashtbl.add&nbsp;h&nbsp;hd&nbsp;(MapValue(nh,&nbsp;MapSubtype));</div>
-      <div id="line000019" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[32]*)nh)</div>
-      <div id="line000020" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;(*[126]*)create_member&nbsp;tl&nbsp;nh</div>
-      <div id="line000021" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;in&nbsp;(*[92]*)create_member&nbsp;namelist&nbsp;symbol_table.values</div>
-      <div id="line000022" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000022| </div>
-      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| let&nbsp;rec&nbsp;make_name_list&nbsp;strlist&nbsp;namelist&nbsp;=</div>
-      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| &nbsp;&nbsp;match&nbsp;strlist&nbsp;with</div>
-      <div id="line000025" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000025| &nbsp;&nbsp;|&nbsp;[]&nbsp;-&gt;&nbsp;(*[92]*)List.rev&nbsp;namelist</div>
-      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;|&nbsp;hd::&nbsp;tl&nbsp;-&gt;&nbsp;(*[80]*)make_name_list&nbsp;tl&nbsp;(hd::&nbsp;namelist)</div>
-      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| </div>
-      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| let&nbsp;register_library&nbsp;defs&nbsp;symbol_table&nbsp;=</div>
-      <div id="line000029" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000029| &nbsp;&nbsp;(*[6]*)let&nbsp;_&nbsp;=&nbsp;List.map&nbsp;(fun&nbsp;def&nbsp;-&gt;&nbsp;(*[92]*)let&nbsp;(names,&nbsp;formal_args,&nbsp;code)&nbsp;=&nbsp;def&nbsp;in</div>
-      <div id="line000030" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000030| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[92]*)let&nbsp;(h,&nbsp;name)&nbsp;=&nbsp;create_namespace&nbsp;names&nbsp;symbol_table</div>
-      <div id="line000031" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000031| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;(*[92]*)Hashtbl.replace&nbsp;h&nbsp;name&nbsp;(Ast.LibraryFunction(make_name_list&nbsp;formal_args&nbsp;[],&nbsp;code,&nbsp;symbol_table))</div>
-      <div id="line000032" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;defs</div>
-      <div id="line000033" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000033| &nbsp;&nbsp;in&nbsp;(*[6]*)()</div>
+      <div id="line000015" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000015| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)exit&nbsp;0)</div>
+      <div id="fold000016">
+      <div id="line000016" class="lineNone"><a href="javascript:fold('fold000016');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000016| </div>
+      <div id="line000017" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000017| let&nbsp;parse&nbsp;channel&nbsp;name&nbsp;=</div>
+      <div id="line000018" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;&nbsp;(*[14]*)let&nbsp;lexbuf&nbsp;=&nbsp;Lexing.from_channel&nbsp;channel&nbsp;in</div>
+      <div id="line000019" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000019| &nbsp;&nbsp;(*[14]*)let&nbsp;pos&nbsp;=&nbsp;lexbuf.Lexing.lex_curr_p&nbsp;in</div>
+      <div id="line000020" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000020| &nbsp;&nbsp;(*[14]*)let&nbsp;_&nbsp;=</div>
+      <div id="line000021" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000021| &nbsp;&nbsp;&nbsp;&nbsp;lexbuf.Lexing.lex_curr_p&nbsp;&lt;-</div>
+      <div id="line000022" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;(pos)&nbsp;with&nbsp;Lexing.pos_lnum&nbsp;=&nbsp;1;&nbsp;Lexing.pos_fname&nbsp;=&nbsp;name;&nbsp;}</div>
+      <div id="line000023" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000023| &nbsp;&nbsp;in&nbsp;(*[14]*)get_ast&nbsp;lexbuf</div>
+      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| </div>
+      <div id="line000025" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000025| let&nbsp;parse_filename&nbsp;filename&nbsp;=</div>
+      <div id="line000026" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;&nbsp;(*[14]*)let&nbsp;channel&nbsp;=&nbsp;open_in&nbsp;filename&nbsp;in</div>
+      <div id="line000027" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000027| &nbsp;&nbsp;(*[14]*)let&nbsp;ast&nbsp;=&nbsp;parse&nbsp;channel&nbsp;filename&nbsp;in</div>
+      <div id="line000028" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000028| &nbsp;&nbsp;(*[14]*)close_in&nbsp;channel;</div>
+      <div id="line000029" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000029| &nbsp;&nbsp;(*[14]*)ast</div>
+      <div id="line000030" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000030| </div>
       </div>
     </code>
     <br/>
@@ -100,18 +97,15 @@
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000007');" title="jump to line 7"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000010');" title="jump to line 10"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000014');" title="jump to line 14"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000015');" title="jump to line 15"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
@@ -136,6 +130,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-07-10 10:11:12</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-07-26 13:11:25</p>
   </body>
 </html>
