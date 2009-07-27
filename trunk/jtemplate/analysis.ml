@@ -44,6 +44,20 @@ let check_errors env =
 	else ()
 
 (**
+Generates additional warnings about unused variables, then prints all warnings
+@param env analysis environment
+@returns unit
+*)
+let check_warnings env =
+	(* check for unused templates *)
+	let env = Hashtbl.fold (fun name spec env ->
+						let (_, _, cloc) = spec
+						in Environment.add_warning env cloc ("Template definition '" ^ name ^ "' is never used.")
+			)	env.templates env
+	(* print warnings *)
+	in List.fold_left (fun _ warning -> print_string ("WARNING: "^warning^"\n")) () (List.rev env.warnings)
+
+(**
 ******************************************************************************************
 *
 * FIRST PASS - resolve all variable references, including closure variables
@@ -51,12 +65,125 @@ let check_errors env =
 ******************************************************************************************
 *)
 
+exception TemplateError of string
+
+(**
+Checks for invalid nesting in a template specification
+@param template_spec the template spec to check
+@return an list of tuples containing the label and line offset where conflicts where found
+**)
+let rec check_template_nesting template_spec =
+	let labels = Hashtbl.create 10
+	(* get start and end for each label *)
+	in let (_, errors) = List.fold_left(fun acc spec ->
+						let (line, errors) = acc
+						in let (name_opt, _) = spec
+						in match name_opt with
+						| None -> (line + 1, errors)
+						| Some label ->
+								try
+									let (start, end_start, ending, end_ending) = Hashtbl.find labels label
+									in let (new_pos, errors) =
+										if line = end_start + 1 then ((start, line, line, line), errors)
+										else if line = end_ending + 1 then ((start, end_start, ending, line), errors)
+										else if ending = end_start then ((start, end_start, line, line), errors)
+										else ((start, end_start, ending, end_ending), (label, line):: errors)
+									in Hashtbl.replace labels label new_pos;
+									(line + 1, errors)
+								with Not_found ->
+										Hashtbl.add labels label (line, line, line, line);
+										(line + 1, errors))
+			(0,[]) template_spec
+	(* find overlapping labels *)
+	in let errors = Hashtbl.fold ( fun label pos list ->
+						let (start1, _, _, ending1) = pos
+						in Hashtbl.fold(fun label pos list ->
+										let (start2, _, _, ending2) = pos
+										in if start2 > start1 && start2 < ending1 && ending2 > ending1 then (label, ending2):: list
+										else list
+							) labels list
+			) labels errors
+	in (labels, errors)
+
+(**
+Generate a set of statements corresponding to a template instruction
+@param instruction instruction AST
+@env runtime environment
+@return a runtime statement for the instruction defining a function
+*)
+and generate_template_instr_function instruction env =
+	let generate_instructions template_specs labels replacement_list cloc args =
+		let find_replacement name =
+			let rec loop = function
+				| [] -> raise Not_found
+				| (n, condexpr, repl):: tl when n = name -> (condexpr, repl)
+				| hd:: tl -> loop tl
+			in loop replacement_list
+		in let make_repl_vars replacements =
+			let rec loop substrings expressions = function
+				| [] -> (ArrayExpr(List.rev substrings), ArrayExpr(List.rev expressions))
+				| hd:: tl ->
+						let (string, expr) = hd
+						in loop (Value(StringValue(string)):: substrings) (expr:: expressions) tl
+			in loop [] [] replacements
+		in let array = Array.of_list template_specs
+		in	let rec loop name result index endindex args target_label substrings_var repl_var =
+			if index = endindex then
+				let result = (Return(Id("result"), cloc)):: result
+				in ExpressionStatement(Declaration(Id(name), Value(FunctionValue(args, List.rev result))), cloc)
+			else
+				let (label_opt, line) = array.(index)
+				in match label_opt with
+				| None ->
+						loop name (ExpressionStatement(Assignment(Id("result"), BinaryOp(Id("result"), Plus, Value(StringValue(line)))), cloc):: result) (index + 1) endindex args target_label substrings_var repl_var
+				| Some label ->
+						if label = target_label then
+							let call = FunctionCall(MemberExpr(Value(StringValue(line)), Value(StringValue("mreplace"))),[substrings_var; repl_var])
+							in loop name (ExpressionStatement(Assignment(Id("result"), BinaryOp(Id("result"), Plus, call)), cloc):: result) (index + 1) endindex args target_label substrings_var repl_var
+						else
+							try
+								let (condexpr, replacements) = find_replacement label
+								in let (substrings, replexprs) = make_repl_vars replacements
+								in let (start, _, _, ending) = Hashtbl.find labels label
+								in let arg_array = match condexpr with
+									| Once | When(_) -> []
+									| Loop(iname, _) | CondLoop(_, iname, _) -> [iname]
+								in let earg_array = match condexpr with
+									| Once | When(_) -> []
+									| Loop(iname, _) | CondLoop(_, iname, _) -> [Id(iname)]
+								in let stmt1 = loop label [ExpressionStatement(Declaration(Id("result"), Value(StringValue(""))), cloc)]
+										start (ending + 1) arg_array label substrings replexprs
+								in let call = ExpressionStatement(Assignment(Id("result"), BinaryOp(Id("result"), Plus, FunctionCall(Id(label), earg_array))), cloc)
+								in let stmt2 = match condexpr with
+									| Once -> call
+									| When(cexpr) -> If(cexpr, call, Noop, cloc)
+									| Loop(iname, iexpr) -> ForEach(iname, iexpr, call, cloc)
+									| CondLoop(cexpr, iname, iexpr) -> If(cexpr, ForEach(iname, iexpr, call, cloc), Noop, cloc)
+								in loop name (stmt2:: stmt1:: result) (ending + 1) endindex args target_label substrings_var repl_var
+							with Not_found ->
+									raise(TemplateError ("could not find instruction for label '"^label^"'"))
+		in let (name, args, specs, cloc) = instruction
+		in loop name [ExpressionStatement(Declaration(Id("result"), Value(StringValue(""))), cloc)]
+			0 (List.length template_specs) args "" (ArrayExpr([])) (ArrayExpr([]))
+	in let (name, args, replacements, cloc) = instruction
+	in	try
+		let (template_specs, labels, _) = Hashtbl.find env.templates name
+		in let (rstmt, env) =
+			try
+				let stmt = generate_instructions template_specs labels replacements cloc args
+				in analyze_variables env stmt
+			with TemplateError message ->
+					(RNoop, Environment.add_error env cloc message)
+		in Hashtbl.remove env.templates name; (rstmt, env)
+	with
+	| Not_found -> (RNoop, env)
+	| Variable_not_found(name) -> (RNoop, env)
 (**
 Filters an ast, returning only a list of declaration and import statement
 @param stmts the statement list to process
 @return a statement list containing only declarations and imports
 *)
-let filter_imported_ast stmts =
+and filter_imported_ast stmts =
 	let rec loop result = function
 		| [] -> List.rev result
 		| stmt:: tl ->
@@ -77,7 +204,7 @@ statements
 on a stack or in the global heap and an environment containing information about all
 variables
 *)
-let rec analyze_variables env ast =
+and analyze_variables env ast =
 	(**
 	recursively searches an expression for declarations
 	@param env the analysis environment
@@ -120,7 +247,17 @@ let rec analyze_variables env ast =
 				find_decl_in_expr env expr cloc
 		| TryFinally(_, _, _) | TryCatch(_, _, _, _) | StatementBlock(_) | Case(None, _) | Continue(_)
 		| Break(_) | Noop | Program(_) | Import(_) | For(_, _, _, _, _) -> env
-		| Instructions(_, _, _, _) | TemplateDef(_, _, _) -> raise(RuntimeError.InternalError "TODO") (*/*TODO*/*)
+		| Instructions(name, _, _, _) -> Environment.declare_variable name env
+		| TemplateDef(name, spec_list , cloc) ->
+				let (labels, errors) = check_template_nesting spec_list
+				in match errors with
+				| [] -> Environment.add_template env name spec_list labels cloc
+				| error_list ->
+						List.fold_left (fun env label_offset ->
+										let (label, offset) = label_offset
+										in let (file, line) = cloc
+										in Environment.add_error env (file, line + offset + 1) ("Invalid nesting of labels for label '"^label^"'")
+							) env error_list
 	(**
 	Find all all variables in statement list whose stack depth is lower than that given
 	@param stmt_list a list of statements to be searched recursively
@@ -410,14 +547,14 @@ let rec analyze_variables env ast =
 			in (RThrow(e, cloc), env)
 	| Break(cloc) -> (RBreak(cloc), env)
 	| Continue(cloc) -> (RContinue(cloc), env)
-	| Import(_, cloc) -> (RNoop, env)
-	| TemplateDef(_, _, _) | Instructions(_, _, _, _) -> (* TODO *)
-			raise (RuntimeError.InternalError "unexpexted statement")
+	| Import(_, _) | TemplateDef(_, _, _) -> (RNoop, env)
+	| Instructions(name, args, specs, cloc) ->
+			generate_template_instr_function (name, args, specs, cloc) env
 
 let analyze ast =
 	let analyze_all env ast =
-		let (ast, env) = analyze_variables env ast in
-		check_errors env; (ast, env)
+		let (ast, env) = analyze_variables env ast
+		in check_errors env; check_warnings env; (ast, env)
 	in let env = Environment.new_analysis_environment()
 	in let env = Library.register_for_analysis env
 	in analyze_all env ast

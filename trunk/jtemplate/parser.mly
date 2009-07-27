@@ -234,8 +234,8 @@ prop_list:
     | property COMMA prop_list                { $1::$3 }
 ;
 template_spec:                        
-    | label TEXT                              { (Some $1,$2) }
-    | TEXT                                    { (None, $1) }
+    | label TEXT                              { (Some $1,$2 ^ "\n") }
+    | TEXT                                    { (None, $1 ^ "\n") }
 ;
 template_specs:                       
     | template_spec                           { [$1] }
@@ -255,7 +255,8 @@ repl_condition:
 replacement:                          
     | ID EQUALS expression                    { ($1,$3) }
 ;
-replacement_list:                     
+replacement_list:                
+    | /* nothing */                           { [] }
     | replacement                             { [$1] }
     | replacement COMMA replacement_list      { $1::$3 }
 ;

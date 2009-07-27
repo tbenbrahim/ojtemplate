@@ -32,6 +32,10 @@ type var_prop ={
 	tail_callble: bool;
 }
 
+type label_pos= int*int*int*int
+
+type template_spec_def = (template_spec list * (string , label_pos ) Hashtbl.t * (string * int))
+
 (**
 The analysis environment
 *)
@@ -46,8 +50,9 @@ type analysis_env ={
 	warnings: string list;
 	unique_id: int;
 	names: string list;
-	varprops: (int, var_prop) Hashtbl.t;
+	varprops: (int,var_prop) Hashtbl.t;
 	imported: string list;
+	templates: (string, template_spec_def) Hashtbl.t;
 }
 
 (**
@@ -68,6 +73,7 @@ let new_analysis_environment () =
 		varprops = Hashtbl.create 10;
 		names =[];
 		imported =[];
+		templates = Hashtbl.create 1;
 	}
 
 (**
@@ -98,6 +104,7 @@ let declare_variable_and_value env name value =
 				names = if num_added = 0 then env.names else name:: env.names;
 				varprops = env.varprops;
 				imported = env.imported;
+				templates = env.templates;
 			}
 	| _ ->
 			let (map, num_added) = find_or_declare (List.hd env.locals).variable_map (List.hd env.num_locals) env.unique_id
@@ -114,6 +121,7 @@ let declare_variable_and_value env name value =
 				names = if num_added = 0 then env.names else name:: env.names;
 				varprops = env.varprops;
 				imported = env.imported;
+				templates = env.templates;
 			}
 
 (**
@@ -133,7 +141,7 @@ Find variable in analysis scope
 @param name the variable name
 @param env the analysis environment
 @return a tuple with the value and location
-@throws Vaariable_not_found when the variable is not found
+@throws Variable_not_found when the variable is not found
 *)
 let resolve_variable name env =
 	let rec find scopes =
@@ -182,6 +190,7 @@ let new_analysis_scope env =
 				names = env.names;
 				varprops = env.varprops;
 				imported = env.imported;
+				templates = env.templates;
 			}
 	| hd:: tl -> {
 				globals = env.globals;
@@ -196,6 +205,7 @@ let new_analysis_scope env =
 				names = env.names;
 				varprops = env.varprops;
 				imported = env.imported;
+				templates = env.templates;
 			}
 (**
 Pops the analysis scope
@@ -220,6 +230,7 @@ let pop_scope env =
 							names = env.names;
 							varprops = env.varprops;
 							imported = env.imported;
+							templates = env.templates;
 						}
 				| None -> raise (RuntimeError.InternalError "popping a top level scope"))
 	| local:: tl ->
@@ -237,6 +248,7 @@ let pop_scope env =
 						names = env.names;
 						varprops = env.varprops;
 						imported = env.imported;
+						templates = env.templates;
 					}
 			| None -> {
 						globals = env.globals;
@@ -251,6 +263,7 @@ let pop_scope env =
 						names = env.names;
 						varprops = env.varprops;
 						imported = env.imported;
+						templates = env.templates;
 					}
 
 (**
@@ -272,6 +285,7 @@ let new_analysis_stackframe env =
 		names = env.names;
 		varprops = env.varprops;
 		imported = env.imported;
+		templates = env.templates;
 	}
 
 (**
@@ -296,7 +310,7 @@ let add_error env codeloc message =
 		num_globals = env.num_globals;
 		locals = env.locals;
 		num_locals = env.num_locals;
-		errors = ("At line "^(string_of_int line_number)^" in "^filename^": "^message):: env.errors;
+		errors = ("At line "^(string_of_int line_number)^" in "^(Filename.basename filename)^": "^message):: env.errors;
 		sdepth = env.sdepth;
 		max_depth = env.max_depth;
 		warnings = env.warnings;
@@ -304,6 +318,7 @@ let add_error env codeloc message =
 		names = env.names;
 		varprops = env.varprops;
 		imported = env.imported;
+		templates = env.templates;
 	}
 
 (**
@@ -323,11 +338,12 @@ let add_warning env codeloc message =
 		sdepth = env.sdepth;
 		max_depth = env.max_depth;
 		errors = env.errors;
-		warnings = ("At line "^(string_of_int line_number)^" in "^filename^": "^message):: env.warnings;
+		warnings = ("At line "^(string_of_int line_number)^" in "^(Filename.basename filename)^": "^message):: env.warnings;
 		unique_id = env.unique_id;
 		names = env.names;
 		varprops = env.varprops;
 		imported = env.imported;
+		templates = env.templates;
 	}
 
 (**
@@ -358,7 +374,22 @@ let add_import env filename =
 		names = env.names;
 		varprops = env.varprops;
 		imported = filename:: env.imported;
+		templates = env.templates;
 	}
+(**
+Adds a template to the environment
+@param runtime environment
+@param name template name
+@param spec_list list of line specifications
+@param labels  label positions
+@return a new environment
+**)
+let add_template env name spec_list labels cloc =
+	let env=if Hashtbl.mem env.templates name then
+		add_warning env cloc ("Duplicate template definition '" ^ name ^ "'")
+	else
+		env
+	in Hashtbl.replace env.templates name (spec_list,labels,cloc); env
 
 (**
 checks if a file has already been imported
