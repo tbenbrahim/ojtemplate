@@ -5,10 +5,12 @@ texts['fold000001'] = '<a href="javascript:fold(\'fold000001\');"><img border="0
 states['fold000001'] = false;
 texts['fold000025'] = '<a href="javascript:fold(\'fold000025\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 25 to line 27</i>';
 states['fold000025'] = false;
-texts['fold000029'] = '<a href="javascript:fold(\'fold000029\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 29 to line 46</i>';
+texts['fold000029'] = '<a href="javascript:fold(\'fold000029\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 29 to line 30</i>';
 states['fold000029'] = false;
-texts['fold000048'] = '<a href="javascript:fold(\'fold000048\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 48 to line 48</i>';
-states['fold000048'] = false;
+texts['fold000032'] = '<a href="javascript:fold(\'fold000032\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 32 to line 47</i>';
+states['fold000032'] = false;
+texts['fold000050'] = '<a href="javascript:fold(\'fold000050\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 50 to line 50</i>';
+states['fold000050'] = false;
 
 function fold(id) {
   tmp = document.all[id].innerHTML;

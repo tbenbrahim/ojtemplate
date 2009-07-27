@@ -11,7 +11,7 @@ texts['fold000041'] = '<a href="javascript:fold(\'fold000041\');"><img border="0
 states['fold000041'] = false;
 texts['fold000046'] = '<a href="javascript:fold(\'fold000046\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 46 to line 55</i>';
 states['fold000046'] = false;
-texts['fold000057'] = '<a href="javascript:fold(\'fold000057\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 57 to line 270</i>';
+texts['fold000057'] = '<a href="javascript:fold(\'fold000057\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 57 to line 271</i>';
 states['fold000057'] = false;
 
 function fold(id) {
