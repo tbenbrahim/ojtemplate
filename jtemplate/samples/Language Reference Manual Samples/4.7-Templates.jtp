@@ -1,0 +1,21 @@
+template htmlTable{ 
+  		#<table> 
+  		#<tr> 
+header 	#<th>columnLabel</th> 
+  		#</tr> 
+row  	#<tr> 
+cell  	#<td>cellData</td>
+row   	#</tr> 
+  		#</table> 
+} 
+
+
+instructions for htmlTable(dataMap){ 
+	header foreach(label in dataMap.labels): columnLabel=label; 
+	row foreach(dataArray in dataMap.data): ; 
+	cell foreach(element in dataArray): cellData=element; 
+} 
+
+let people={labels: ['Name','Age'], data: [['John',42], ['Mary',38]] }; 
+
+println(htmlTable(people));

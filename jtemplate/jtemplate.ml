@@ -26,11 +26,13 @@ let _ =
 		(
 			let filename = Sys.argv.(1) in
 			let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
-			in let (ast, env) = Analysis.analyze ast
-			(**in AstInfo.print_ast ast;
-			let _ = List.fold_left (fun ind name -> print_int ind; print_string (" = "^name^"\n"); ind + 1) 0 (List.rev env.names)
-			*)
-			in let renv ={
+			in let (ast, env) = try
+					Analysis.analyze ast
+				with RuntimeError.FatalExit(_) -> exit(- 2)
+			in 
+			(**AstInfo.print_ast ast;
+			let _ = List.fold_left (fun ind name -> print_int ind; print_string (" = "^name^"\n"); ind + 1) 0 (List.rev env.names) in*)
+			let renv ={
 				heap = Array.make env.num_globals (- 1, RUndefined);
 				stackframes = Array.make (env.max_depth + 1) [||];
 				closure_vars = None;
@@ -40,9 +42,9 @@ let _ =
 			}
 			in let _ = Library.register_for_runtime env renv
 			in let _ = register_args argl renv
-			in
-			try
+			in try
 				Interpreter.interpret renv ast
-			with ex ->
-					RuntimeError.display_error ex renv.current_line; raise ex
+			with
+			| RuntimeError.FatalExit _ -> exit(- 1)
+			| ex -> RuntimeError.display_error ex renv.current_line; raise ex
 		)
