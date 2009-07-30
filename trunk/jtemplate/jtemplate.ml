@@ -30,13 +30,13 @@ let _ =
 					Analysis.analyze ast
 				with RuntimeError.FatalExit(_) -> exit(- 2)
 			in 
-			(**AstInfo.print_ast ast;
-			let _ = List.fold_left (fun ind name -> print_int ind; print_string (" = "^name^"\n"); ind + 1) 0 (List.rev env.names) in*)
+			AstInfo.print_ast ast;
+			print_name_info env;
 			let renv ={
 				heap = Array.make env.num_globals (- 1, RUndefined);
 				stackframes = Array.make (env.max_depth + 1) [||];
 				closure_vars = None;
-				gnames = Array.of_list (List.rev env.names);
+				gnames = Array.of_list env.names;
 				current_line = ("", 0);
 				callstack =[];
 			}

@@ -1,28 +1,26 @@
 (**
 Create an optimized AST from the parsing phase AST
 
-The first pass replaces all symbolic variable names with absolute locations,
-either on a stack or in the global heap, detects and registers closure variables,
-processes imports
+Pass 1:
+- resolve all variable references, including closure variables
+- process imports and add declarations to AST
+- builds runtime AST
+- convert template definitions / instructions
+- evaluate operations on constants and replace with value in AST
+- determine if variables are initialized with a constant value (rather than an expression),
+if a variable is written after being declared and if it is ever read after being declared
 
+Pass 2:
 The second pass replaces all non function variables whose value have not been modified
-with a constant value. Example:
-let a = 1; let a = 1;
-let b = a + 1; -----> let b = 1 + 1;
-
-The third pass replacess all evaluatable expressions with a value. Example:
-let b = 1 + 1; -----> let b = 2;
-
-The fourth pass eliminates any variable which is never read after it is declared,
-and generates a warning. Also eliminates expression statements with no side effects
+with a constant value, and evaluates operations on constants , eliminates assignment
+statements on constant values when the variable is not reassigned and not written
 Example:
-let a = 1;
-let a = a + 1;
-print("Hello world"); -----> print("Hello world");
-
-expand varagrs
-
-TODO detect use before intialization
+let a = 2; // a is never modified
+let b = a + 1;
+gets replaced by
+let b = 2 + 1;
+which gets replaced with
+let b = 3;
 
 @author Tony BenBrahim
 
@@ -46,7 +44,7 @@ let check_errors env =
 (**
 Generates additional warnings about unused variables, then prints all warnings
 @param env analysis environment
-@returns unit
+@returns analysis environment with newly added warnings
 *)
 let check_warnings env =
 	(* check for unused templates *)
@@ -54,15 +52,62 @@ let check_warnings env =
 						let (_, _, cloc) = spec
 						in Environment.add_warning env cloc ("Template definition '" ^ name ^ "' is never used.")
 			)	env.templates env
+	(* check variables usage *)
+	in let rec loop_names env max names = function
+		| n when n = max -> env
+		| n ->
+				let env =
+					try
+						let varprop = Hashtbl.find env.varprops n
+						in let (_, line) = varprop.declaration_loc
+						in match line with
+						| 0 -> env
+						| _ ->
+								let env = if varprop.read_after_declared = false then
+										add_warning env varprop.declaration_loc ("Variable "^(List.hd names)^" is never read.")
+									else
+										env
+								in env
+					with Not_found ->
+							env
+				in loop_names env max (List.tl names) (n + 1)
+	in let env = loop_names env (List.length env.names) env.names 0
 	(* print warnings *)
-	in List.fold_left (fun _ warning -> print_string ("WARNING: "^warning^"\n")) () (List.rev env.warnings)
+	in List.fold_left (fun _ warning -> print_string ("WARNING: "^warning^"\n")) () (List.rev env.warnings);
+	env
 
 (**
-******************************************************************************************
-*
-* FIRST PASS - resolve all variable references, including closure variables
-*
-******************************************************************************************
+Prints information about names found during analysis
+@env analysis environment
+@return unit
+*)
+let print_name_info env =
+	let _ = List.fold_left (fun ind name ->
+						print_int ind;
+						let (read, written, analyzed, (file, line)) =
+							try
+								let vp = Hashtbl.find env.varprops ind
+								in (vp.read_after_declared, vp.written_after_declared, true, vp.declaration_loc)
+							with Not_found -> (false, false, false, ("", 0))
+						in
+						print_string (" "^name^" read="^(string_of_bool read)^" written="^(string_of_bool written)
+								^ " analyzed="^(string_of_bool analyzed)^" ("
+								^( Filename.basename file)^","^(string_of_int line)^")\n") ;
+						ind + 1) 0 env.names
+	in ()
+
+(**
+**********************************************************************************************
+* FIRST PASS
+* - resolve all variable references, including closure variables
+* - process imports and add declarations to AST
+* - builds runtime AST
+* - convert template definitions / instructions
+* - evaluate operations on constants and replace with value in AST
+* - determine if variables are initialized with a constant value (rather than an expression)
+* - determine if a variable is written after being declared and if it is ever read after being declared
+* - determine if a function is inlineable
+**********************************************************************************************
 *)
 
 exception TemplateError of string
@@ -196,7 +241,7 @@ and filter_imported_ast stmts =
 
 (** find declarations and resolve references to variables. Since declarations are
 visible in the entire scope in which they are defined, and not just after they are
-declared, a breadth first search is necessary before receusively processing children
+declared, a breadth first search is necessary before recursively processing children
 statements
 @param env an analysis environment
 @param ast the intermediate ast
@@ -216,7 +261,7 @@ and analyze_variables env ast =
 		match expr with
 		| Declaration(expr1, expr2) ->
 				let env = (match expr1 with
-						| Id(name) -> Environment.declare_variable name env
+						| Id(name) -> let (env, uid) = Environment.declare_variable env name in env
 						| MemberExpr(_, _) -> env
 						| _ -> Environment.add_error env cloc "Left side cannot be assigned to")
 				in find_decl_in_expr (find_decl_in_expr env expr1 cloc) expr2 cloc
@@ -247,7 +292,7 @@ and analyze_variables env ast =
 				find_decl_in_expr env expr cloc
 		| TryFinally(_, _, _) | TryCatch(_, _, _, _) | StatementBlock(_) | Case(None, _) | Continue(_)
 		| Break(_) | Noop | Program(_) | Import(_) | For(_, _, _, _, _) -> env
-		| Instructions(name, _, _, _) -> Environment.declare_variable name env
+		| Instructions(name, _, _, _) -> let (env, _) = Environment.declare_variable env name in env
 		| TemplateDef(name, spec_list , cloc) ->
 				let (labels, errors) = check_template_nesting spec_list
 				in match errors with
@@ -304,6 +349,46 @@ and analyze_variables env ast =
 			| stmt:: list -> loop (process result stmt) list
 		in loop None stmt_list
 	(**
+	Convert a parsing value to a runtime value
+	*)
+	and convert_value env cloc = function
+		| StringValue(v) -> (RStringValue(v), env)
+		| IntegerValue(v) -> (RIntegerValue(v), env)
+		| FloatValue(v) -> (RFloatValue(v), env)
+		| BooleanValue(v) -> (RBooleanValue(v), env)
+		| Void -> (RVoid, env)
+		| NaN -> (RNaN, env)
+		| MapValue(h, s) ->
+				(RMapValue(Hashtbl.fold (fun k v h ->
+										let (repl, env) = convert_value env cloc v
+										in Hashtbl.replace h k repl ; h ) h (Hashtbl.create 10), s), env)
+		| FunctionValue(arg_list, stmt_list) ->
+				let rec analyze_vararg has_vararg namelist env = function
+					| [] -> (has_vararg, List.rev namelist, env)
+					| name::[] when is_vararg name -> analyze_vararg true ((vararg_formalname name):: namelist) env []
+					| name:: tl ->
+							let env =
+								(if is_vararg name then
+										Environment.add_error env cloc "vararg must be last argument"
+									else
+										env)
+							in analyze_vararg has_vararg (name:: namelist) env tl
+				in let (has_vararg, arg_list, env) = analyze_vararg false [] env arg_list
+				in let newenv = Environment.new_analysis_stackframe env
+				in let (newenv, _) = Environment.declare_variable newenv "this"
+				in let _ = Environment.record_usage env (LocalVar(env.unique_id, 0, 0)) (DeclareOp cloc)
+				in let _ = Environment.record_usage env (LocalVar(env.unique_id, 0, 0)) WriteOp
+				in let _ = Environment.record_usage env (LocalVar(env.unique_id, 0, 0)) ReadOp
+				in let newenv = List.fold_left
+						(fun env name ->
+									let (env, _) = Environment.declare_variable env name
+									in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1 , 0, 0)) (DeclareOp cloc)
+									in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1, 0, 0)) WriteOp
+									in env) newenv arg_list
+				in let (stmt_list, newenv) = analyze_variables_in_block newenv stmt_list
+				in let closure_vars = get_closure_vars stmt_list (Environment.get_depth newenv)
+				in (RFunctionValue(List.hd newenv.num_locals, Environment.get_depth newenv, List.length arg_list, has_vararg, stmt_list, closure_vars), Environment.pop_scope newenv)
+	(**
 	Replaces all variables in expression with absolute locations
 	Also sets up function definitions
 	@param env analysis environment
@@ -312,54 +397,46 @@ and analyze_variables env ast =
 	@return new expression with variables replaced with absolute location
 	*)
 	and resolve_expr env expr cloc =
-		let rec convert_value env = function
-			| StringValue(v) -> (RStringValue(v), env)
-			| IntegerValue(v) -> (RIntegerValue(v), env)
-			| FloatValue(v) -> (RFloatValue(v), env)
-			| BooleanValue(v) -> (RBooleanValue(v), env)
-			| Void -> (RVoid, env)
-			| NaN -> (RNaN, env)
-			| MapValue(h, s) ->
-					(RMapValue(Hashtbl.fold (fun k v h ->
-											let (repl, env) = convert_value env v
-											in Hashtbl.replace h k repl ; h ) h (Hashtbl.create 10), s), env)
-			| FunctionValue(arg_list, stmt_list) ->
-					let rec analyze_vararg has_vararg namelist env = function
-						| [] -> (has_vararg, List.rev namelist, env)
-						| name::[] when is_vararg name -> analyze_vararg true ((vararg_formalname name):: namelist) env []
-						| name:: tl ->
-								let env =
-									(if is_vararg name then
-											Environment.add_error env cloc "vararg must be last argument"
-										else
-											env)
-								in analyze_vararg has_vararg (name:: namelist) env tl
-					in let (has_vararg, arg_list, env) = analyze_vararg false [] env arg_list
-					in let newenv = Environment.new_analysis_stackframe env
-					in let newenv = Environment.declare_variable "this" newenv
-					in let newenv = List.fold_left (fun env name -> Environment.declare_variable name env) newenv arg_list
-					in let (stmt_list, newenv) = analyze_variables_in_block newenv stmt_list
-					in let closure_vars = get_closure_vars stmt_list (Environment.get_depth newenv)
-					in (RFunctionValue(List.hd newenv.num_locals, Environment.get_depth newenv, List.length arg_list, has_vararg, stmt_list, closure_vars), Environment.pop_scope newenv)
-		and resolve_expr_sub env expr =
+		let rec resolve_expr_sub env expr op_type =
 			match expr with
 			| Id(name) ->
-					let (_, loc) = Environment.resolve_variable name env
+					let loc = Environment.resolve_variable name env
+					in let _ = record_usage env loc op_type
 					in (RVariable(loc), env)
 			| VarArg(name) ->
-					let (_, loc) = Environment.resolve_variable name env
+					let loc = Environment.resolve_variable name env
 					in (RVarArg(loc), env)
 			| BinaryOp(e1, op, e2) ->
-					let (expr1, env) = resolve_expr_sub env e1
-					in let (expr2, env) = resolve_expr_sub env e2
-					in (RBinaryOp(expr1, op, expr2), env)
+					let (expr1, env) = resolve_expr_sub env e1 ReadOp
+					in let (expr2, env) = resolve_expr_sub env e2 ReadOp
+					in (match (expr1, expr2) with
+						| (RValue(v1), RValue(v2)) ->
+								(try
+									(RValue(Expression.evaluate_op v1 v2 op), env)
+								with
+								| Expression.EInvalidOperation(_, t) ->
+										(RBinaryOp(expr1, op, expr2), Environment.add_error env cloc ("invalid operation for "^t^" types"))
+								| Expression.EIncompatibleTypes(t1, t2) ->
+										(RBinaryOp(expr1, op, expr2), Environment.add_error env cloc ("incompatible types "^t1^" and "^t2))
+								)
+						| _ -> (RBinaryOp(expr1, op, expr2), env))
 			| CompOp(e1, op, e2) ->
-					let (expr1, env) = resolve_expr_sub env e1
-					in let (expr2, env) = resolve_expr_sub env e2
-					in (RCompOp(expr1, op, expr2), env)
+					let (expr1, env) = resolve_expr_sub env e1 ReadOp
+					in let (expr2, env) = resolve_expr_sub env e2 ReadOp
+					in (match (expr1, expr2) with
+						| (RValue(v1), RValue(v2)) ->
+								(try
+									(RValue(Expression.compare v1 op v2), env)
+								with
+								| Expression.EInvalidComparaison(_, _, _) ->
+										(RCompOp(expr1, op, expr2), Environment.add_error env cloc ("invalid  comparaison"))
+								)
+						| _ -> (RCompOp(expr1, op, expr2), env))
 			| Not(e) ->
-					let (expr, env) = resolve_expr_sub env e
-					in (RNot(expr), env)
+					let (expr, env) = resolve_expr_sub env e ReadOp
+					in (match expr with
+						| RValue(RBooleanValue(b)) -> (RValue(RBooleanValue(not b)), env)
+						| _ -> (RNot(expr), env))
 			| FunctionCall(e, el) ->
 					let rec has_unbound_var = function
 						| [] -> false
@@ -380,49 +457,54 @@ and analyze_variables env ast =
 											Id(name)
 									in bound_list (variable:: result) tl
 							| expr:: tl -> bound_list (expr:: result) tl
-						in resolve_expr_sub env (Value(FunctionValue(unbound_list [] el,[Return(FunctionCall(e, bound_list [] el), cloc)])))
+						in resolve_expr_sub env (Value(FunctionValue(unbound_list [] el,[Return(FunctionCall(e, bound_list [] el), cloc)]))) ReadOp
 					else
-						let (expr, env) = resolve_expr_sub env e
+						let (expr, env) = resolve_expr_sub env e ReadOp
 						in let (expr_list, env) = List.fold_left(fun acc expr -> let (lst, env) = acc
-											in let (expr, env) = resolve_expr_sub env expr in (expr:: lst, env)) ([], env) el
+											in let (expr, env) = resolve_expr_sub env expr ReadOp in (expr:: lst, env)) ([], env) el
 						in (RFunctionCall(expr, List.rev expr_list), env)
 			| MapExpr(prop_list) ->
 					let (prop_list, env) = List.fold_left(fun acc prop -> let (lst, env) = acc
 										in let (name, expr) = prop
-										in let (expr, env) = resolve_expr_sub env expr
+										in let (expr, env) = resolve_expr_sub env expr ReadOp
 										in ((name, expr):: lst, env)) ([], env) prop_list
 					in (RMapExpr(List.rev prop_list), env)
 			| ArrayExpr(el) ->
 					let (expr_list, env) = List.fold_left(fun acc expr -> let (lst, env) = acc
-										in let (expr, env) = resolve_expr_sub env expr
+										in let (expr, env) = resolve_expr_sub env expr ReadOp
 										in (expr:: lst, env)) ([], env) el
 					in (RArrayExpr(List.rev expr_list), env)
-			| Value(v) -> let (repl, env) = convert_value env v in (RValue(repl), env)
+			| Value(v) -> let (repl, env) = convert_value env cloc v in (RValue(repl), env)
 			| Assignment(e1, e2) ->
-					let (expr1, env) = resolve_expr_sub env e1
-					in let (expr2, env) = resolve_expr_sub env e2
+					let (expr1, env) = resolve_expr_sub env e1 WriteOp
+					in let (expr2, env) = resolve_expr_sub env e2 ReadOp
 					in (RAssignment(expr1, expr2), env)
 			| Declaration(e1, e2) ->
-					let (expr1, env) = resolve_expr_sub env e1
-					in let (expr2, env) = resolve_expr_sub env e2
+					let (expr1, env) = resolve_expr_sub env e1 (DeclareOp cloc)
+					in let (expr2, env) = resolve_expr_sub env e2 ReadOp
+					in let _ = match (expr1, expr2) with
+						| (RVariable(loc), RValue(value)) ->
+								let uid = uid_from_loc loc
+								in Environment.set_constant_value env uid value
+						| _ -> ()
 					in (RDeclaration(expr1, expr2), env)
 			| TernaryCond(e1, e2, e3) ->
-					let (e1, env) = resolve_expr_sub env e1
-					in let (e2, env) = resolve_expr_sub env e2
-					in let (e3, env) = resolve_expr_sub env e3
+					let (e1, env) = resolve_expr_sub env e1 ReadOp
+					in let (e2, env) = resolve_expr_sub env e2 ReadOp
+					in let (e3, env) = resolve_expr_sub env e3 ReadOp
 					in (RTernaryCond(e1, e2, e3), env)
 			| MemberExpr(e1, e2) ->
-					let (expr1, env) = resolve_expr_sub env e1
-					in let (expr2, env) = resolve_expr_sub env e2
+					let (expr1, env) = resolve_expr_sub env e1 op_type
+					in let (expr2, env) = resolve_expr_sub env e2 ReadOp
 					in (RMemberExpr(expr1, expr2), env)
 			| PostFixSum(e, inc) ->
-					let (expr, env) = resolve_expr_sub env e
+					let (expr, env) = resolve_expr_sub env e WriteOp
 					in (RPostFixSum(expr, inc), env)
 			| UnboundVar(_) ->
 					(RValue(RVoid), Environment.add_error env cloc "Unexpected unbound var")
 		in
 		try
-			resolve_expr_sub env expr
+			resolve_expr_sub env expr ReadOp
 		with
 		| Variable_not_found(name) -> (RValue(RVoid), Environment.add_error env cloc ("Undefined variable '"^name^"'"))
 	(**
@@ -451,7 +533,6 @@ and analyze_variables env ast =
 		let rec loop result env = function
 			| [] -> (List.rev result, env)
 			| Import(filename, cloc):: tl ->
-			(* if env.locals =[] && env.globals.parent = None then *)
 					(if Environment.has_import env filename then
 							loop (Noop:: result) env tl
 						else (
@@ -463,8 +544,6 @@ and analyze_variables env ast =
 										in let result = List.fold_left (fun lst stmt -> stmt:: lst) result stmts
 										in loop result env tl
 								| _ -> raise (RuntimeError.InternalError "Unexpected node from import"))))
-			(* else let env = Environment.add_error env cloc "Import must be at  *)
-			(* the top level of the global scope" in loop (Noop:: result) env tl *)
 			| stmt:: tl -> loop (stmt:: result) env tl
 		in loop [] env stmt_list
 	(**
@@ -477,8 +556,7 @@ and analyze_variables env ast =
 	and analyze_variables_in_block env stmt_list =
 		let (stmt_list, env) = process_imports env stmt_list
 		in let env = List.fold_left(fun env stmt -> find_declarations_in_stmt env stmt) env stmt_list
-		(*in let (stmt_list, env) = *)in replace_variables_in_block env stmt_list
-	(* in analyze_variables_nested_stmt env stmt_list [] *)
+		in replace_variables_in_block env stmt_list
 	and analyze_variables_in_stmt env stmt =
 		let env = find_declarations_in_stmt env stmt
 		in analyze_variables env stmt
@@ -500,9 +578,9 @@ and analyze_variables env ast =
 			let newenv = Environment.new_analysis_scope env
 			in let (stmt1, newenv) = analyze_variables_in_stmt newenv stmt1
 			in let newenv = Environment.new_analysis_scope (Environment.pop_scope newenv)
-			in let newenv = Environment.declare_variable name newenv
+			in let (newenv, _) = Environment.declare_variable newenv name
 			in let (stmt2, newenv) = analyze_variables_in_stmt newenv stmt2
-			in let (_, loc) = Environment.resolve_variable name newenv
+			in let loc = Environment.resolve_variable name newenv
 			in (RTryCatch(stmt1, loc, stmt2, cloc), Environment.pop_scope newenv)
 	| If(expr, stmt1, stmt2, cloc) ->
 			let (expr, env) = resolve_expr env expr cloc
@@ -518,10 +596,10 @@ and analyze_variables env ast =
 			in let (stmt2, newenv) = analyze_variables_in_stmt newenv stmt2
 			in (RTryFinally(stmt1, stmt2, cloc), Environment.pop_scope newenv)
 	| ForEach(name, expr, stmt, cloc) ->
-			let newenv = Environment.declare_variable name (Environment.new_analysis_scope env)
+			let (newenv, _) = Environment.declare_variable (Environment.new_analysis_scope env) name
 			in let (expr, newenv) = resolve_expr newenv expr cloc
 			in let (stmt, newenv) = analyze_variables_in_stmt newenv stmt
-			in let (_, loc) = Environment.resolve_variable name newenv
+			in let loc = Environment.resolve_variable name newenv
 			in (RForEach(loc, expr, stmt, cloc), Environment.pop_scope newenv)
 	| For(expr1, expr2, expr3, stmt, cloc) ->
 			let newenv = Environment.new_analysis_scope env
@@ -551,10 +629,97 @@ and analyze_variables env ast =
 	| Instructions(name, args, specs, cloc) ->
 			generate_template_instr_function (name, args, specs, cloc) env
 
+(**
+**********************************************************************************************
+* SECOND PASS
+* - replace all constant declarations with Noop
+* - replace all constant variables with their value
+* - replace all constant expressions with the computed value
+**********************************************************************************************
+*)
+
+let rec replace_constant env = function
+	|	RVariable(loc) ->
+			let uid = uid_from_loc loc
+			in if Environment.is_constant env uid then
+				RValue(Environment.get_constant_value env uid)
+			else RVariable(loc)
+	| RNot(expr) -> RNot(replace_constant env expr)
+	| RBinaryOp(expr1, op, expr2) ->
+			let (e1, e2) = (replace_constant env expr1, replace_constant env expr2)
+			in (try match (e1, e2) with
+				| (RValue(v1), RValue(v2)) -> RValue(Expression.evaluate_op v1 v2 op)
+				| _ -> RBinaryOp(e1, op, e2)
+			with _ -> RBinaryOp(e1, op, e2))
+	| RCompOp(expr1, op, expr2) -> RCompOp(replace_constant env expr1, op, replace_constant env expr2)
+	| RValue(RFunctionValue(locals, depth, args, vararg, stmts, closvars)) ->
+			RValue(RFunctionValue(locals, depth, args, vararg, List.map(fun stmt -> pass2 env stmt) stmts, closvars))
+	| RValue(_) | RPostFixSum(_) | RVarArg(_) as value -> value
+	| RFunctionCall(expr, expr_list) ->
+			RFunctionCall(expr, List.map(fun e -> replace_constant env e) expr_list)
+	| RAssignment(expr1, expr2) -> RAssignment(expr1, replace_constant env expr2)
+	| RDeclaration(expr1, expr2) ->
+			let expr2 = replace_constant env expr2
+			in let _ = match (expr1, expr2) with
+				| (RVariable(loc), RValue(value)) ->
+						let uid = uid_from_loc loc
+						in Environment.set_constant_value env uid value
+				| _ -> ()
+			in	RDeclaration(expr1, expr2)
+	| RMemberExpr(expr1, expr2) -> RMemberExpr(replace_constant env expr1, replace_constant env expr2)
+	| RArrayExpr(expr_list) -> RArrayExpr(List.map(fun e -> replace_constant env e) expr_list)
+	| RMapExpr(prop_list) ->
+			RMapExpr(List.map (fun prop -> let (name, e) = prop in (name, replace_constant env e)) prop_list)
+	| RTernaryCond(expr1, expr2, expr3) ->
+			RTernaryCond(replace_constant env expr1, replace_constant env expr2, replace_constant env expr3)
+
+and pass2 env = function
+	| RProgram(stmts) -> RProgram(List.map (fun stmt -> pass2 env stmt) stmts)
+	| RStatementBlock(stmts) ->	RStatementBlock(List.map (fun stmt -> pass2 env stmt) stmts)
+	| RThrow(expr, cloc) -> RThrow(replace_constant env expr, cloc)
+	| RCase(Some expr, cloc) -> RCase(Some (replace_constant env expr), cloc)
+	| RReturn(expr, cloc) -> RReturn(replace_constant env expr, cloc)
+	| RContinue(_) | RBreak(_) | RCase(None, _) | RNoop as stmt -> stmt
+	| RExpressionStatement(expr, cloc) -> RExpressionStatement(replace_constant env expr, cloc)
+	| RFor(expr1, expr2, expr3, stmt, cloc) ->
+			RFor(replace_constant env expr1, replace_constant env expr2, replace_constant env expr3,
+				pass2 env stmt, cloc)
+	| RIf(expr, stmt1, stmt2, cloc) -> RIf(replace_constant env expr, pass2 env stmt1, pass2 env stmt2, cloc)
+	| RTryFinally(stmt1, stmt2, cloc) -> RTryFinally(pass2 env stmt1, pass2 env stmt2, cloc)
+	| RTryCatch(stmt1, v, stmt2, cloc) -> RTryCatch(pass2 env stmt1, v, pass2 env stmt2, cloc)
+	| RSwitch(expr, stmts, cloc) -> RSwitch(replace_constant env expr,
+				(List.map (fun stmt -> pass2 env stmt) stmts), cloc)
+	| RForEach(v, expr, stmt, cloc) -> RForEach(v, replace_constant env expr, pass2 env stmt, cloc)
+
+(**
+Analyzes an AST, generates a runtime AST
+@param ast a parsing AST
+@return a tuple of the runtime AST and analysis environment
+*)
 let analyze ast =
 	let analyze_all env ast =
-		let (ast, env) = analyze_variables env ast
-		in check_errors env; check_warnings env; (ast, env)
+		let (rast, env) = analyze_variables env ast
+		in let (rast, env) =
+			(rast, {
+					globals = env.globals;
+					num_globals = env.num_globals;
+					locals = env.locals;
+					num_locals = env.num_locals;
+					sdepth = env.sdepth;
+					max_depth = env.max_depth;
+					errors = env.errors;
+					warnings = env.warnings;
+					unique_id = env.unique_id;
+					names = List.rev env.names;
+					varprops = env.varprops;
+					imported = env.imported;
+					templates = env.templates;
+					constants = env.constants;
+				})
+		in let (rast, env) = (pass2 env rast, env)
+		in let _ = check_errors env
+		in let env = check_warnings env
+		in (rast, env)
 	in let env = Environment.new_analysis_environment()
 	in let env = Library.register_for_analysis env
 	in analyze_all env ast

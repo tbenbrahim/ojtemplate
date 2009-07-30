@@ -1,0 +1,22 @@
+let b={};
+let b.test='1';
+
+let add=function(x,y,z){
+	return x+y;	
+};
+
+let a=1;
+
+for (var i=0;i<10;++i){
+	let a=2;
+	println('test'+a);
+}
+
+let side=2;
+let c=10;
+
+let square=function(s){
+	return s*s*c;	
+};
+
+println(square(side));

@@ -9,7 +9,6 @@ row   	#</tr>
   		#</table> 
 } 
 
-
 instructions for htmlTable(dataMap){ 
 	header foreach(label in dataMap.labels): columnLabel=label; 
 	row foreach(dataArray in dataMap.data): ; 
@@ -19,3 +18,7 @@ instructions for htmlTable(dataMap){
 let people={labels: ['Name','Age'], data: [['John',42], ['Mary',38]] }; 
 
 println(htmlTable(people));
+
+println(true!=false);
+
+
