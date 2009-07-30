@@ -8,11 +8,10 @@ Module environment defines the runtime and analysis environments
 module StringMap = Map.Make(String)
 
 (**
-@param field1 value
 @param field2 index into scope
 @param field3 unique id
 *)
-type var_info = (runtime_variable_value * int * int)
+type var_info = (int * int)
 
 (**
 represents variables map in a global or local scope, and reference to parent scope
@@ -28,11 +27,12 @@ Properties of variable locations
 type var_prop ={
 	written_after_declared: bool;
 	read_after_declared: bool;
-	inlineable: bool;
-	tail_callble: bool;
+	inline_expr: (runtime_expression * string list) option;
+	tail_callable: bool;
+	declaration_loc: string * int;
 }
 
-type label_pos= int*int*int*int
+type label_pos = int * int * int * int
 
 type template_spec_def = (template_spec list * (string , label_pos ) Hashtbl.t * (string * int))
 
@@ -50,9 +50,10 @@ type analysis_env ={
 	warnings: string list;
 	unique_id: int;
 	names: string list;
-	varprops: (int,var_prop) Hashtbl.t;
+	varprops: (int, var_prop) Hashtbl.t;
 	imported: string list;
 	templates: (string, template_spec_def) Hashtbl.t;
+	constants: (int, runtime_variable_value) Hashtbl.t;
 }
 
 (**
@@ -74,65 +75,99 @@ let new_analysis_environment () =
 		names =[];
 		imported =[];
 		templates = Hashtbl.create 1;
+		constants = Hashtbl.create 10;
 	}
 
 (**
-declare a variable if it does not exist
-or create a new entry and return new index
+sets the declaration value for a variable
+@param env analysis environment
+@param uid unique id of variable
+@param value runtime value of variable
+@return unit
+*)
+let set_constant_value env uid value =
+	Hashtbl.replace env.constants uid value
+
+(**
+gets the constant value for a variable
+@param env analysis environment
+@param uid unique id of variable
+@return runtime value of variable
+*)
+let get_constant_value env uid =
+	Hashtbl.find env.constants uid
+
+(**
+returns whether the variable is a constant
+@param env analysis environment
+@param uid unique id of variable
+@return true if the variable is a constant
+*)
+let is_constant env uid =
+	try
+		let varprop = Hashtbl.find env.varprops uid
+		in not varprop.written_after_declared
+	with Not_found -> false
+(**
+declare a variable if it does not exist or create a new entry and return new index
 @param name name of variable to declare
 @param env analysis environment
-@return the modified environment
+@return a tuple of the modified environment and uid
 *)
-let declare_variable_and_value env name value =
+let declare_variable env name =
 	let find_or_declare varmaps nextind uid =
-		try let _ = StringMap.find name varmaps in (varmaps, 0)
-		with Not_found -> (StringMap.add name (value, nextind, uid) varmaps, 1)
+		try let (_, uid) = StringMap.find name varmaps in (varmaps, 0, uid)
+		with Not_found -> (StringMap.add name (nextind, uid) varmaps, 1, uid)
 	in
 	match env.locals with
 	| [] ->
-			let ( map, num_added) = find_or_declare env.globals.variable_map env.num_globals env.unique_id
+			let ( map, num_added, uid) = find_or_declare env.globals.variable_map env.num_globals env.unique_id
 			in
-			{ globals ={ variable_map = map; parent = env.globals.parent };
-				num_globals = env.num_globals + num_added;
-				locals = env.locals;
-				num_locals = env.num_locals;
-				sdepth = env.sdepth;
-				max_depth = env.max_depth;
-				errors = env.errors;
-				warnings = env.warnings;
-				unique_id = env.unique_id + num_added;
-				names = if num_added = 0 then env.names else name:: env.names;
-				varprops = env.varprops;
-				imported = env.imported;
-				templates = env.templates;
-			}
+			({ globals ={ variable_map = map; parent = env.globals.parent };
+					num_globals = env.num_globals + num_added;
+					locals = env.locals;
+					num_locals = env.num_locals;
+					sdepth = env.sdepth;
+					max_depth = env.max_depth;
+					errors = env.errors;
+					warnings = env.warnings;
+					unique_id = env.unique_id + num_added;
+					names = if num_added = 0 then env.names else name:: env.names;
+					varprops = env.varprops;
+					imported = env.imported;
+					templates = env.templates;
+					constants = env.constants;
+				}, uid)
 	| _ ->
-			let (map, num_added) = find_or_declare (List.hd env.locals).variable_map (List.hd env.num_locals) env.unique_id
+			let (map, num_added, uid) = find_or_declare (List.hd env.locals).variable_map (List.hd env.num_locals) env.unique_id
 			in
-			{ globals = env.globals;
-				num_globals = env.num_globals;
-				locals ={ variable_map = map; parent = (List.hd env.locals).parent }:: List.tl env.locals;
-				num_locals = ((List.hd env.num_locals) + num_added):: List.tl env.num_locals;
-				sdepth = env.sdepth;
-				max_depth = env.max_depth;
-				errors = env.errors;
-				warnings = env.warnings;
-				unique_id = env.unique_id + num_added;
-				names = if num_added = 0 then env.names else name:: env.names;
-				varprops = env.varprops;
-				imported = env.imported;
-				templates = env.templates;
-			}
+			({ globals = env.globals;
+					num_globals = env.num_globals;
+					locals ={ variable_map = map; parent = (List.hd env.locals).parent }:: List.tl env.locals;
+					num_locals = ((List.hd env.num_locals) + num_added):: List.tl env.num_locals;
+					sdepth = env.sdepth;
+					max_depth = env.max_depth;
+					errors = env.errors;
+					warnings = env.warnings;
+					unique_id = env.unique_id + num_added;
+					names = if num_added = 0 then env.names else name:: env.names;
+					varprops = env.varprops;
+					imported = env.imported;
+					templates = env.templates;
+					constants = env.constants;
+				}, uid)
 
 (**
-declare a variable, return index of existing variable in current scope if found
-or create a new entry and return new index
+declare a variable if it does not exist or create a new entry and return new index,
+then sets constant value
 @param name name of variable to declare
 @param env analysis environment
+@param value
 @return the modified environment
 *)
-let declare_variable name env =
-	declare_variable_and_value env name RUndefined
+let declare_variable_and_value name env value =
+	let (env, uid) = declare_variable name env
+	in set_constant_value env uid value; env
 
 exception Variable_not_found of string
 
@@ -140,14 +175,14 @@ exception Variable_not_found of string
 Find variable in analysis scope
 @param name the variable name
 @param env the analysis environment
-@return a tuple with the value and location
+@return location
 @throws Variable_not_found when the variable is not found
 *)
 let resolve_variable name env =
 	let rec find scopes =
 		try
-			let (value, ind, uid) = StringMap.find name scopes.variable_map
-			in (value, uid, ind)
+			let (ind, uid) = StringMap.find name scopes.variable_map
+			in (uid, ind)
 		with Not_found ->
 				(match scopes.parent with
 					| Some parent -> find parent
@@ -157,19 +192,41 @@ let resolve_variable name env =
 		| [] -> raise Not_found
 		| scope:: tl ->
 				try
-					let (value, uid, ind) = find scope
-					in (value, LocalVar(uid, List.length tl, ind))
+					let (uid, ind) = find scope
+					in (LocalVar(uid, List.length tl, ind))
 				with
 				| Not_found -> find_in_stackframes tl
 	in
 	try
 		match env.locals with
-		| [] -> let (value, uid, ind) = find env.globals in (value, GlobalVar(uid, ind))
+		| [] -> let (uid, ind) = find env.globals in (GlobalVar(uid, ind))
 		| _ -> (try
 					find_in_stackframes env.locals
 				with Not_found ->
-						let (value, uid, ind) = find env.globals in (value, GlobalVar(uid, ind)))
+						let (uid, ind) = find env.globals in (GlobalVar(uid, ind)))
 	with Not_found -> raise (Variable_not_found name)
+
+(**
+returns uid from location
+@param loc the variable location
+@return uid
+*)
+let uid_from_loc = function
+	| GlobalVar(uid, _) -> uid
+	| LocalVar(uid, _, _) -> uid
+
+(**
+Find variable and value in analysis scope
+@param name the variable name
+@param env the analysis environment
+@return tuple of value and location
+@throws Variable_not_found when the variable is not found
+*)
+let resolve_variable_value name env =
+	let loc = resolve_variable name env
+	in let uid = uid_from_loc loc
+	in ( get_constant_value env uid, loc)
+
 (**
 Setups a new scope within the same global or local scope
 @param env analysis environment
@@ -191,6 +248,7 @@ let new_analysis_scope env =
 				varprops = env.varprops;
 				imported = env.imported;
 				templates = env.templates;
+				constants = env.constants;
 			}
 	| hd:: tl -> {
 				globals = env.globals;
@@ -206,6 +264,7 @@ let new_analysis_scope env =
 				varprops = env.varprops;
 				imported = env.imported;
 				templates = env.templates;
+				constants = env.constants;
 			}
 (**
 Pops the analysis scope
@@ -231,6 +290,7 @@ let pop_scope env =
 							varprops = env.varprops;
 							imported = env.imported;
 							templates = env.templates;
+							constants = env.constants;
 						}
 				| None -> raise (RuntimeError.InternalError "popping a top level scope"))
 	| local:: tl ->
@@ -249,6 +309,7 @@ let pop_scope env =
 						varprops = env.varprops;
 						imported = env.imported;
 						templates = env.templates;
+						constants = env.constants;
 					}
 			| None -> {
 						globals = env.globals;
@@ -264,6 +325,7 @@ let pop_scope env =
 						varprops = env.varprops;
 						imported = env.imported;
 						templates = env.templates;
+						constants = env.constants;
 					}
 
 (**
@@ -286,6 +348,7 @@ let new_analysis_stackframe env =
 		varprops = env.varprops;
 		imported = env.imported;
 		templates = env.templates;
+		constants = env.constants;
 	}
 
 (**
@@ -319,6 +382,7 @@ let add_error env codeloc message =
 		varprops = env.varprops;
 		imported = env.imported;
 		templates = env.templates;
+		constants = env.constants;
 	}
 
 (**
@@ -344,6 +408,7 @@ let add_warning env codeloc message =
 		varprops = env.varprops;
 		imported = env.imported;
 		templates = env.templates;
+		constants = env.constants;
 	}
 
 (**
@@ -375,21 +440,85 @@ let add_import env filename =
 		varprops = env.varprops;
 		imported = filename:: env.imported;
 		templates = env.templates;
+		constants = env.constants;
 	}
+
+(**
+type of operation performed on variable
+*)
+type var_op_type =
+	| ReadOp
+	| WriteOp
+	| DeclareOp of (string * int)
+
+(**
+Records a variables property
+@param env analysis environment
+@param loc variable location
+@param operation
+@return unit
+*)
+let record_usage env loc op =
+	let uid = match loc with
+		| GlobalVar(uid, _) -> uid
+		| LocalVar(uid, _, _) -> uid
+	in let props =
+		try Hashtbl.find env.varprops uid
+		with Not_found ->
+				{ written_after_declared = false;
+					read_after_declared = false;
+					inline_expr = None;
+					tail_callable = false;
+					declaration_loc = ("", 0)
+				}
+	in let new_props =
+		match op with
+		| ReadOp ->
+				{ written_after_declared = props.written_after_declared;
+					read_after_declared = true;
+					inline_expr = props.inline_expr;
+					tail_callable = props.tail_callable;
+					declaration_loc = props.declaration_loc;
+				}
+		| WriteOp ->
+				{	written_after_declared = true;
+					read_after_declared = props.read_after_declared;
+					inline_expr = props.inline_expr;
+					tail_callable = props.tail_callable;
+					declaration_loc = props.declaration_loc;
+				}
+		| DeclareOp(loc) ->
+				match props.declaration_loc with
+				| ("", 0) ->
+						{ written_after_declared = false;
+							read_after_declared = false;
+							inline_expr = props.inline_expr;
+							tail_callable = false;
+							declaration_loc = loc
+						}
+				| _ ->
+						{ written_after_declared = true;
+							read_after_declared = props.read_after_declared;
+							inline_expr = props.inline_expr;
+							tail_callable = props.tail_callable;
+							declaration_loc = props.declaration_loc
+						}
+	in Hashtbl.replace env.varprops uid new_props
+
 (**
 Adds a template to the environment
 @param runtime environment
 @param name template name
 @param spec_list list of line specifications
-@param labels  label positions
+@param labels label positions
 @return a new environment
 **)
 let add_template env name spec_list labels cloc =
-	let env=if Hashtbl.mem env.templates name then
-		add_warning env cloc ("Duplicate template definition '" ^ name ^ "'")
-	else
-		env
-	in Hashtbl.replace env.templates name (spec_list,labels,cloc); env
+	let env = if Hashtbl.mem env.templates name then
+			add_warning env cloc ("Duplicate template definition '" ^ name ^ "'")
+		else
+			env
+	in Hashtbl.replace env.templates name (spec_list, labels, cloc); env
 
 (**
 checks if a file has already been imported

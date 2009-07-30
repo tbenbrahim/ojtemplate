@@ -39,7 +39,7 @@ let register_for_analysis env =
 							in loop env tl
 					| name:: name_rest ->
 							let (h, env) = (try
-									match resolve_variable name env with
+									match resolve_variable_value name env with
 									| (RMapValue(h, MapSubtype), loc) -> (h, env)
 									| _ -> raise (RuntimeError.InternalError "inconsistent library call definition")
 								with
@@ -68,9 +68,11 @@ Registers library functions into a runtime environment
 let register_for_runtime env renv =
 	let rec process rmap =
 		StringMap.fold(fun k v _ ->
-						match v with
-						| (RUndefined, ind, uid) -> ()
-						| (value, ind, uid) -> renv.heap.(ind) <- (uid, value)
+						let (ind, uid) = v
+						in try
+							let value = get_constant_value env uid
+							in renv.heap.(ind) <- (uid, value)
+						with Not_found -> ()
 			) rmap.variable_map ();
 		match rmap.parent with
 		| None -> ()
