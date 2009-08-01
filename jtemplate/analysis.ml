@@ -310,13 +310,13 @@ and analyze_variables env ast =
 	@return Some map of unique id to Void of all variables found or None if none where found
 	*)
 	and get_closure_vars stmt_list stack_depth =
-		let add uid = function
-			| None -> let t = Hashtbl.create 2 in Hashtbl.replace t uid RUndefined; Some t
-			| Some t -> Hashtbl.replace t uid RUndefined; Some t
+		let add loc = function
+			| None -> let t = Hashtbl.create 2 in Hashtbl.replace t loc RUndefined; Some t
+			| Some t -> Hashtbl.replace t loc RUndefined; Some t
 		in
 		let rec find_in_expr result = function
-			| RVariable(LocalVar(uid, sdepth, _)) | RVarArg(LocalVar(uid, sdepth, _)) ->
-					if sdepth = stack_depth then result else add uid result
+			| RVariable(LocalVar(_, sdepth, ind)) | RVarArg(LocalVar(_, sdepth, ind)) ->
+					if sdepth = stack_depth then result else add (sdepth, ind) result
 			| RValue(_) | RVariable(GlobalVar(_, _)) | RVarArg(GlobalVar(_, _)) -> result
 			| RPostFixSum(e, _) | RNot(e) -> find_in_expr result e
 			| RBinaryOp(e1, _, e2) | RCompOp(e1, _, e2) | RAssignment(e1, e2) | RDeclaration(e1, e2)
@@ -401,9 +401,6 @@ and analyze_variables env ast =
 			match expr with
 			| Id(name) ->
 					let loc = Environment.resolve_variable name env
-					in let uid = match loc with
-						| GlobalVar(uid, _) -> uid
-						| LocalVar(uid, _, _) -> uid
 					in let _ = record_usage env loc op_type
 					in (RVariable(loc), env)
 			| VarArg(name) ->

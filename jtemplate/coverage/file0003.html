@@ -109,7 +109,7 @@
       <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| &nbsp;&nbsp;|&nbsp;RStringValue&nbsp;of&nbsp;string</div>
       <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| &nbsp;&nbsp;|&nbsp;RBooleanValue&nbsp;of&nbsp;bool</div>
       <div id="line000057" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000057| &nbsp;&nbsp;|&nbsp;RFunctionValue&nbsp;of&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;bool&nbsp;*&nbsp;runtime_statement&nbsp;list</div>
-      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;((int,&nbsp;runtime_variable_value)&nbsp;Hashtbl.t)&nbsp;option</div>
+      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;((int*int,&nbsp;runtime_variable_value)&nbsp;Hashtbl.t)&nbsp;option</div>
       <div id="line000059" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000059| &nbsp;&nbsp;|&nbsp;(*&nbsp;stack&nbsp;size,&nbsp;depth,&nbsp;argslen,varargs?,&nbsp;statements,&nbsp;closure&nbsp;vars&nbsp;*)</div>
       <div id="line000060" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000060| &nbsp;&nbsp;RLibraryFunction&nbsp;of&nbsp;lib_function_def</div>
       <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| &nbsp;&nbsp;|&nbsp;RMapValue&nbsp;of&nbsp;(string,&nbsp;runtime_variable_value)&nbsp;Hashtbl.t&nbsp;*&nbsp;map_subtype</div>
@@ -124,7 +124,7 @@
       <div id="line000070" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000070| &nbsp;&nbsp;runtime_env&nbsp;=</div>
       <div id="line000071" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000071| &nbsp;&nbsp;{&nbsp;heap&nbsp;:&nbsp;(int&nbsp;*&nbsp;runtime_variable_value)&nbsp;array;</div>
       <div id="line000072" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000072| &nbsp;&nbsp;&nbsp;&nbsp;stackframes&nbsp;:&nbsp;(runtime_variable_value&nbsp;array)&nbsp;array;</div>
-      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| &nbsp;&nbsp;&nbsp;&nbsp;mutable&nbsp;closure_vars&nbsp;:&nbsp;((int,&nbsp;runtime_variable_value)&nbsp;Hashtbl.t)&nbsp;option;</div>
+      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| &nbsp;&nbsp;&nbsp;&nbsp;mutable&nbsp;closure_vars&nbsp;:&nbsp;((int*int,&nbsp;runtime_variable_value)&nbsp;Hashtbl.t)&nbsp;option;</div>
       <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| &nbsp;&nbsp;&nbsp;&nbsp;gnames&nbsp;:&nbsp;string&nbsp;array;&nbsp;mutable&nbsp;current_line&nbsp;:&nbsp;(string&nbsp;*&nbsp;int);</div>
       <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| &nbsp;&nbsp;&nbsp;&nbsp;mutable&nbsp;callstack&nbsp;:&nbsp;(string&nbsp;*&nbsp;int)&nbsp;list</div>
       <div id="line000076" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000076| &nbsp;&nbsp;}</div>
@@ -220,7 +220,7 @@
       <div id="line000166" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000166| &nbsp;&nbsp;|&nbsp;RTryFinally&nbsp;of&nbsp;runtime_statement&nbsp;*&nbsp;runtime_statement&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
       <div id="line000167" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000167| &nbsp;&nbsp;|&nbsp;RThrow&nbsp;of&nbsp;runtime_expression&nbsp;*&nbsp;(string&nbsp;*&nbsp;int)</div>
       <div id="line000168" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000168| &nbsp;</div>
-      <div id="line000169" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000169| let&nbsp;is_vararg&nbsp;varname&nbsp;=&nbsp;(*[74]*)varname.[0]&nbsp;=&nbsp;'['</div>
+      <div id="line000169" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000169| let&nbsp;is_vararg&nbsp;varname&nbsp;=&nbsp;(*[84]*)varname.[0]&nbsp;=&nbsp;'['</div>
       <div id="line000170" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000170| &nbsp;&nbsp;</div>
       <div id="line000171" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000171| let&nbsp;vararg_formalname&nbsp;varname&nbsp;=</div>
       <div id="line000172" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000172| &nbsp;&nbsp;(*[8]*)String.sub&nbsp;varname&nbsp;1&nbsp;((String.length&nbsp;varname)&nbsp;-&nbsp;1)</div>
@@ -428,6 +428,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-07-26 23:57:42</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-08-01 13:52:03</p>
   </body>
 </html>

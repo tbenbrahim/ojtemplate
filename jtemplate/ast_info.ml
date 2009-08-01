@@ -24,7 +24,7 @@ struct
 					String.sub x 1 ((String.length x) - 1)) ^")"
 	and get_closure_vars = function
 		| None -> "None"
-		| Some t -> (Hashtbl.fold (fun n _ s -> s^(string_of_int n)^",") t "[")^"]"
+		| Some t -> (Hashtbl.fold (fun n _ s -> let (d,i)=n in s^"Local("^(string_of_int d)^","^(string_of_int i)^"),") t "[")^"]"
 	
 	let prefix level =
 		match level with
