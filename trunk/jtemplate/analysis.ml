@@ -374,20 +374,20 @@ and analyze_variables env ast =
 										env)
 							in analyze_vararg has_vararg (name:: namelist) env tl
 				in let (has_vararg, arg_list, env) = analyze_vararg false [] env arg_list
-				in let newenv = Environment.new_analysis_stackframe env
-				in let (newenv, _) = Environment.declare_variable newenv "this"
-				in let _ = Environment.record_usage env (LocalVar(env.unique_id, 0, 0)) (DeclareOp cloc)
-				in let _ = Environment.record_usage env (LocalVar(env.unique_id, 0, 0)) WriteOp
-				in let _ = Environment.record_usage env (LocalVar(env.unique_id, 0, 0)) ReadOp
-				in let newenv = List.fold_left
+				in let env = Environment.new_analysis_stackframe env
+				in let (env, _) = Environment.declare_variable env "this"
+				in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1, 0, 0)) (DeclareOp cloc)
+				in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1, 0, 0)) WriteOp
+				in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1, 0, 0)) ReadOp
+				in let env = List.fold_left
 						(fun env name ->
 									let (env, _) = Environment.declare_variable env name
 									in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1 , 0, 0)) (DeclareOp cloc)
 									in let _ = Environment.record_usage env (LocalVar(env.unique_id - 1, 0, 0)) WriteOp
-									in env) newenv arg_list
-				in let (stmt_list, newenv) = analyze_variables_in_block newenv stmt_list
-				in let closure_vars = get_closure_vars stmt_list (Environment.get_depth newenv)
-				in (RFunctionValue(List.hd newenv.num_locals, Environment.get_depth newenv, List.length arg_list, has_vararg, stmt_list, closure_vars), Environment.pop_scope newenv)
+									in env) env arg_list
+				in let (stmt_list, env) = analyze_variables_in_block env stmt_list
+				in let closure_vars = get_closure_vars stmt_list (Environment.get_depth env)
+				in (RFunctionValue(List.hd env.num_locals, Environment.get_depth env, List.length arg_list, has_vararg, stmt_list, closure_vars), Environment.pop_scope env)
 	(**
 	Replaces all variables in expression with absolute locations
 	Also sets up function definitions
@@ -401,6 +401,9 @@ and analyze_variables env ast =
 			match expr with
 			| Id(name) ->
 					let loc = Environment.resolve_variable name env
+					in let uid = match loc with
+						| GlobalVar(uid, _) -> uid
+						| LocalVar(uid, _, _) -> uid
 					in let _ = record_usage env loc op_type
 					in (RVariable(loc), env)
 			| VarArg(name) ->
@@ -642,7 +645,11 @@ let rec replace_constant env = function
 	|	RVariable(loc) ->
 			let uid = uid_from_loc loc
 			in if Environment.is_constant env uid then
-				RValue(Environment.get_constant_value env uid)
+				try
+					match (Environment.get_constant_value env uid) with
+					| RFunctionValue(_) -> RVariable(loc)
+					| value -> RValue(value)
+				with Not_found -> RVariable(loc)
 			else RVariable(loc)
 	| RNot(expr) -> RNot(replace_constant env expr)
 	| RBinaryOp(expr1, op, expr2) ->
@@ -656,16 +663,20 @@ let rec replace_constant env = function
 			RValue(RFunctionValue(locals, depth, args, vararg, List.map(fun stmt -> pass2 env stmt) stmts, closvars))
 	| RValue(_) | RPostFixSum(_) | RVarArg(_) as value -> value
 	| RFunctionCall(expr, expr_list) ->
-			RFunctionCall(expr, List.map(fun e -> replace_constant env e) expr_list)
+			RFunctionCall(replace_constant env expr, List.map(fun e -> replace_constant env e) expr_list)
 	| RAssignment(expr1, expr2) -> RAssignment(expr1, replace_constant env expr2)
 	| RDeclaration(expr1, expr2) ->
 			let expr2 = replace_constant env expr2
-			in let _ = match (expr1, expr2) with
+			in (match (expr1, expr2) with
 				| (RVariable(loc), RValue(value)) ->
 						let uid = uid_from_loc loc
-						in Environment.set_constant_value env uid value
-				| _ -> ()
-			in	RDeclaration(expr1, expr2)
+						in if is_constant env uid then
+							match value with
+							| RFunctionValue(_) -> RDeclaration(expr1, expr2)
+							| _ -> (Environment.set_constant_value env uid value; RValue(RUndefined))
+						else
+							RDeclaration(expr1, expr2)
+				| _ -> RDeclaration(expr1, expr2))
 	| RMemberExpr(expr1, expr2) -> RMemberExpr(replace_constant env expr1, replace_constant env expr2)
 	| RArrayExpr(expr_list) -> RArrayExpr(List.map(fun e -> replace_constant env e) expr_list)
 	| RMapExpr(prop_list) ->
@@ -680,7 +691,10 @@ and pass2 env = function
 	| RCase(Some expr, cloc) -> RCase(Some (replace_constant env expr), cloc)
 	| RReturn(expr, cloc) -> RReturn(replace_constant env expr, cloc)
 	| RContinue(_) | RBreak(_) | RCase(None, _) | RNoop as stmt -> stmt
-	| RExpressionStatement(expr, cloc) -> RExpressionStatement(replace_constant env expr, cloc)
+	| RExpressionStatement(expr, cloc) ->
+			(match replace_constant env expr with
+				| RValue(RUndefined) -> RNoop
+				| expr -> RExpressionStatement(expr, cloc))
 	| RFor(expr1, expr2, expr3, stmt, cloc) ->
 			RFor(replace_constant env expr1, replace_constant env expr2, replace_constant env expr3,
 				pass2 env stmt, cloc)

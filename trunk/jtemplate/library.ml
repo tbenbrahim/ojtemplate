@@ -70,11 +70,13 @@ let register_for_runtime env renv =
 		StringMap.fold(fun k v _ ->
 						let (ind, uid) = v
 						in try
+							print_string("LIBRARY TRYING:"^(string_of_int uid)^"\n");
 							let value = get_constant_value env uid
-							in renv.heap.(ind) <- (uid, value)
+							in print_string("LIBRARY GOT:"^(string_of_int uid)^"\n");renv.heap.(ind) <- (uid, value)
 						with Not_found -> ()
 			) rmap.variable_map ();
 		match rmap.parent with
 		| None -> ()
 		| Some m -> process m
 	in process env.globals
+	
