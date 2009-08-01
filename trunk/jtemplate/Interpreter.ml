@@ -242,7 +242,7 @@ and resolve_func_this env fexpr =
 	| RMemberExpr(this_expr, funcname) ->
 			let (env, this) = evaluate env this_expr
 			in let f = match this with
-				| RUndefined -> raise (RuntimeError.InternalError "unexpected value in function resolution")
+				| RUndefined -> raise (RuntimeError.InternalError "unexpected undefined this in function resolution")
 				| RStringValue(_) ->
 						let (env, v) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(1, 1)), RValue(RStringValue("prototype"))), funcname))
 						in v
