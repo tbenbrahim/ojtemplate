@@ -491,7 +491,7 @@ let record_usage env loc op =
 				match props.declaration_loc with
 				| ("", 0) ->
 						{ written_after_declared = false;
-							read_after_declared = false;
+							read_after_declared = props.read_after_declared;
 							inline_expr = props.inline_expr;
 							tail_callable = false;
 							declaration_loc = loc
