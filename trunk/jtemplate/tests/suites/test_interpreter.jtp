@@ -401,6 +401,47 @@ var testSuite={
         		};
         		return foo(1,2,3,4);
         	}
+        },{
+        	description: 'closures',
+        	test: function(){
+        		let f={};
+        		for (var i=0;i<10;++i){
+        			let f[i]=function(n){
+        				return function(){
+        					return n; 
+        				};
+        			}(i);
+        		}
+        		for (var i=0;i<10;++i){
+        			if (f[i]()!=i)
+        				return false;
+        		}
+        		return true;
+        	}
+        },{
+        	description: 'templates',
+        	test: function(){
+	        	template htmlTable{ 
+			  				#<table>
+	  						#<tr>
+					header 	#<th>columnLabel</th>
+	  						#</tr>
+					row  	#<tr>
+					cell  	#<td>cellData</td>
+					row   	#</tr>
+	  						#</table>
+				} 
+				instructions for htmlTable(dataMap){ 
+					header foreach(label in dataMap.labels): columnLabel=label; 
+					row foreach(dataArray in dataMap.data): ; 
+					cell foreach(element in dataArray): cellData=element; 
+				} 
+				let people={labels: ['Name','Age'], data: [['John',42], ['Mary',38]] }; 
+				let res=htmlTable(people);
+				let ref='<table>\r\n<tr>\r\n<th>Name</th>\r\n<th>Age</th>\r\n</tr>\r\n<tr>\r\n<td>John</td>\r\n'
+	        	 + '<td>42</td>\r\n</tr>\r\n<tr>\r\n<td>Mary</td>\r\n<td>38</td>\r\n</tr>\r\n</table>\r\n';
+	        	return ref==res; 	
+        	}
         }
     ]
 };    

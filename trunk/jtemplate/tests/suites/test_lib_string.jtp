@@ -120,5 +120,30 @@ var testSuite={
         			var a='1.343.34.2'; 
         			return a.split('.')==['1','343','34','2'];
             	}
+            },{
+            	description: 'mreplace()',
+            	test: function(){
+            		return 'foo bar foo bar'.mreplace(['foo','bar'],['bar','foo'])=='bar foo bar foo';
+            	}
+            },{
+            	description: 'non-string this throws exception',
+            	test: function(){
+            		try{
+            			String.prototype.length.apply(123);
+            			return false;
+            		}catch(e){
+            			return true;
+            		}
+            	}
+            },{
+            	description: 'mreplace() with different size arrays throws exception',
+            	test: function(){
+            		try{
+            			'foo bar foo bar'.mreplace(['foo'],['bar','foo'])=='bar foo bar foo';
+            			return false;
+            		}catch(e){
+            			return true;
+            		}
+            	}
             }
     ]};

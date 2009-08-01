@@ -134,7 +134,16 @@ Evaluates an expression
 *)
 and evaluate env = function
 	| RVariable(loc) -> (env, Environment.get_value env loc)
-	| RValue(v) -> (env, v)
+	| RValue(v) ->
+			(match v with (* look for closure vars*)
+				| RFunctionValue(framesize, depth, argslen, has_varargs, statements, Some closure_vars) ->
+						let closure_vals = Hashtbl.create 10
+						in let _ = Hashtbl.fold(
+									fun k _ _ -> let (d, i) = k
+											in let (_, value) = evaluate env (RVariable(LocalVar(0, d, i)))
+											in Hashtbl.replace closure_vals (d, i) value) closure_vars ()
+						in (env, RFunctionValue(framesize, depth, argslen, has_varargs, statements, Some closure_vals))
+				| _ -> (env, v))
 	| RPostFixSum(expr, inc) ->
 			let (env, v) = evaluate env expr
 			in let _ = evaluate env (RAssignment(expr, RBinaryOp(RValue(v), Plus, RValue(RIntegerValue(inc)))))
@@ -296,23 +305,27 @@ Runs a function
 and run_function env value_list this = function
 	| RFunctionValue(framesize, depth, argslen, vararg, stmts, closure_vars) ->
 			let old_frame = Array.copy (env.stackframes.(depth))
-			in env.stackframes.(depth) <- make_stackframe framesize argslen vararg value_list this;
-			env.closure_vars <- closure_vars;
-			(try
+			in let _ = env.stackframes.(depth) <- make_stackframe framesize argslen vararg value_list this
+			in let old_closure_vars = env.closure_vars
+			in let _ = env.closure_vars <- closure_vars
+			in (try
 				env.callstack <- env.current_line:: env.callstack;
 				interpret_stmts env stmts;
 				env.callstack <- List.tl env.callstack;
 				env.stackframes.(depth) <- old_frame;
-				(env, RVoid)
+				env.closure_vars <- old_closure_vars;
+					(env, RVoid)
 			with
 			| CFReturn value ->
 					env.callstack <- List.tl env.callstack;
 					env.stackframes.(depth) <- old_frame;
-					(env, value)
+					env.closure_vars <- old_closure_vars;
+						(env, value)
 			| ex ->
 					env.callstack <- List.tl env.callstack;
 					env.stackframes.(depth) <- old_frame;
-					raise ex)
+					env.closure_vars <- old_closure_vars;
+						raise ex)
 	| RLibraryFunction(def) ->
 			let old_frame = env.stackframes.(0)
 			in env.stackframes.(0) <- make_stackframe def.num_args def.num_args def.vararg value_list this;

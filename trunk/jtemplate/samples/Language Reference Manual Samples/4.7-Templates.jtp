@@ -19,6 +19,5 @@ let people={labels: ['Name','Age'], data: [['John',42], ['Mary',38]] };
 
 println(htmlTable(people));
 
-println(true!=false);
 
 

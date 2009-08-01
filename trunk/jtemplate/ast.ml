@@ -55,7 +55,7 @@ type replacement =
   | RStringValue of string
   | RBooleanValue of bool
   | RFunctionValue of int * int * int * bool * runtime_statement list
-                      * ((int, runtime_variable_value) Hashtbl.t) option
+                      * ((int*int, runtime_variable_value) Hashtbl.t) option
   | (* stack size, depth, argslen,varargs?, statements, closure vars *)
   RLibraryFunction of lib_function_def
   | RMapValue of (string, runtime_variable_value) Hashtbl.t * map_subtype
@@ -70,7 +70,7 @@ consists of a heap for globals and an array of stackframes to support nested fun
   runtime_env =
   { heap : (int * runtime_variable_value) array;
     stackframes : (runtime_variable_value array) array;
-    mutable closure_vars : ((int, runtime_variable_value) Hashtbl.t) option;
+    mutable closure_vars : ((int*int, runtime_variable_value) Hashtbl.t) option;
     gnames : string array; mutable current_line : (string * int);
     mutable callstack : (string * int) list
   }

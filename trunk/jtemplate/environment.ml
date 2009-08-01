@@ -104,10 +104,9 @@ returns whether the variable is a constant
 @return true if the variable is a constant
 *)
 let is_constant env uid =
-	try
 		let varprop = Hashtbl.find env.varprops uid
 		in not varprop.written_after_declared
-	with Not_found -> false
+
 (**
 declare a variable if it does not exist or create a new entry and return new index
 @param name name of variable to declare
@@ -540,7 +539,14 @@ Retrieves a value at a location
 *)
 let get_value env = function
 	| GlobalVar(uid, ind) -> let (_, value) = env.heap.(ind) in value
-	| LocalVar(uid, depth, ind) -> env.stackframes.(depth).(ind)
+	| LocalVar(uid, depth, ind) ->
+			match env.closure_vars with
+			| None -> env.stackframes.(depth).(ind)
+			| Some h ->
+					try match Hashtbl.find h (depth, ind) with
+						| RUndefined -> env.stackframes.(depth).(ind) (* needed for recursive function defs *)
+						| value -> value
+					with Not_found -> env.stackframes.(depth).(ind)
 
 (**
 Sets a value at a location
