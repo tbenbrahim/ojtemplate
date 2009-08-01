@@ -62,6 +62,7 @@ rule main = parse
 | float as token { REAL(float_of_string token)}
 | id as token { (map_id token )}
 | '\'' { single_quote_string "" lexbuf } 
+| '"' { double_quote_string "" lexbuf }
 | "//" [^'\n']* { main lexbuf}
 | "/*" {multiline_comment lexbuf}
 | '\n' { incr_linenum lexbuf;main lexbuf }
@@ -104,10 +105,24 @@ rule main = parse
 | eof { EOF } 
 and single_quote_string s = parse
 | '\n'  { incr_linenum lexbuf; single_quote_string (s ^ "\n") lexbuf }
-| "\\'"  { single_quote_string (s ^ "\'") lexbuf }
-| "'"  { STRING(s) }
+| '\''  { STRING(s) }
+| '\\' { single_quote_string (s ^ (escape_char lexbuf)) lexbuf }
 | [^ '\''] as c  { single_quote_string (s ^ String.make 1 c) lexbuf }
 | eof  { syntax_exception "Unterminated string constant" lexbuf }
+and double_quote_string s = parse
+| '\n'  { incr_linenum lexbuf; single_quote_string (s ^ "\n") lexbuf }
+| '"'  { STRING(s) }
+| '\\' { single_quote_string (s ^ (escape_char lexbuf)) lexbuf }
+| [^ '"'] as c  { single_quote_string (s ^ String.make 1 c) lexbuf }
+| eof  { syntax_exception "Unterminated string constant" lexbuf }
+and escape_char =parse
+| '\\' {"\\"}
+| 'n'  {"\n"}
+| 'r'  {"\r"}
+| '\'' {"'"}
+| '"' {"\""}
+| 't'  {"\t"}
+| 'b'  {"\b"} 
 and multiline_comment = parse
 | '\n' { incr_linenum lexbuf; multiline_comment lexbuf }
 | "*/" { main lexbuf }
