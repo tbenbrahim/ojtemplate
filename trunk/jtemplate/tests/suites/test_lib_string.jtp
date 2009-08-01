@@ -37,7 +37,7 @@ var testSuite={
             	test: function(){
             		try{
             			var a='AbcDef'; 
-            			let b=a.charAt(11);
+            			a.charAt(11);
             			return false;
             		}catch (e){
             			return e.startsWith('invalid index');
@@ -48,7 +48,7 @@ var testSuite={
             	test: function(){
             		try{
             			var a='AbcDef'; 
-            			let b=a.charAt(true);
+            			a.charAt(true);
             			return false;
             		}catch (e){
             			return true;
@@ -70,7 +70,7 @@ var testSuite={
             	description: 'substr() with invalid type start throws exception',
             	test: function(){
 	        		try{
-	        			var a='AbcDef'.substr('a',3);
+	        			'AbcDef'.substr('a',3);
 	        			return false;
 	        		}catch(e){
 	        			return true;
@@ -80,7 +80,7 @@ var testSuite={
             	description: 'substr() with invalid type length throws exception',
             	test: function(){
 	        		try{
-	        			var a='AbcDef'.substr(3,'a');
+	        			'AbcDef'.substr(3,'a');
 	        			return false;
 	        		}catch(e){
 	        			return true;
@@ -90,7 +90,7 @@ var testSuite={
             	description: 'substr() with out of range start/length throws exception',
             	test: function(){
             		try{
-            			var a='AbcDef'.substr(10,3);
+            			'AbcDef'.substr(10,3);
             			return false;
             		}catch(e){
             			return true;
