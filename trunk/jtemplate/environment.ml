@@ -460,6 +460,7 @@ type var_op_type =
 	| ReadOp
 	| WriteOp
 	| DeclareOp of (string * int)
+	| DeclareWriteOp of (string * int)
 
 (**
 Records a variables property
@@ -492,15 +493,27 @@ let record_usage env loc op =
 					declaration_loc = props.declaration_loc;
 				}
 		| DeclareOp(loc) ->
+				(match props.declaration_loc with
+					| ("", 0) ->
+							{ written_after_declared = false;
+								read_after_declared = props.read_after_declared;
+								declaration_loc = loc
+							}
+					| _ ->
+							{ written_after_declared = true;
+								read_after_declared = props.read_after_declared;
+								declaration_loc = props.declaration_loc
+							})
+		| DeclareWriteOp(loc) ->
 				match props.declaration_loc with
 				| ("", 0) ->
-						{ written_after_declared = false;
-							read_after_declared = props.read_after_declared;
+						{ written_after_declared = true;
+							read_after_declared = true;
 							declaration_loc = loc
 						}
 				| _ ->
 						{ written_after_declared = true;
-							read_after_declared = props.read_after_declared;
+							read_after_declared = true;
 							declaration_loc = props.declaration_loc
 						}
 	in Hashtbl.replace env.varprops uid new_props

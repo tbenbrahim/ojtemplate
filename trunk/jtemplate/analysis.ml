@@ -66,7 +66,7 @@ let check_warnings env =
 						in match line with
 						| 0 -> env
 						| _ ->
-								let env = if varprop.read_after_declared = false && line!=0 then
+								let env = if varprop.read_after_declared = false && line!= 0 then
 										add_warning env varprop.declaration_loc ("Variable "^(List.hd names)^" is never read.")
 									else
 										env
@@ -497,7 +497,9 @@ and analyze_variables env ast =
 					in let (e3, env) = resolve_expr_sub env e3 ReadOp
 					in (RTernaryCond(e1, e2, e3), env)
 			| MemberExpr(e1, e2) ->
-					let (expr1, env) = resolve_expr_sub env e1 op_type
+					let (expr1, env) = match op_type with
+						| DeclareOp(loc) -> resolve_expr_sub env e1 (DeclareWriteOp(loc))
+						| _ -> resolve_expr_sub env e1 op_type
 					in let (expr2, env) = resolve_expr_sub env e2 ReadOp
 					in (RMemberExpr(expr1, expr2), env)
 			| PostFixSum(e, inc) ->
