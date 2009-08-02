@@ -1,4 +1,13 @@
 (**
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
 Create an optimized AST from the parsing phase AST
 
 Pass 1:
@@ -14,15 +23,8 @@ Pass 2:
 The second pass replaces all non function variables whose value have not been modified
 with a constant value, and evaluates operations on constants , eliminates assignment
 statements on constant values when the variable is not reassigned and not written
-Example:
-let a = 2; // a is never modified
-let b = a + 1;
-gets replaced by
-let b = 2 + 1;
-which gets replaced with
-let b = 3;
 
-@author Tony BenBrahim
+@author Tony BenBrahim <tony.benbrahim at gmail.com >
 
 *)
 
@@ -106,10 +108,10 @@ let print_name_info env =
 * - evaluate operations on constants and replace with value in AST
 * - determine if variables are initialized with a constant value (rather than an expression)
 * - determine if a variable is written after being declared and if it is ever read after being declared
-* - determine if a function is inlineable
 **********************************************************************************************
 *)
 
+(**internal exception to signal an error in template processing. *)
 exception TemplateError of string
 
 (**
@@ -638,6 +640,12 @@ and analyze_variables env ast =
 **********************************************************************************************
 *)
 
+(**
+Replace non modified variables with their declared value
+@param env analysis environment
+@param expression expression to process
+@return an expression with constant variables replaced by their value
+*)
 let rec replace_constant env = function
 	|	RVariable(loc) ->
 			let uid = uid_from_loc loc
@@ -680,7 +688,11 @@ let rec replace_constant env = function
 			RMapExpr(List.map (fun prop -> let (name, e) = prop in (name, replace_constant env e)) prop_list)
 	| RTernaryCond(expr1, expr2, expr3) ->
 			RTernaryCond(replace_constant env expr1, replace_constant env expr2, replace_constant env expr3)
-
+(**
+Looks for expressions where constants can be substituted
+@param env analysis environment
+@param stmt statement
+*)
 and pass2 env = function
 	| RProgram(stmts) -> RProgram(List.map (fun stmt -> pass2 env stmt) stmts)
 	| RStatementBlock(stmts) ->	RStatementBlock(List.map (fun stmt -> pass2 env stmt) stmts)

@@ -37,9 +37,9 @@ let initialize env =
 			code = fun env ->
 						let value = env.stackframes.(0).(1)
 						in let array = this_array_map env
-						in let len = Hashtbl.find array "length" in
-						Hashtbl.replace array (cast_to_string len) value;
-						Hashtbl.replace array "length" (RIntegerValue((cast_to_integer len) + 1))
+						in let len = string_of_value (Hashtbl.find array "length") in
+						Hashtbl.replace array len value;
+						Hashtbl.replace array "length" (RIntegerValue((int_of_string len) + 1))
 		};
 		{
 			name =["Array";"prototype";"pop"];
@@ -48,7 +48,7 @@ let initialize env =
 			vararg = false;
 			code = fun env ->
 						let hashtbl = this_array_map env
-						in let len = cast_to_integer(Hashtbl.find hashtbl "length") in
+						in let len = int_of_string (string_of_value (Hashtbl.find hashtbl "length")) in
 						if len = 0 then
 							raise (LibraryError "Error while attempting to pop an empty array in Array.pop")
 						else
@@ -75,7 +75,7 @@ let initialize env =
 			vararg = false;
 			code = fun env ->
 						let hashtbl = this_map_map env
-						in let key = cast_to_string (env.stackframes.(0).(1))
+						in let key = string_of_value (env.stackframes.(0).(1))
 						in let _ = Hashtbl.remove hashtbl key
 						in ()
 		};
@@ -86,7 +86,7 @@ let initialize env =
 			vararg = false;
 			code = fun env ->
 						let hashtbl = this_map_map env
-						in let key = cast_to_string(env.stackframes.(0).(1))
+						in let key = string_of_value (env.stackframes.(0).(1))
 						in raise (CFReturn(RBooleanValue(Hashtbl.mem hashtbl key)))
 		};
 		{
@@ -153,7 +153,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let command = cast_to_string (env.stackframes.(0).(1)) in
+						let command = string_of_value (env.stackframes.(0).(1)) in
 						raise (CFReturn (RIntegerValue(Sys.command command)))
 		};
 		{
@@ -203,12 +203,10 @@ let initialize env =
 			num_args = 0;
 			vararg = false;
 			code = fun env ->
-						let rec p = function
-							| [] -> ()
-							| (file, line):: tl ->
-									print_string ("Called from line "^(string_of_int line)^" in file "^ (Filename.basename file)^":\n");
-									p tl
-						in p env.callstack
+						Stack.iter (fun loc ->
+										let (file, line) = loc
+										in print_string ("Called from line "^(string_of_int line)^" in file "^ (Filename.basename file)^":\n"))
+							env.callstack
 		};
 		{
 			name = ["typeof"];
