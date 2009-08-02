@@ -1,3 +1,20 @@
+(**
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Evaluation of binary operations and comparaison of values
+Various helper functions for expression evaluation
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
+*)
+
 open Ast
 
 (**
@@ -143,13 +160,6 @@ let cast_to_bool value =
 	| RBooleanValue(b) -> b
 	| _ -> raise (EInvalidCast (string_of_value_type value,"boolean"))
 
-(**
-cast to string
-@param value the value to cast to a string
-@return a string representation of value
-*)
-let cast_to_string value =
-	string_of_value value
 
 let cast_to_integer value =
 	match value with
@@ -162,26 +172,6 @@ let cast_to_float value =
 	| RIntegerValue(i) -> float_of_int i
 	| _ -> raise (EInvalidCast (string_of_value_type value,"float"))
 
-(**
-Attempts to cast two values to compatible types for an operation
-@param value1 the first value
-@param value2 the second value
-@return a cast type with both values typed to the same type
-*)
-let casting_type value1 value2 =
-	let type1 = value_type value1 in
-	let type2 = value_type value2 in
-	if type1 = StringType || type2 = StringType then
-		StringCast(cast_to_string value1, cast_to_string value2)
-	else if (type1 = FloatType && (type2 = IntegerType || type2 = FloatType))
-	or (type2 = FloatType && (type1 = IntegerType || type1 = FloatType)) then
-		FloatCast(cast_to_float value1, cast_to_float value2)
-	else if type1 = IntegerType && type2 = IntegerType then
-		IntegerCast(cast_to_integer value1, cast_to_integer value2)
-	else if type1 = BooleanType && type2 = BooleanType then
-		BoolCast(cast_to_bool value1, cast_to_bool value2)
-	else
-		raise (EIncompatibleTypes(string_of_value_type value1, string_of_value_type value2))
 
 (**
 Evaluate the operation
@@ -191,28 +181,23 @@ Evaluate the operation
 @return the value that results from the operation
 *)
 let evaluate_op value1 value2 operator =
-	match casting_type value1 value2 with
-	| BoolCast(b1, b2) ->
+	let string_op s1 s2 =
+		(match operator with
+			| Plus -> RStringValue(s1 ^ s2)
+			| _ -> raise (EInvalidOperation (operator,"string"))
+		)
+	in let float_op f1 f2 = (let f = (match operator with
+					| Plus -> f1 +. f2
+					| Minus -> f1 -. f2
+					| Times -> f1 *. f2
+					| Divide -> f1 /. f2
+					| _ -> raise (EInvalidOperation (operator,"float"))) in
+			if f = infinity || f = neg_infinity || f = nan then RNaN
+			else RFloatValue(f)
+		)
+	in match (value1, value2) with
+	| (RIntegerValue(i1), RIntegerValue(i2)) ->
 			(match operator with
-				| And -> RBooleanValue(b1 && b2)
-				| Or -> RBooleanValue(b1 || b2)
-				| _ -> raise (EInvalidOperation (operator,"boolean"))
-			)
-	| StringCast(s1, s2) ->
-			(match operator with
-				| Plus -> RStringValue(s1 ^ s2)
-				| _ -> raise (EInvalidOperation (operator,"string"))
-			)
-	| FloatCast(f1, f2) -> (let f = (match operator with
-						| Plus -> f1 +. f2
-						| Minus -> f1 -. f2
-						| Times -> f1 *. f2
-						| Divide -> f1 /. f2
-						| _ -> raise (EInvalidOperation (operator,"float"))) in
-				if f = infinity || f = neg_infinity || f = nan then RNaN
-				else RFloatValue(f)
-			)
-	| IntegerCast(i1, i2) -> (match operator with
 				| Plus -> RIntegerValue( i1 + i2 )
 				| Minus -> RIntegerValue( i1 - i2)
 				| Times -> RIntegerValue( i1 * i2)
@@ -220,6 +205,19 @@ let evaluate_op value1 value2 operator =
 				| Modulo -> if i2 <> 0 then RIntegerValue( i1 mod i2) else RNaN
 				| _ -> raise (EInvalidOperation (operator,"integer"))
 			)
+	| (RBooleanValue(b1), RBooleanValue(b2)) ->
+			(match operator with
+				| And -> RBooleanValue(b1 && b2)
+				| Or -> RBooleanValue(b1 || b2)
+				| _ -> raise (EInvalidOperation (operator,"boolean"))
+			)
+	| (RStringValue(s1), RStringValue(s2)) -> string_op s1 s2
+	| (RStringValue(s1), v2) -> string_op s1 (string_of_value v2)
+	| (v1, RStringValue(s2)) -> string_op (string_of_value v1) s2
+	| (RFloatValue(f1), RFloatValue(f2)) -> float_op f1 f2
+	| (RFloatValue(f1), RIntegerValue(i2)) -> float_op f1 (float_of_int i2)
+	| (RIntegerValue(i1), RFloatValue(f2)) -> float_op (float_of_int i1) f2
+	| (value1, value2) -> raise (EIncompatibleTypes(string_of_value_type value1, string_of_value_type value2))
 
 (**
 Implements comparaison of two values, according to the following semantics:
