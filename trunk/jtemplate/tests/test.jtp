@@ -1,12 +1,23 @@
-let x={
-		description: 'precendence of ?: expressions',
-		test: function(){
-			let gcd = function(x, y) {
-				return x == y ? x : x < y ? gcd(x, y - x) : gcd(x - y, x); 
-				// will get casting error compare boolean to int if broken 
-			};
-			return gcd(24,6)==6;
+var x = {
+	description : 'default case should be last',
+	test : function() {
+		try {
+			let b=0;
+			let a = 10;
+			switch (a) {
+			default:
+				b=1;
+				break;
+			case 10:
+				b=2;
+				break;
+			}
+			return b;
+		} catch (e) {
+			println(e);
+			return e == 'EXP-13 expected a collection type for the second argument of forEach, but got a integer';
 		}
-	};
+	}
+};
 
-x.test();
+println(x.test());

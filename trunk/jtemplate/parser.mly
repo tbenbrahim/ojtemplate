@@ -1,8 +1,22 @@
 %{
     
 (** 
-    expression parsing adapted from ECMA-262 
-    http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf 
+
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Jtemplate parser
+expression parsing adapted from ECMA-262 
+http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf 
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
 *)
 
 open Ast

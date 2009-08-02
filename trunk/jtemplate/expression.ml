@@ -16,6 +16,7 @@ Various helper functions for expression evaluation
 *)
 
 open Ast
+open RuntimeError
 
 (**
 Converts a MapValue array to a list of values
@@ -60,7 +61,7 @@ let rec string_of_value = function
 	| RVoid -> "void"
 	| RNaN -> "NaN"
 	| RUndefined -> "undefined"
-
+	
 (**
 enumeration of a value's possible types
 *)
@@ -105,42 +106,12 @@ let string_of_value_type = function
 	| RIntegerValue(i) -> "integer"
 	| RFloatValue(f) -> "float"
 	| RBooleanValue(b) -> "boolean"
-	| RMapValue(_, ArraySubtype) ->"map"
-	| RMapValue(_, MapSubtype) -> "array"
+	| RMapValue(_, ArraySubtype) ->"array"
+	| RMapValue(_, MapSubtype) -> "map"
 	| RFunctionValue(_, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
 	| RVoid -> "void"
 	| RNaN -> "NaN"
 	| RUndefined -> "undefined"
-
-exception EIncompatibleTypes of string * string (* type1, type2 *)
-
-exception EInvalidCast of string * string (* value type name, typename *)
-
-exception EInvalidOperation of Ast.operator * string  (* operator, typename *)
-
-exception EInvalidComparaison of Ast.comparator * string * string (* comparator, typename *)
-
-exception ELeftSideIsNotAMap of string * string (* typename value *)
-
-exception ELeftSideCannotBeAssigned
-
-exception EInvalidMember of string * string (* typename,value *)
-
-exception EUndefinedMapMember of string (* value *)
-
-exception EInvalidArrayIndex of string * string (* type value *)
-
-exception EArrayIndexOutOfBounds of string (*index*)
-
-exception ETypeMismatchInAssignment of string * string * string (* name oldtype new type *)
-
-exception EMismatchedFunctionArgs of int * int (* expected actual *)
-
-exception ENotAFunction
-
-exception ENotACollectionType of string * string (* message, value *)
-
-exception EDefaultCaseShouldBeLast
 
 (** type to hold the result of casting two values to the same type *)
 type cast_type =
@@ -148,18 +119,6 @@ type cast_type =
 	| FloatCast of float * float
 	| StringCast of string * string
 	| BoolCast of bool * bool
-
-(**
-cast to boolean
-@param value the value to cast to a boolean
-@return a boolean
-@throws EInvalidCast in value is not a boolean
-*)
-let cast_to_bool value =
-	match value with
-	| RBooleanValue(b) -> b
-	| _ -> raise (EInvalidCast (string_of_value_type value,"boolean"))
-
 
 let cast_to_integer value =
 	match value with
@@ -172,7 +131,6 @@ let cast_to_float value =
 	| RIntegerValue(i) -> float_of_int i
 	| _ -> raise (EInvalidCast (string_of_value_type value,"float"))
 
-
 (**
 Evaluate the operation
 @param value1 the first value
@@ -181,17 +139,25 @@ Evaluate the operation
 @return the value that results from the operation
 *)
 let evaluate_op value1 value2 operator =
-	let string_op s1 s2 =
+	let string_of_operator = function
+		| Plus -> "+"
+		| Minus -> "-"
+		| Times -> "*"
+		| Divide -> "/"
+		| Modulo -> "%"
+		| Or -> "||"
+		| And -> "&&"
+	in let string_op s1 s2 =
 		(match operator with
 			| Plus -> RStringValue(s1 ^ s2)
-			| _ -> raise (EInvalidOperation (operator,"string"))
+			| _ -> raise (EInvalidOperation (string_of_operator operator,"string"))
 		)
 	in let float_op f1 f2 = (let f = (match operator with
 					| Plus -> f1 +. f2
 					| Minus -> f1 -. f2
 					| Times -> f1 *. f2
 					| Divide -> f1 /. f2
-					| _ -> raise (EInvalidOperation (operator,"float"))) in
+					| _ -> raise (EInvalidOperation (string_of_operator operator,"float"))) in
 			if f = infinity || f = neg_infinity || f = nan then RNaN
 			else RFloatValue(f)
 		)
@@ -203,13 +169,13 @@ let evaluate_op value1 value2 operator =
 				| Times -> RIntegerValue( i1 * i2)
 				| Divide -> if i2 <> 0 then RIntegerValue( i1 / i2) else RNaN
 				| Modulo -> if i2 <> 0 then RIntegerValue( i1 mod i2) else RNaN
-				| _ -> raise (EInvalidOperation (operator,"integer"))
+				| _ -> raise (EInvalidOperation (string_of_operator operator,"integer"))
 			)
 	| (RBooleanValue(b1), RBooleanValue(b2)) ->
 			(match operator with
 				| And -> RBooleanValue(b1 && b2)
 				| Or -> RBooleanValue(b1 || b2)
-				| _ -> raise (EInvalidOperation (operator,"boolean"))
+				| _ -> raise (EInvalidOperation (string_of_operator operator,"boolean"))
 			)
 	| (RStringValue(s1), RStringValue(s2)) -> string_op s1 s2
 	| (RStringValue(s1), v2) -> string_op s1 (string_of_value v2)
@@ -289,7 +255,7 @@ let rec compare v1 op v2 =
 							match op with
 							| Equal -> RBooleanValue(b1 = b2)
 							| NotEqual -> RBooleanValue(b1 <> b2)
-							| _ -> raise (EInvalidComparaison(op, string_of_value_type v1, string_of_value_type v2)) )
+							| _ -> raise (EInvalidComparaison(opname op, string_of_value_type v1, string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
 	| RVoid ->
 			(match v2 with
@@ -297,7 +263,7 @@ let rec compare v1 op v2 =
 							match op with
 							| Equal -> RBooleanValue(true)
 							| NotEqual -> RBooleanValue(false)
-							| _ -> raise (EInvalidComparaison(op, string_of_value_type v1, string_of_value_type v2)) )
+							| _ -> raise (EInvalidComparaison(opname op, string_of_value_type v1, string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
 	| RNaN ->
 			(match v2 with
@@ -305,7 +271,7 @@ let rec compare v1 op v2 =
 							match op with
 							| Equal -> RBooleanValue(true)
 							| NotEqual -> RBooleanValue(false)
-							| _ -> raise (EInvalidComparaison(op,
+							| _ -> raise (EInvalidComparaison(opname op,
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
@@ -315,7 +281,7 @@ let rec compare v1 op v2 =
 							match op with
 							| Equal -> RBooleanValue(hashtbl_equal h1 h2)
 							| NotEqual -> RBooleanValue(not (hashtbl_equal h1 h2))
-							| _ -> raise (EInvalidComparaison(op,
+							| _ -> raise (EInvalidComparaison(opname op,
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
@@ -325,7 +291,7 @@ let rec compare v1 op v2 =
 							match op with
 							| Equal -> RBooleanValue(hashtbl_equal h1 h2)
 							| NotEqual -> RBooleanValue(not (hashtbl_equal h1 h2))
-							| _ -> raise (EInvalidComparaison(op,
+							| _ -> raise (EInvalidComparaison(opname op,
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
@@ -335,7 +301,7 @@ let rec compare v1 op v2 =
 							match op with
 							| Equal -> RBooleanValue(size1 = size2 && stmts1 = stmts2)
 							| NotEqual -> RBooleanValue(not (size1 = size2 && stmts1 = stmts2))
-							| _ -> raise (EInvalidComparaison(op,
+							| _ -> raise (EInvalidComparaison(opname op,
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
@@ -345,11 +311,18 @@ let rec compare v1 op v2 =
 						( match op with
 							| Equal -> RBooleanValue(def1 == def2)
 							| NotEqual -> RBooleanValue(not (def1 == def2))
-							| _ -> raise (EInvalidComparaison(op,
+							| _ -> raise (EInvalidComparaison(opname op,
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
 	| RUndefined -> raise (RuntimeError.InternalError "unexpected value in compare")
+and opname = function
+		| LessThan -> "<"
+		| LessThanEqual -> "<="
+		| Equal -> "=="
+		| NotEqual ->"!="
+		| GreaterThanEqual -> ">="
+		| GreaterThan -> ">"
 and hashtbl_equal h1 h2 =
 	(Hashtbl.length h1) = (Hashtbl.length h2) &&
 	try
@@ -360,7 +333,7 @@ and mismatched_compare v1 op v2 =
 	match op with
 	| Equal -> RBooleanValue(false)
 	| NotEqual -> RBooleanValue(true)
-	| _ -> raise (EInvalidComparaison(op, string_of_value_type v1, string_of_value_type v2))
+	| _ -> raise (EInvalidComparaison(opname op, string_of_value_type v1, string_of_value_type v2))
 (**
 Makes a stack frame from the supplied value list
 @param size size of stack frame
@@ -376,13 +349,13 @@ and make_stackframe size numargs vararg value_list this =
 		| (num_left, ind, value:: rest) ->
 				stackframe.(ind) <- value;
 				loop_single_values (num_left - 1, ind + 1, rest)
-		| (num_left, ind,[]) -> []
+		| (num_left, ind,[]) -> raise (EMismatchedFunctionArgs (numargs, List.length value_list))
 	in let rest = loop_single_values ((if vararg then numargs - 1 else numargs), 1, value_list)
 	in ((match (rest, vararg) with
 			| (list, true) ->	stackframe.(numargs) <- array_of_value_list(list)
 			| ([] , false) -> ()
 			| (_, false) ->
-					raise (EMismatchedFunctionArgs (size, List.length value_list))));
+					raise (EMismatchedFunctionArgs (numargs, List.length value_list))));
 	stackframe.(0) <- this;
 	stackframe
 (**

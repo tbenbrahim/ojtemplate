@@ -1,0 +1,81 @@
+var testSuite={
+    description: 'I/O Library',
+    tests: 
+    [
+        {
+            description: 'Create directory',
+            test: function(){
+            	return Directory.create('testdir') &&
+            		Directory.exists('testdir');
+            }
+        },        {
+            description: 'Delete directory',
+            test: function(){
+            	return Directory.delete('testdir') &&
+            		!Directory.exists('testdir');
+            }
+        },{
+        	description: 'List directory',
+        	test: function(){
+        		Directory.create('testdir2');
+        		Directory.create('testdir2/subdir');
+        		let a=Directory.list('testdir2');
+        		let result=a.length()==3 && a[2]=='subdir';
+        		Directory.delete('testdir2/subdir');
+        		Directory.delete('testdir2');
+        		return result;
+        	}
+        },{
+        	description: 'Rename',
+        	test: function(){
+        		Directory.create('testdir2');
+        		File.rename('testdir2','testdir3');
+        		let result=Directory.exists('testdir3');
+        		Directory.delete('testdir3');
+        		return result;
+        	}
+        },{
+        	description: 'File creation',
+        	test: function(){
+        		let handle='1';
+        		File.openForWriting(handle,'testfile');
+        		File.write(handle,'Hello ');
+        		File.writeln(handle,'world!');
+        		File.close(handle);
+        		return File.exists('testfile');
+        	}
+        },{
+        	description: 'File reading',
+        	test: function(){
+        		let handle='1';
+        		File.openForReading(handle,'testfile');
+        		let s=File.readln(handle);
+        		File.close(handle);
+        		return s=='Hello world!';
+        	}
+        },{
+        	description: 'File eof',
+        	test: function(){
+        		let handle='1';
+        		File.openForWriting(handle,'testfile');
+        		for (var i=0;i<10;++i)
+        			File.writeln(handle,'test');
+        		File.close(handle);
+        		File.openForReading(handle,'testfile');
+        		let numlines=0;
+        		while(!File.eof(handle)){
+        			File.readln(handle);
+        			++numlines;
+        		}
+        		File.close(handle);
+        		return numlines==10;
+        	}
+        },{
+        	description: 'File delete',
+        	test: function(){
+        		File.delete('testfile');
+        		return !File.exists('testfile');
+        	}
+        }
+	]
+};

@@ -40,7 +40,7 @@ var testSuite={
             			a.charAt(11);
             			return false;
             		}catch (e){
-            			return e.startsWith('invalid index');
+            			return true;
             		}
             	}
             },{

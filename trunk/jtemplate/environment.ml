@@ -8,7 +8,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-Operations on AST analysis and runtime environments 
+Operations on AST analysis and runtime environments
 
 @author Tony BenBrahim < tony.benbrahim at gmail.com >
 
@@ -19,8 +19,8 @@ open Ast
 module StringMap = Map.Make(String)
 
 (**
-@param field2 index into scope
-@param field3 unique id
+@param field1 index into scope
+@param field2 unique id
 *)
 type var_info = (int * int)
 
@@ -113,8 +113,9 @@ returns whether the variable is a constant
 @return true if the variable is a constant
 *)
 let is_constant env uid =
-		let varprop = Hashtbl.find env.varprops uid
-		in not varprop.written_after_declared
+	let varprop = Hashtbl.find env.varprops uid
+	in let (_, line) = varprop.declaration_loc
+	in not varprop.written_after_declared && line!= 0
 
 (**
 declare a variable if it does not exist or create a new entry and return new index
@@ -177,6 +178,7 @@ let declare_variable_and_value name env value =
 	let (env, uid) = declare_variable name env
 	in set_constant_value env uid value; env
 
+(** internal exception used during analysis *)
 exception Variable_not_found of string
 
 (**

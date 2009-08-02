@@ -32,7 +32,7 @@ struct
 			
 			and prefix = function
 				| 0 -> ""
-				| _ -> (String.make ((level - 1) * 3) ' ') ^ "+--"
+				| level -> (String.make (level * 3) ' ') ^ "+--"
 			
 			and location_name = function
 				| GlobalVar(uid, ind) ->"Global("^(string_of_int uid)^","^(string_of_int ind)^")\n"
@@ -151,7 +151,7 @@ struct
 					(prefix level)^"finally\n"^(statement_descriptionl (level + 1) stmt2)
 			| RTryCatch(stmt1, vloc, stmt2, env) ->
 					(prefix level)^"Try\n"^(statement_descriptionl (level + 1) stmt1)^
-					(prefix level)^"catch "^(location_name vloc)^"\n"^(statement_descriptionl (level + 1) stmt2)
+					(prefix level)^"catch "^(location_name vloc)^(statement_descriptionl (level + 1) stmt2)
 			| RSwitch(expr, stmts, env) ->
 					List.fold_left(fun pre stmt -> pre^(statement_descriptionl (level + 1) stmt))
 						((prefix level)^"Switch\n"^(expr_descriptionl (level + 1) expr)) stmts

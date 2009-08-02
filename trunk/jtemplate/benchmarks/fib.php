@@ -1,20 +1,8 @@
 <?php
-function fibonacci ($n)
+function fib($n)
 {
-  if ($n == 0)
-  {
-    return 0;
-  }
-  else
-  if ($n == 1)
-  {
-    return 1;
-  }
-  else
-  {
-    return fibonacci( $n - 1)+fibonacci( $n - 2 );
-  }
+	return $n >1 ?  fib($n - 1) + fib($n - 2) : $n==1 ? 1: 0;  
 }
 
-print_r (fibonacci(32));
+print_r (fib(32));
 ?>
