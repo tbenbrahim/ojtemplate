@@ -68,8 +68,8 @@ let initialize env =
 			num_args = 2;
 			vararg = false;
 			code = fun env ->
-						let handle = cast_to_string (env.stackframes.(0).(1)) in
-						let filename = cast_to_string (env.stackframes.(0).(2)) in
+						let handle = string_of_value (env.stackframes.(0).(1)) in
+						let filename = string_of_value (env.stackframes.(0).(2)) in
 						try
 							if Hashtbl.mem descriptors handle then
 								raise (EIOPassthrough("handle "^handle^" is already opened in call to openForWriting"))
@@ -86,8 +86,8 @@ let initialize env =
 			num_args = 2;
 			vararg = false;
 			code = fun env ->
-						let handle = cast_to_string (env.stackframes.(0).(1)) in
-						let filename = cast_to_string (env.stackframes.(0).(2)) in
+						let handle = string_of_value (env.stackframes.(0).(1)) in
+						let filename = string_of_value (env.stackframes.(0).(2)) in
 						try
 							if Hashtbl.mem descriptors handle then
 								raise (EIOPassthrough("handle "^handle^" is already opened in call to openForReading"))
@@ -104,7 +104,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let handle = cast_to_string (env.stackframes.(0).(1)) in
+						let handle = string_of_value (env.stackframes.(0).(1)) in
 						let (c, _ ) = get_descriptor handle "closeFile" in
 						try
 							(match c with
@@ -121,12 +121,12 @@ let initialize env =
 			num_args = 2;
 			vararg = true;
 			code = fun env ->
-						let handle = cast_to_string (env.stackframes.(0).(1)) in
+						let handle = string_of_value (env.stackframes.(0).(1)) in
 						let (c, filename) = get_descriptor handle "write" in
 						match c with
 						| OutChannel(ch) ->
 								( try
-									let _ = List.map (fun el -> output_string ch (cast_to_string el))
+									let _ = List.map (fun el -> output_string ch (string_of_value el))
 											(list_of_array (env.stackframes.(0).(2))) in ()
 								with
 								| EIOPassthrough(msg) -> raise (LibraryError msg)
@@ -139,12 +139,12 @@ let initialize env =
 			num_args = 2;
 			vararg = true;
 			code = fun env ->
-						let handle = cast_to_string (env.stackframes.(0).(1)) in
+						let handle = string_of_value (env.stackframes.(0).(1)) in
 						let (c, filename) = get_descriptor handle "writeln" in
 						match c with
 						| OutChannel(ch) ->
 								(try
-									let _ = List.map (fun el -> output_string ch (cast_to_string el))
+									let _ = List.map (fun el -> output_string ch (string_of_value el))
 											(list_of_array (env.stackframes.(0).(2))) in
 									output_string ch ( "\n")
 								with
@@ -158,7 +158,7 @@ let initialize env =
 			num_args=1;
 			vararg=false;
 			code= fun env ->
-					let handle = cast_to_string (env.stackframes.(0).(1)) in
+					let handle = string_of_value (env.stackframes.(0).(1)) in
 					let (c, filename) = get_descriptor handle "readln" in
 					match c with
 					| OutChannel(ch) -> raise (EIOPassthrough ("invalid handle in call to readln. Handle "^handle^" was opened for writing "^filename))
@@ -177,7 +177,7 @@ let initialize env =
 			num_args=1;
 			vararg=false;
 			code= fun env ->
-					let handle = cast_to_string (env.stackframes.(0).(1)) in
+					let handle = string_of_value (env.stackframes.(0).(1)) in
 					let (c, filename) = get_descriptor handle "eof" in
 					match c with
 					| OutChannel(ch) -> raise (EIOPassthrough("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
@@ -189,7 +189,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let filename = cast_to_string (env.stackframes.(0).(1)) in
+						let filename = string_of_value (env.stackframes.(0).(1)) in
 						raise (CFReturn(RBooleanValue (Sys.file_exists filename)))
 		};
 		{
@@ -198,7 +198,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let name = cast_to_string (env.stackframes.(0).(1)) in
+						let name = string_of_value (env.stackframes.(0).(1)) in
 						try
 							unlink name;
 							raise (CFReturn(RBooleanValue(true)))
@@ -212,8 +212,8 @@ let initialize env =
 			num_args = 2;
 			vararg = false;
 			code = fun env ->
-						let fromname = cast_to_string (env.stackframes.(0).(1)) in
-						let toname = cast_to_string (env.stackframes.(0).(2)) in
+						let fromname = string_of_value (env.stackframes.(0).(1)) in
+						let toname = string_of_value (env.stackframes.(0).(2)) in
 						try
 							rename fromname toname;
 							raise (CFReturn(RBooleanValue(true)))
@@ -226,7 +226,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let name = cast_to_string (env.stackframes.(0).(1)) in
+						let name = string_of_value (env.stackframes.(0).(1)) in
 						try
 							mkdir name 0o640;
 							raise (CFReturn(RBooleanValue(true)))
@@ -239,7 +239,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let name = cast_to_string (env.stackframes.(0).(1)) in
+						let name = string_of_value (env.stackframes.(0).(1)) in
 						try
 							rmdir name;
 							raise (CFReturn(RBooleanValue(true)))
@@ -252,7 +252,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let name = cast_to_string (env.stackframes.(0).(1)) in
+						let name = string_of_value (env.stackframes.(0).(1)) in
 						let arr = (try
 								let handle = opendir name in
 								let h = Hashtbl.create 10
@@ -275,7 +275,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let name = cast_to_string (env.stackframes.(0).(1)) in
+						let name = string_of_value (env.stackframes.(0).(1)) in
 						raise (CFReturn(RBooleanValue((try
 											Sys.is_directory name
 										with

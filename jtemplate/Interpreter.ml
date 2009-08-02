@@ -1,6 +1,28 @@
+(**
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+The Jtemplate interpreter
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
+*)
+
 open Ast
 open Expression
 
+(**
+Interpret a runtime AST
+@param env a runtime environment
+@param ast the runtime AST to interpret
+@return unit
+*)
 let rec interpret env = function
 	| RProgram(stmts) | RStatementBlock(stmts) ->
 			List.iter (fun stmt -> interpret env stmt) stmts
@@ -187,7 +209,7 @@ and evaluate env = function
 							(env, Hashtbl.find h key)
 						with Not_found ->
 								raise (EUndefinedMapMember key))
-				| _ -> raise (ELeftSideIsNotAMap(string_of_value_type left_map, cast_to_string left_map)))
+				| _ -> raise (ELeftSideIsNotAMap(string_of_value_type left_map, string_of_value left_map)))
 	| RNot(expr) ->
 			let (env, v) = evaluate env expr in
 			(match v with
@@ -278,7 +300,7 @@ and resolve_func_this env fexpr =
 						in v
 				| RMapValue(h, MapSubtype) ->
 						let (env, value) = evaluate env funcname
-						in let name = cast_to_string value
+						in let name = string_of_value value
 						in try find_func h name
 						with | Not_found ->
 								try find_map_func h ["prototype"; name]
@@ -289,8 +311,7 @@ and resolve_func_this env fexpr =
 													let (env, value) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(9, 9)), RValue(RStringValue("prototype"))), funcname))
 													in value
 												with EUndefinedMapMember _ -> raise (EUndefinedMapMember name)
-			in
-			(this, f)
+			in (this, f)
 	| _ ->
 			let (env, v) = evaluate env fexpr
 			in (RVoid, v)
@@ -300,48 +321,73 @@ Runs a function
 @value_list list of values to pass as arguments
 @this this pointer
 @func function
-@return unit
+@return a tuple of the environemt and return value
 *)
-and run_function env value_list this = function
+and run_function env value_list this func =
+	match func with
 	| RFunctionValue(framesize, depth, argslen, vararg, stmts, closure_vars) ->
-			let old_frame = Array.copy (env.stackframes.(depth))
+			let old_frame = env.stackframes.(depth)
 			in let _ = env.stackframes.(depth) <- make_stackframe framesize argslen vararg value_list this
 			in let old_closure_vars = env.closure_vars
+			in let old_skip_callstack_pop = env.skip_callstack_pop
 			in let _ = env.closure_vars <- closure_vars
 			in (try
-				env.callstack <- env.current_line:: env.callstack;
+				(if Stack.is_empty env.callstack or Stack.top env.callstack!= env.current_line then
+						(Stack.push env.current_line env.callstack;
+							env.skip_callstack_pop <- false)
+					else
+						env.skip_callstack_pop <- true
+				);
 				interpret_stmts env stmts;
-				env.callstack <- List.tl env.callstack;
+				(if env.skip_callstack_pop then ()
+					else let _ = Stack.pop env.callstack in ());
+				env.skip_callstack_pop <- old_skip_callstack_pop;
 				env.stackframes.(depth) <- old_frame;
 				env.closure_vars <- old_closure_vars;
-					(env, RVoid)
+				(env, RVoid)
 			with
 			| CFReturn value ->
-					env.callstack <- List.tl env.callstack;
+					(if env.skip_callstack_pop then ()
+						else let _ = Stack.pop env.callstack in ());
+					env.skip_callstack_pop <- old_skip_callstack_pop;
 					env.stackframes.(depth) <- old_frame;
 					env.closure_vars <- old_closure_vars;
-						(env, value)
+					(env, value)
 			| ex ->
-					env.callstack <- List.tl env.callstack;
+					(if env.skip_callstack_pop then ()
+						else let _ = Stack.pop env.callstack in ());
+					env.skip_callstack_pop <- old_skip_callstack_pop;
 					env.stackframes.(depth) <- old_frame;
 					env.closure_vars <- old_closure_vars;
-						raise ex)
+					raise ex)
 	| RLibraryFunction(def) ->
 			let old_frame = env.stackframes.(0)
+			in let old_skip_callstack_pop = env.skip_callstack_pop
 			in env.stackframes.(0) <- make_stackframe def.num_args def.num_args def.vararg value_list this;
 			(try
-				env.callstack <- env.current_line:: env.callstack;
+				(if Stack.is_empty env.callstack or Stack.top env.callstack!= env.current_line then
+						(Stack.push env.current_line env.callstack;
+							env.skip_callstack_pop <- false)
+					else
+						env.skip_callstack_pop <- true
+				);
 				def.code env;
-				env.callstack <- List.tl env.callstack;
+				(if env.skip_callstack_pop then ()
+					else let _ = Stack.pop env.callstack in ());
+				env.skip_callstack_pop <- old_skip_callstack_pop;
 				env.stackframes.(0) <- old_frame;
 				(env, RVoid)
 			with
 			| CFReturn value ->
-					env.callstack <- List.tl env.callstack;
+					(if env.skip_callstack_pop then ()
+						else let _ = Stack.pop env.callstack in ());
+					env.skip_callstack_pop <- old_skip_callstack_pop;
 					env.stackframes.(0) <- old_frame;
 					(env, value)
 			| ex ->
-					env.callstack <- List.tl env.callstack;
+					(if env.skip_callstack_pop then ()
+						else let _ = Stack.pop env.callstack in ());
+					env.skip_callstack_pop <- old_skip_callstack_pop;
 					env.stackframes.(0) <- old_frame;
 					raise ex)
 	| _ -> raise ENotAFunction
@@ -357,7 +403,7 @@ and evaluate_memb_expr_index env index =
 	(match evaluate env index with
 		| (_, RStringValue(s)) -> (s, false)
 		| (_, RIntegerValue(i)) -> (string_of_int i, true)
-		| (_, v) -> raise (EInvalidMember(string_of_value_type v, cast_to_string v))
+		| (_, v) -> raise (EInvalidMember(string_of_value_type v, string_of_value v))
 	)
 (**
 Returns the hashmap that corresponds to the member expression
@@ -378,7 +424,7 @@ and get_member_expr_map env expr index =
 						| Not_found -> raise (EArrayIndexOutOfBounds index)
 				)
 		| RMapValue(h, MapSubtype) -> (h, index)
-		| _ -> raise (ELeftSideIsNotAMap(string_of_value_type left, cast_to_string left))
+		| _ -> raise (ELeftSideIsNotAMap(string_of_value_type left, string_of_value left))
 	)
 (**
 Evaluates a list of expressions

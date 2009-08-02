@@ -91,7 +91,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let substring = cast_to_string (env.stackframes.(0).(1))
+						let substring = string_of_value (env.stackframes.(0).(1))
 						in raise (CFReturn (RIntegerValue(indexOf (get_this env) substring)))
 		};
 		{
@@ -113,7 +113,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let substring = cast_to_string (env.stackframes.(0).(1))
+						let substring = string_of_value (env.stackframes.(0).(1))
 						in raise (CFReturn (RBooleanValue(substring = String.sub (get_this env) 0 (String.length substring))))
 		};
 		{
@@ -122,7 +122,7 @@ let initialize env =
 			num_args = 1;
 			vararg = false;
 			code = fun env ->
-						let ss = cast_to_string (env.stackframes.(0).(1))
+						let ss = string_of_value (env.stackframes.(0).(1))
 						in let s = get_this env
 						in raise (CFReturn (RBooleanValue(ss = String.sub s (String.length s - String.length ss) (String.length ss))))
 		};
@@ -132,8 +132,8 @@ let initialize env =
 			num_args = 2;
 			vararg = false;
 			code = fun env ->
-						let substr = cast_to_string (env.stackframes.(0).(1))
-						in let repl = cast_to_string (env.stackframes.(0).(2))
+						let substr = string_of_value (env.stackframes.(0).(1))
+						in let repl = string_of_value (env.stackframes.(0).(2))
 						in let s = get_this env
 						in let ssl = String.length substr in
 						let rec loop str =
@@ -151,7 +151,7 @@ let initialize env =
 			vararg = false;
 			code = fun env ->
 						let str = get_this env
-						in let substr = cast_to_string (env.stackframes.(0).(1))
+						in let substr = string_of_value (env.stackframes.(0).(1))
 						in let result = Hashtbl.create 10
 						in let rec loop s ind =
 							match indexOf s substr with
@@ -187,8 +187,8 @@ let initialize env =
 			code = fun env ->
 						let rec make_array result = function
 							| [] -> Array.of_list(List.rev result)
-							| v:: tl -> make_array ((cast_to_string v):: result) tl
-						in let string = cast_to_string env.stackframes.(0).(0)
+							| v:: tl -> make_array ((string_of_value v):: result) tl
+						in let string = string_of_value env.stackframes.(0).(0)
 						in let substrings = make_array [] ( list_of_array env.stackframes.(0).(1))
 						in let values = make_array [] (list_of_array env.stackframes.(0).(2))
 						in let len = Array.length substrings

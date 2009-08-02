@@ -1,9 +1,20 @@
-open Ast
-
 (**
-Module environment defines the runtime and analysis environments
-@author Tony BenBrahim
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Operations on AST analysis and runtime environments 
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
 *)
+
+open Ast
 
 module StringMap = Map.Make(String)
 
@@ -27,8 +38,6 @@ Properties of variable locations
 type var_prop ={
 	written_after_declared: bool;
 	read_after_declared: bool;
-	inline_expr: (runtime_expression * string list) option;
-	tail_callable: bool;
 	declaration_loc: string * int;
 }
 
@@ -466,8 +475,6 @@ let record_usage env loc op =
 		with Not_found ->
 				{ written_after_declared = false;
 					read_after_declared = false;
-					inline_expr = None;
-					tail_callable = false;
 					declaration_loc = ("", 0)
 				}
 	in let new_props =
@@ -475,15 +482,11 @@ let record_usage env loc op =
 		| ReadOp ->
 				{ written_after_declared = props.written_after_declared;
 					read_after_declared = true;
-					inline_expr = props.inline_expr;
-					tail_callable = props.tail_callable;
 					declaration_loc = props.declaration_loc;
 				}
 		| WriteOp ->
 				{	written_after_declared = true;
 					read_after_declared = props.read_after_declared;
-					inline_expr = props.inline_expr;
-					tail_callable = props.tail_callable;
 					declaration_loc = props.declaration_loc;
 				}
 		| DeclareOp(loc) ->
@@ -491,15 +494,11 @@ let record_usage env loc op =
 				| ("", 0) ->
 						{ written_after_declared = false;
 							read_after_declared = props.read_after_declared;
-							inline_expr = props.inline_expr;
-							tail_callable = false;
 							declaration_loc = loc
 						}
 				| _ ->
 						{ written_after_declared = true;
 							read_after_declared = props.read_after_declared;
-							inline_expr = props.inline_expr;
-							tail_callable = props.tail_callable;
 							declaration_loc = props.declaration_loc
 						}
 	in Hashtbl.replace env.varprops uid new_props
