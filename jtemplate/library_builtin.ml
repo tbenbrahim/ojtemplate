@@ -207,7 +207,7 @@ let initialize env =
 			code = fun env ->
 						let func = env.stackframes.(0).(0)
 						in match func with
-						| RFunctionValue(_, _, _, _, _, _) | RLibraryFunction(_) ->
+						| RFunctionValue(_, _, _, _, _, _,_) | RLibraryFunction(_) ->
 								let args = list_of_array env.stackframes.(0).(1)
 								in let this = List.hd args
 								in let args = List.tl args

@@ -133,7 +133,7 @@ var testSuite={
             description: 'too few arguments in function call',
             test: function(){
             	try{
-            		let a=function(x,y){};
+            		let a=function(x,y){let b=1;let c=2;};
             		a(1);
             		return false;
                 }catch (e){
@@ -144,7 +144,7 @@ var testSuite={
             description: 'too many arguments in function call',
             test: function(){
             	try{
-            		let a=function(x,y){};
+            		let a=function(x,y){let b=1;let c=2;};
             		a(1,2,3);
             		return false;
                 }catch (e){

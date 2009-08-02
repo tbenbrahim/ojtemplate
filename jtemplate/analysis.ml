@@ -390,7 +390,12 @@ and analyze_variables env ast =
 									in env) env arg_list
 				in let (stmt_list, env) = analyze_variables_in_block env stmt_list
 				in let closure_vars = get_closure_vars stmt_list (Environment.get_depth env)
-				in (RFunctionValue(List.hd env.num_locals, Environment.get_depth env, List.length arg_list, has_vararg, stmt_list, closure_vars), Environment.pop_scope env)
+				in let inline_expr = match (stmt_list, closure_vars) with
+					| (RReturn(expr, _)::[], None) | (RExpressionStatement(expr, _)::[], None) -> Some expr
+					| ([], None) -> Some (RValue(RVoid))
+					| _ -> None
+				in (RFunctionValue(List.hd env.num_locals, Environment.get_depth env, List.length arg_list, has_vararg,
+						stmt_list, closure_vars, inline_expr), Environment.pop_scope env)
 	(**
 	Replaces all variables in expression with absolute locations
 	Also sets up function definitions
@@ -643,13 +648,40 @@ and analyze_variables env ast =
 **********************************************************************************************
 *)
 
+(** replaces an expression from an inlined function with the corresponding
+values from a function call expression list
+@param depth the stack depth, for sanity checking
+@param numargs the number of arguments
+@param repl_exprs the expressions used in the call invocation
+@param expr the inline expression
+@return the inline expression with the arguments replacing the former local args
+*)
+let rec inline_expr_replace depth numargs repl_expr expr =
+	let rec loop = function
+		| RVariable(LocalVar(uid, d, ind)) when d = depth && ind <= numargs ->
+				List.nth repl_expr (ind - 1)
+		| RVariable(_) | RValue(_) | RVarArg(_) as e -> e
+		| RBinaryOp(expr1, op, expr2) -> RBinaryOp(loop expr1, op, loop expr2)
+		| RCompOp(e1, op, e2) -> RCompOp(loop e1, op, loop e2)
+		| RNot(e) -> RNot(loop e)
+		| RTernaryCond(e1, e2, e3) -> RTernaryCond(loop e1, loop e2, loop e3)
+		| RDeclaration(e1, e2) -> RDeclaration(loop e1, loop e2)
+		| RAssignment(e1, e2) -> RAssignment(loop e1, loop e2)
+		| RMapExpr(props) -> RMapExpr(List.map (fun p -> let (name, e) = p in (name, loop e)) props)
+		| RArrayExpr(elist) -> RArrayExpr(List.map(fun e -> loop e) elist)
+		| RFunctionCall(e, elist) -> RFunctionCall(loop e, List.map(fun e -> loop e) elist)
+		| RMemberExpr(e1, e2) -> RMemberExpr(loop e1, loop e2)
+		| RPostFixSum(e, i) -> RPostFixSum(loop e, i)
+	in loop expr
+and
 (**
 Replace non modified variables with their declared value
 @param env analysis environment
+@param inline_uids list of inlined functions to avoid recursively inlining recursive inlinable functions
 @param expression expression to process
 @return an expression with constant variables replaced by their value
 *)
-let rec replace_constant env = function
+replace_constant env inline_uids = function
 	|	RVariable(loc) ->
 			let uid = uid_from_loc loc
 			in if Environment.is_constant env uid then
@@ -659,22 +691,35 @@ let rec replace_constant env = function
 					| value -> RValue(value)
 				with Not_found -> RVariable(loc)
 			else RVariable(loc)
-	| RNot(expr) -> RNot(replace_constant env expr)
+	| RNot(expr) -> RNot(replace_constant env inline_uids expr)
 	| RBinaryOp(expr1, op, expr2) ->
-			let (e1, e2) = (replace_constant env expr1, replace_constant env expr2)
+			let (e1, e2) = (replace_constant env inline_uids expr1, replace_constant env inline_uids expr2)
 			in (try match (e1, e2) with
 				| (RValue(v1), RValue(v2)) -> RValue(Expression.evaluate_op v1 v2 op)
 				| _ -> RBinaryOp(e1, op, e2)
 			with _ -> RBinaryOp(e1, op, e2))
-	| RCompOp(expr1, op, expr2) -> RCompOp(replace_constant env expr1, op, replace_constant env expr2)
-	| RValue(RFunctionValue(locals, depth, args, vararg, stmts, closvars)) ->
-			RValue(RFunctionValue(locals, depth, args, vararg, List.map(fun stmt -> pass2 env stmt) stmts, closvars))
+	| RCompOp(expr1, op, expr2) ->
+			RCompOp(replace_constant env inline_uids expr1, op, replace_constant env inline_uids expr2)
+	| RValue(RFunctionValue(locals, depth, args, vararg, stmts, closvars, inline)) ->
+			RValue(RFunctionValue(locals, depth, args, vararg, List.map(fun stmt -> pass2 env stmt) stmts, closvars, inline))
 	| RValue(_) | RPostFixSum(_) | RVarArg(_) as value -> value
 	| RFunctionCall(expr, expr_list) ->
-			RFunctionCall(replace_constant env expr, List.map(fun e -> replace_constant env e) expr_list)
-	| RAssignment(expr1, expr2) -> RAssignment(expr1, replace_constant env expr2)
+			let e = replace_constant env inline_uids expr
+			in let e_list = List.map(fun e -> replace_constant env inline_uids e) expr_list
+			in (match e with
+				| RVariable(GlobalVar(uid, _))
+				| RVariable(LocalVar(uid, _, _)) when is_constant env uid ->
+						(match get_constant_value env uid with
+							| RFunctionValue(_, depth, numargs, false, _, None, Some expr) ->
+									if List.exists (fun i -> i == uid) inline_uids then
+										RFunctionCall(e, e_list)
+									else
+										replace_constant env (uid:: inline_uids) (inline_expr_replace depth numargs e_list expr)
+							| _ -> RFunctionCall(e, e_list))
+				| _ -> RFunctionCall(e, e_list))
+	| RAssignment(expr1, expr2) -> RAssignment(expr1, replace_constant env inline_uids expr2)
 	| RDeclaration(expr1, expr2) ->
-			let expr2 = replace_constant env expr2
+			let expr2 = replace_constant env inline_uids expr2
 			in (match (expr1, expr2) with
 				| (RVariable(loc), RValue(value)) ->
 						let uid = uid_from_loc loc
@@ -685,12 +730,15 @@ let rec replace_constant env = function
 						else
 							RDeclaration(expr1, expr2)
 				| _ -> RDeclaration(expr1, expr2))
-	| RMemberExpr(expr1, expr2) -> RMemberExpr(replace_constant env expr1, replace_constant env expr2)
-	| RArrayExpr(expr_list) -> RArrayExpr(List.map(fun e -> replace_constant env e) expr_list)
+	| RMemberExpr(expr1, expr2) ->
+			RMemberExpr(replace_constant env inline_uids expr1, replace_constant env inline_uids expr2)
+	| RArrayExpr(expr_list) ->
+			RArrayExpr(List.map(fun e -> replace_constant env inline_uids e) expr_list)
 	| RMapExpr(prop_list) ->
-			RMapExpr(List.map (fun prop -> let (name, e) = prop in (name, replace_constant env e)) prop_list)
+			RMapExpr(List.map (fun prop -> let (name, e) = prop in (name, replace_constant env inline_uids e)) prop_list)
 	| RTernaryCond(expr1, expr2, expr3) ->
-			RTernaryCond(replace_constant env expr1, replace_constant env expr2, replace_constant env expr3)
+			RTernaryCond(replace_constant env inline_uids expr1, replace_constant env inline_uids expr2,
+				replace_constant env inline_uids expr3)
 (**
 Looks for expressions where constants can be substituted
 @param env analysis environment
@@ -699,23 +747,23 @@ Looks for expressions where constants can be substituted
 and pass2 env = function
 	| RProgram(stmts) -> RProgram(List.map (fun stmt -> pass2 env stmt) stmts)
 	| RStatementBlock(stmts) ->	RStatementBlock(List.map (fun stmt -> pass2 env stmt) stmts)
-	| RThrow(expr, cloc) -> RThrow(replace_constant env expr, cloc)
-	| RCase(Some expr, cloc) -> RCase(Some (replace_constant env expr), cloc)
-	| RReturn(expr, cloc) -> RReturn(replace_constant env expr, cloc)
+	| RThrow(expr, cloc) -> RThrow(replace_constant env [] expr, cloc)
+	| RCase(Some expr, cloc) -> RCase(Some (replace_constant env [] expr), cloc)
+	| RReturn(expr, cloc) -> RReturn(replace_constant env [] expr, cloc)
 	| RContinue(_) | RBreak(_) | RCase(None, _) | RNoop as stmt -> stmt
 	| RExpressionStatement(expr, cloc) ->
-			(match replace_constant env expr with
+			(match replace_constant env [] expr with
 				| RValue(RUndefined) -> RNoop
 				| expr -> RExpressionStatement(expr, cloc))
 	| RFor(expr1, expr2, expr3, stmt, cloc) ->
-			RFor(replace_constant env expr1, replace_constant env expr2, replace_constant env expr3,
+			RFor(replace_constant env [] expr1, replace_constant env [] expr2, replace_constant env [] expr3,
 				pass2 env stmt, cloc)
-	| RIf(expr, stmt1, stmt2, cloc) -> RIf(replace_constant env expr, pass2 env stmt1, pass2 env stmt2, cloc)
+	| RIf(expr, stmt1, stmt2, cloc) -> RIf(replace_constant env [] expr, pass2 env stmt1, pass2 env stmt2, cloc)
 	| RTryFinally(stmt1, stmt2, cloc) -> RTryFinally(pass2 env stmt1, pass2 env stmt2, cloc)
 	| RTryCatch(stmt1, v, stmt2, cloc) -> RTryCatch(pass2 env stmt1, v, pass2 env stmt2, cloc)
-	| RSwitch(expr, stmts, cloc) -> RSwitch(replace_constant env expr,
+	| RSwitch(expr, stmts, cloc) -> RSwitch(replace_constant env [] expr,
 				(List.map (fun stmt -> pass2 env stmt) stmts), cloc)
-	| RForEach(v, expr, stmt, cloc) -> RForEach(v, replace_constant env expr, pass2 env stmt, cloc)
+	| RForEach(v, expr, stmt, cloc) -> RForEach(v, replace_constant env [] expr, pass2 env stmt, cloc)
 
 (**
 Analyzes an AST, generates a runtime AST

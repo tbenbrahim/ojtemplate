@@ -104,10 +104,12 @@ struct
 			and value_descriptionl level = function
 				| RIntegerValue v ->
 						(prefix level) ^ ("Integer " ^ ((string_of_int v) ^ "\n"))
-				| RFunctionValue (stacksize, depth, numargs, varargs, stmts, closure_vars) ->
+				| RFunctionValue (stacksize, depth, numargs, varargs, stmts, closure_vars, inline) ->
 						(prefix level) ^
 						"RFunction("^(string_of_int stacksize)^","^(string_of_int depth)^","^(string_of_int numargs)
-						^","^(string_of_bool varargs)^","^(get_closure_vars closure_vars)^")\n"
+						^","^(string_of_bool varargs)^","^(get_closure_vars closure_vars)^
+						", inline "^(match inline with | Some _ -> "true" | None -> "false")^
+						")\n"
 						^ (statement_list (level + 1) stmts)
 				| RLibraryFunction(_) -> "" (* never in ast *)
 				| RBooleanValue v ->
