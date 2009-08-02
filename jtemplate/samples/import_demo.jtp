@@ -10,7 +10,6 @@ Date.now().fold( function(k, v, acc) {
 		println(k.padLeft( 11, ' '), ': ', (v+'').padLeft( 4, ' '));
 }, Void);
 println();
-
 println('Today is ', Date.now().toString());
 
 // test of varargs, foreach
