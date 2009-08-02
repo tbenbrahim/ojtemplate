@@ -7,8 +7,6 @@ import 'string.jtp';
 
 var Date.days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-var Date.prototype={};
-
 var Date.prototype.toString=function(){
     var offset='';
     if (this.gmtOffset>0){
