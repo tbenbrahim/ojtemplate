@@ -22,7 +22,7 @@ open Filename_util
 open RuntimeError
 open Environment
 open Analysis
-(**open Ast_info*)
+open Ast_info
 
 let _ =
 	(**
@@ -55,8 +55,8 @@ let _ =
 						RuntimeError.display_error ex ("", 0);
 						exit(- 2)
 			in
-			(**AstInfo.print_ast ast;
-			print_name_info env;*)
+			AstInfo.print_ast ast;
+			print_name_info env;
 			let renv ={
 				heap = Array.make env.num_globals (- 1, RUndefined);
 				stackframes = Array.make (env.max_depth + 1) [||];

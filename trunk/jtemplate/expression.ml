@@ -57,11 +57,11 @@ let rec string_of_value = function
 	| RMapValue(t, MapSubtype) ->
 			(Hashtbl.fold (fun prop v s ->
 								s^prop^": "^(string_of_value v)^";") t "{")^"}"
-	| RFunctionValue(_, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
+	| RFunctionValue(_, _, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
 	| RVoid -> "void"
 	| RNaN -> "NaN"
 	| RUndefined -> "undefined"
-	
+
 (**
 enumeration of a value's possible types
 *)
@@ -88,7 +88,7 @@ let value_type = function
 	| RFloatValue(_) -> FloatType
 	| RBooleanValue(_) -> BooleanType
 	| RStringValue(_) -> StringType
-	| RFunctionValue(_, _, _, _, _, _) -> FunctionType
+	| RFunctionValue(_, _, _, _, _, _, _) -> FunctionType
 	| RLibraryFunction(_) -> LibraryCallType
 	| RMapValue(_, MapSubtype) -> MapType
 	| RMapValue(_, ArraySubtype _) -> ArrayType
@@ -108,7 +108,7 @@ let string_of_value_type = function
 	| RBooleanValue(b) -> "boolean"
 	| RMapValue(_, ArraySubtype) ->"array"
 	| RMapValue(_, MapSubtype) -> "map"
-	| RFunctionValue(_, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
+	| RFunctionValue(_, _, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
 	| RVoid -> "void"
 	| RNaN -> "NaN"
 	| RUndefined -> "undefined"
@@ -295,9 +295,9 @@ let rec compare v1 op v2 =
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
-	| RFunctionValue(size1, depth1, len1, varargs1, stmts1, clos1) ->
+	| RFunctionValue(size1, depth1, len1, varargs1, stmts1, clos1,inline1) ->
 			(match v2 with
-				| RFunctionValue(size2, depth2, len2, varargs2, stmts2, clos2) -> (
+				| RFunctionValue(size2, depth2, len2, varargs2, stmts2, clos2, inline2) -> (
 							match op with
 							| Equal -> RBooleanValue(size1 = size2 && stmts1 = stmts2)
 							| NotEqual -> RBooleanValue(not (size1 = size2 && stmts1 = stmts2))
@@ -317,12 +317,12 @@ let rec compare v1 op v2 =
 				| _ -> mismatched_compare v1 op v2 )
 	| RUndefined -> raise (RuntimeError.InternalError "unexpected value in compare")
 and opname = function
-		| LessThan -> "<"
-		| LessThanEqual -> "<="
-		| Equal -> "=="
-		| NotEqual ->"!="
-		| GreaterThanEqual -> ">="
-		| GreaterThan -> ">"
+	| LessThan -> "<"
+	| LessThanEqual -> "<="
+	| Equal -> "=="
+	| NotEqual ->"!="
+	| GreaterThanEqual -> ">="
+	| GreaterThan -> ">"
 and hashtbl_equal h1 h2 =
 	(Hashtbl.length h1) = (Hashtbl.length h2) &&
 	try

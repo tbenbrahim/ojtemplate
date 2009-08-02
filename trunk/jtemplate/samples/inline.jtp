@@ -10,5 +10,3 @@ let printarea=function(x){
 };
 
 printarea(side);
-
-printarea(side);

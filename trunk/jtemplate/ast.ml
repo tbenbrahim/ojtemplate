@@ -79,7 +79,7 @@ runtime_variable_value =
 	| RBooleanValue of bool
 	| RFunctionValue of int * int * int * bool * runtime_statement list
 	* (((int * int), runtime_variable_value) Hashtbl.t)
-	option
+	option * runtime_expression option
 	|
 	RLibraryFunction of lib_function_def
 	| RMapValue of (string, runtime_variable_value) Hashtbl.t * map_subtype

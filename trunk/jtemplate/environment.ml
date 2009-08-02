@@ -116,7 +116,7 @@ let is_constant env uid =
 	let varprop = Hashtbl.find env.varprops uid
 	in let (_, line) = varprop.declaration_loc
 	in not varprop.written_after_declared && line!= 0
-
+	
 (**
 declare a variable if it does not exist or create a new entry and return new index
 @param name name of variable to declare
@@ -478,7 +478,7 @@ let record_usage env loc op =
 		with Not_found ->
 				{ written_after_declared = false;
 					read_after_declared = false;
-					declaration_loc = ("", 0)
+					declaration_loc = ("", 0);
 				}
 	in let new_props =
 		match op with

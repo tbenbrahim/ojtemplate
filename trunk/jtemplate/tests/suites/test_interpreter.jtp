@@ -188,7 +188,7 @@ var testSuite={
         			return true;
         		}
         	}
-        },{ //regression bug 124
+        },{ //regression bug 
         	description: 'try catch passes return through',
         	test: function(){
         		return function(){
