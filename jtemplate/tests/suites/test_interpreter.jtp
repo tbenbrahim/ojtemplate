@@ -44,6 +44,17 @@ var testSuite={
                  return (a==10?true:false) && a!=10?false:true;
             }
         },{
+            description: 'ternary expression with non boolean throws exception',
+            test: function(){
+            	try{
+                 	var a=10;
+                 	let b=('a'.length()?true:false) && a!=10?false:true;
+                 	return false;
+                }catch(e){
+                	return true;
+                }
+            }
+        },{
             description: 'for loop test',
             test: function(){
                 var a=0;
@@ -81,6 +92,32 @@ var testSuite={
                     ++i;
                 }
                 return a==100;
+            }
+        },{
+            description: 'if test',
+            test: function(){
+            	if ('a'.length()==1)
+            		return true;
+            	return false;
+            }
+        },{
+            description: 'else test',
+            test: function(){
+            	if ('a'.length()==2)
+            		return false;
+            	else
+            		return true;
+            }
+        },{
+            description: 'if with non boolean throws exception',
+            test: function(){
+            	try{
+            		if ('a'.length())
+            			return true;
+            		return false;
+            	}catch(e){
+            		return true;
+            	}
             }
         },{
             description: 'while loop test with continue',
@@ -150,6 +187,41 @@ var testSuite={
         		}catch(e){
         			return true;
         		}
+        	}
+        },{ //regression bug 124
+        	description: 'try catch passes return through',
+        	test: function(){
+        		return function(){
+        			try{
+        				return true;
+	        		}catch(e){
+	        			return false;
+        			}
+        		}();
+        	}
+        },{ 
+        	description: 'try catch passes break through',
+        	test: function(){
+        		for (var i=0;i<10;i++){
+        			try{
+        				break;
+        			}catch(e){
+        				return false;
+        			}
+        		}
+        		return true;
+        	}
+        },{ 
+        	description: 'try catch passes continue through',
+        	test: function(){
+        		for (var i=0;i<10;i++){
+        			try{
+        				continue;
+        			}catch(e){
+        				return false;
+        			}
+        		}
+        		return true;
         	}
         },{
         	description: 'try finally catch, all steps reached',
@@ -321,6 +393,17 @@ var testSuite={
         		return a==2;
         	}
         },{
+        	description: 'switch() without match',
+        	test: function(){
+        		let a=11;
+        		switch(a){
+        		case 1: throw 'error';
+        		case 10: a=2;break;
+        		case 12: throw 'error';
+        		}
+        		return a==11;
+        	}
+        },{
         	description: 'switch() default case',
         	test: function(){
         		let a=11;
@@ -373,6 +456,49 @@ var testSuite={
         		}catch(e){
         			return true;
         		}
+        	}
+        },{
+        	description: 'foreach on array',
+        	test: function(){
+        		let sum=0;
+        		let arr=[1,2,3];
+        		foreach (n in arr)
+        			sum+=n;
+        		return sum==6;
+        	}
+        },{
+        	description: 'foreach on map',
+        	test: function(){
+        		let sum='';
+        		let map={a:1,b:2,c:3};
+        		foreach (n in map){
+        			sum+=n;
+        		}
+        		return sum=='abc' || sum=='acb' || sum=='bac' || sum=='bca' || sum=='cab' || sum=='cba';
+        	}
+        },{
+        	description: 'foreach with break',
+        	test: function(){
+        		let sum=0;
+        		let arr=[1,2,3];
+        		foreach (n in arr){
+        			if(n==3)
+        				break;
+        			sum+=n;
+        		}
+        		return sum==3;
+        	}
+        },{
+        	description: 'foreach with continue',
+        	test: function(){
+        		let sum=0;
+        		let arr=[1,2,3];
+        		foreach (n in arr){
+        			sum+=n;
+        			continue;
+        			sum+=10;
+        		}
+        		return sum==6;
         	}
         },{
         	description: 'unbound vars/partial application',

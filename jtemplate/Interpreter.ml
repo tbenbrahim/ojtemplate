@@ -16,6 +16,7 @@ The Jtemplate interpreter
 
 open Ast
 open Expression
+open RuntimeError
 
 (**
 Interpret a runtime AST
@@ -84,14 +85,17 @@ let rec interpret env = function
 				| []-> caselist
 				| RCase(Some expr, _):: tl ->
 						if defaultfound then
-							raise EDefaultCaseShouldBeLast (* TODO should be checked in analysis *)
+							raise EDefaultCaseShouldBeLast
 						else(
 							let caselist = (Some expr, tl):: caselist in
 							find_cases caselist false tl)
 				| RCase(None, _):: tl ->
-						let caselist = (None, tl):: caselist in
-						find_cases caselist true tl
-				| _:: tl -> find_cases caselist false tl
+						if defaultfound then
+							raise EDefaultCaseShouldBeLast
+						else(
+							let caselist = (None, tl):: caselist in
+							find_cases caselist true tl)
+				| _:: tl -> find_cases caselist defaultfound tl
 			(* match a value with a case and return a statement list *)
 			in let rec match_case expr1 = function
 				| [] -> []
@@ -114,9 +118,11 @@ let rec interpret env = function
 			(try
 				interpret env stmt1;
 			with
-			| CFUserException e ->
+			| CFUserException(e, _) ->
 					let _ = Environment.set_value env e vloc
 					in interpret env stmt2
+			| CFBreak | CFContinue as exn -> raise exn
+			| CFReturn(v) -> raise (CFReturn v)
 			| exn ->
 					let _ = Environment.set_value env (RStringValue(RuntimeError.string_of_error exn)) vloc
 					in interpret env stmt2
@@ -136,7 +142,7 @@ let rec interpret env = function
 	| RThrow(expr, cloc) ->
 			env.current_line <- cloc;
 			let (_, value) = evaluate env expr
-			in raise (CFUserException value)
+			in raise (CFUserException(value, string_of_value value))
 	| RNoop | RCase(_, _) -> ()
 
 (**
@@ -197,13 +203,16 @@ and evaluate env = function
 				| v -> raise (EIncompatibleTypes ("boolean" , string_of_value_type v)))
 	| RMemberExpr(left, index) ->
 			let (env, left_map) = evaluate env left
-			in let (key, _) = evaluate_memb_expr_index env index
+			in let (key, is_int) = evaluate_memb_expr_index env index
 			in (match left_map with
 				| RMapValue(h, ArraySubtype) ->
-						(try
-							(env, Hashtbl.find h key)
-						with Not_found ->
-								raise (EArrayIndexOutOfBounds key))
+						if (not is_int)  then
+							raise (EInvalidArrayIndex("string", key))
+						else
+							(try
+								(env, Hashtbl.find h key)
+							with Not_found ->
+									raise (EArrayIndexOutOfBounds key))
 				| RMapValue(h, MapSubtype) ->
 						(try
 							(env, Hashtbl.find h key)
@@ -416,7 +425,8 @@ and get_member_expr_map env expr index =
 	let (env, left) = evaluate env expr
 	in let (index, is_int) = evaluate_memb_expr_index env index
 	in (match left with
-		| RMapValue(h, ArraySubtype) -> (if not is_int then raise (EInvalidArrayIndex("string", index))
+		| RMapValue(h, ArraySubtype) ->
+				(if not is_int then raise (EInvalidArrayIndex("string", index))
 					else
 						try
 							let _ = Hashtbl.find h index in (h, index)

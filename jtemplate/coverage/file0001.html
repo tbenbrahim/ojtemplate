@@ -22,13 +22,13 @@
         <td valign="top">
           <table class="simple">
             <tr><th>kind</th><th width="16px">&nbsp;</th><th>coverage</th></tr>
-            <tr><td>binding</td><td width="16px">&nbsp;</td><td>0 / 1 (0 %)</td></tr>
+            <tr><td>binding</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>sequence</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>for</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>if/then</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>try</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
             <tr><td>while</td><td width="16px">&nbsp;</td><td>0 / 0 (- %)</td></tr>
-            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>2 / 20 (10 %)</td></tr>
+            <tr><td>match/function</td><td width="16px">&nbsp;</td><td>18 / 28 (64 %)</td></tr>
           </table>
         </td>
         <td valign="top">
@@ -53,147 +53,141 @@
     <code>
       <div id="fold000001">
       <div id="line000001" class="lineNone"><a href="javascript:fold('fold000001');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000001| (**</div>
-      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| this&nbsp;module&nbsp;defines&nbsp;runtime&nbsp;errors&nbsp;that&nbsp;are&nbsp;reported&nbsp;to&nbsp;the&nbsp;user</div>
-      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| @author&nbsp;tbenbrahim</div>
-      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| *)</div>
+      <div id="line000002" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000002| This&nbsp;program&nbsp;is&nbsp;free&nbsp;software;&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and&nbsp;/&nbsp;or&nbsp;modify</div>
+      <div id="line000003" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000003| it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;as&nbsp;published&nbsp;by</div>
+      <div id="line000004" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000004| the&nbsp;Free&nbsp;Software&nbsp;Foundation;&nbsp;version&nbsp;3&nbsp;of&nbsp;the&nbsp;License.</div>
       <div id="line000005" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000005| &nbsp;</div>
-      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| open&nbsp;Ast</div>
-      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| &nbsp;</div>
-      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;an&nbsp;access&nbsp;was&nbsp;made&nbsp;to&nbsp;an&nbsp;undefined&nbsp;variable</div>
-      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| @param&nbsp;field1&nbsp;the&nbsp;variable&nbsp;name</div>
-      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| *)</div>
-      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| exception&nbsp;ReferenceToUndefinedVariable&nbsp;of&nbsp;string</div>
+      <div id="line000006" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000006| This&nbsp;program&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,</div>
+      <div id="line000007" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000007| but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of</div>
+      <div id="line000008" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000008| MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;See&nbsp;the</div>
+      <div id="line000009" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000009| GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.</div>
+      <div id="line000010" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000010| &nbsp;</div>
+      <div id="line000011" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000011| This&nbsp;module&nbsp;defines&nbsp;runtime&nbsp;errors&nbsp;that&nbsp;are&nbsp;reported&nbsp;to&nbsp;the&nbsp;user</div>
       <div id="line000012" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000012| &nbsp;</div>
-      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;an&nbsp;access&nbsp;was&nbsp;made&nbsp;to&nbsp;an&nbsp;undefined&nbsp;map&nbsp;field</div>
-      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| @param&nbsp;field1&nbsp;the&nbsp;field&nbsp;name</div>
-      <div id="line000015" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000015| @param&nbsp;field2&nbsp;the&nbsp;variable&nbsp;name</div>
-      <div id="line000016" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000016| *)</div>
-      <div id="line000017" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000017| exception&nbsp;ReferenceToUndefinedMapVariable&nbsp;of&nbsp;string&nbsp;*&nbsp;string</div>
+      <div id="line000013" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000013| @author&nbsp;Tony&nbsp;BenBrahim&nbsp;&lt;&nbsp;tony.benbrahim&nbsp;at&nbsp;gmail.com&nbsp;&gt;</div>
+      <div id="line000014" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000014| &nbsp;</div>
+      <div id="line000015" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000015| *)</div>
+      <div id="line000016" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000016| &nbsp;</div>
+      <div id="line000017" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000017| open&nbsp;Ast</div>
       <div id="line000018" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000018| &nbsp;</div>
-      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;a&nbsp;field&nbsp;that&nbsp;was&nbsp;accessed&nbsp;as&nbsp;a&nbsp;map&nbsp;is&nbsp;not&nbsp;a&nbsp;map</div>
-      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| @param&nbsp;field1&nbsp;the&nbsp;field&nbsp;name</div>
-      <div id="line000021" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000021| @param&nbsp;field2&nbsp;the&nbsp;variable&nbsp;name</div>
-      <div id="line000022" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000022| *)</div>
-      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| exception&nbsp;NotAMap&nbsp;of&nbsp;string&nbsp;*&nbsp;string</div>
-      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| &nbsp;</div>
-      <div id="line000025" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000025| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;an&nbsp;assignment&nbsp;that&nbsp;would&nbsp;change&nbsp;a&nbsp;variable's&nbsp;type</div>
-      <div id="line000026" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000026| was&nbsp;attempted</div>
-      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| @param&nbsp;field1&nbsp;the&nbsp;variable&nbsp;name</div>
-      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| @param&nbsp;field2&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;variable</div>
-      <div id="line000029" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000029| @param&nbsp;field3&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;value&nbsp;that&nbsp;was&nbsp;to&nbsp;replace&nbsp;the&nbsp;value</div>
-      <div id="line000030" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000030| *)</div>
-      <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| exception&nbsp;TypeMismatchInAssignment&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string</div>
-      <div id="line000032" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000032| &nbsp;</div>
-      <div id="line000033" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000033| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;an&nbsp;assignment&nbsp;that&nbsp;would&nbsp;change&nbsp;a&nbsp;map&nbsp;field's&nbsp;type</div>
-      <div id="line000034" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000034| was&nbsp;attempted</div>
-      <div id="line000035" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000035| @param&nbsp;field1&nbsp;the&nbsp;field&nbsp;name</div>
-      <div id="line000036" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000036| @param&nbsp;field2&nbsp;the&nbsp;variable&nbsp;name</div>
-      <div id="line000037" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000037| @param&nbsp;field3&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;variable</div>
-      <div id="line000038" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000038| @param&nbsp;field4&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;value&nbsp;that&nbsp;was&nbsp;to&nbsp;replace&nbsp;the&nbsp;value</div>
-      <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| *)</div>
-      <div id="line000040" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000040| exception&nbsp;TypeMismatchInMapAssignment&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string</div>
-      <div id="line000041" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000041| &nbsp;</div>
-      <div id="line000042" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000042| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;the&nbsp;number&nbsp;of&nbsp;arguments&nbsp;passed&nbsp;in</div>
-      <div id="line000043" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000043| to&nbsp;a&nbsp;function&nbsp;call&nbsp;do&nbsp;not&nbsp;match&nbsp;with&nbsp;number&nbsp;of&nbsp;arguments&nbsp;in&nbsp;the&nbsp;formal&nbsp;arguments</div>
-      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| @param&nbsp;field1&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;function</div>
-      <div id="line000045" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000045| *)</div>
-      <div id="line000046" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000046| exception&nbsp;MismatchedCallArgs</div>
-      <div id="line000047" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000047| &nbsp;</div>
-      <div id="line000048" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000048| exception&nbsp;TypeMismatchInMapAssignment&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string</div>
+      <div id="line000019" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000019| (**&nbsp;this&nbsp;error&nbsp;represents&nbsp;an&nbsp;unexpected&nbsp;condition,&nbsp;caused&nbsp;by&nbsp;a&nbsp;programming</div>
+      <div id="line000020" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000020| error&nbsp;in&nbsp;the&nbsp;interpreter&nbsp;implementation&nbsp;*)</div>
+      <div id="line000021" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000021| exception&nbsp;InternalError&nbsp;of&nbsp;string</div>
+      <div id="line000022" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000022| &nbsp;</div>
+      <div id="line000023" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000023| (**&nbsp;this&nbsp;error&nbsp;is&nbsp;a&nbsp;generic&nbsp;error&nbsp;thrown&nbsp;by&nbsp;library&nbsp;routines&nbsp;to&nbsp;indicate&nbsp;an</div>
+      <div id="line000024" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000024| error&nbsp;condition,&nbsp;such&nbsp;as&nbsp;the&nbsp;incorrect&nbsp;type&nbsp;of&nbsp;a&nbsp;passed&nbsp;in&nbsp;argument&nbsp;*)</div>
+      <div id="line000025" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000025| exception&nbsp;LibraryError&nbsp;of&nbsp;string</div>
+      <div id="line000026" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000026| &nbsp;</div>
+      <div id="line000027" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000027| (**&nbsp;this&nbsp;error&nbsp;is&nbsp;caused&nbsp;by&nbsp;an&nbsp;abnormal&nbsp;error&nbsp;caused&nbsp;by&nbsp;the&nbsp;lexer,&nbsp;such&nbsp;as&nbsp;an</div>
+      <div id="line000028" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000028| unterminated&nbsp;string&nbsp;**)</div>
+      <div id="line000029" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000029| exception&nbsp;LexerException&nbsp;of&nbsp;string&nbsp;*&nbsp;int&nbsp;*&nbsp;int</div>
+      <div id="line000030" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000030| &nbsp;</div>
+      <div id="line000031" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000031| (**&nbsp;marker&nbsp;exception&nbsp;to&nbsp;note&nbsp;that&nbsp;the&nbsp;program&nbsp;should&nbsp;exit,&nbsp;error&nbsp;has&nbsp;already</div>
+      <div id="line000032" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000032| been&nbsp;reported&nbsp;during&nbsp;analysis&nbsp;*)</div>
+      <div id="line000033" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000033| exception&nbsp;FatalExit</div>
+      <div id="line000034" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000034| &nbsp;</div>
+      <div id="line000035" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000035| (**&nbsp;indicates&nbsp;that&nbsp;an&nbsp;assignment&nbsp;was&nbsp;attempted&nbsp;on&nbsp;two&nbsp;incompatible&nbsp;types*)</div>
+      <div id="line000036" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000036| exception&nbsp;EIncompatibleTypes&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;type1,&nbsp;type2&nbsp;*)</div>
+      <div id="line000037" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000037| &nbsp;</div>
+      <div id="line000038" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000038| (**&nbsp;indicates&nbsp;that&nbsp;the&nbsp;value&nbsp;is&nbsp;not&nbsp;of&nbsp;the&nbsp;expected&nbsp;type&nbsp;*)</div>
+      <div id="line000039" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000039| exception&nbsp;EInvalidCast&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;value&nbsp;type&nbsp;name,&nbsp;typename&nbsp;*)</div>
+      <div id="line000040" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000040| &nbsp;</div>
+      <div id="line000041" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000041| (**&nbsp;indicates&nbsp;that&nbsp;an&nbsp;invalid&nbsp;operation&nbsp;was&nbsp;attempted&nbsp;on&nbsp;the&nbsp;specified&nbsp;types&nbsp;*)</div>
+      <div id="line000042" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000042| exception&nbsp;EInvalidOperation&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;&nbsp;(*&nbsp;operator,&nbsp;typename&nbsp;*)</div>
+      <div id="line000043" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000043| &nbsp;</div>
+      <div id="line000044" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000044| (**&nbsp;indicates&nbsp;that&nbsp;an&nbsp;invalid&nbsp;comparaison&nbsp;was&nbsp;attempted&nbsp;on&nbsp;the&nbsp;given&nbsp;types&nbsp;*)</div>
+      <div id="line000045" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000045| exception&nbsp;EInvalidComparaison&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;comparator,&nbsp;typename&nbsp;*)</div>
+      <div id="line000046" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000046| &nbsp;</div>
+      <div id="line000047" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000047| (**&nbsp;indicates&nbsp;that&nbsp;a&nbsp;member&nbsp;expression&nbsp;is&nbsp;not&nbsp;applied&nbsp;to&nbsp;a&nbsp;map&nbsp;*)</div>
+      <div id="line000048" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000048| exception&nbsp;ELeftSideIsNotAMap&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;typename&nbsp;value&nbsp;*)</div>
       <div id="line000049" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000049| &nbsp;</div>
-      <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| (**&nbsp;This&nbsp;exception&nbsp;indicates&nbsp;that&nbsp;a&nbsp;vararg&nbsp;is&nbsp;not&nbsp;last&nbsp;in&nbsp;function&nbsp;definition</div>
-      <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| @param&nbsp;field1&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;function</div>
-      <div id="line000052" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000052| *)</div>
-      <div id="line000053" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000053| exception&nbsp;VarArgsMustbeLast</div>
-      <div id="line000054" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000054| &nbsp;</div>
-      <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| exception&nbsp;LibraryError&nbsp;of&nbsp;string</div>
-      <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| &nbsp;</div>
-      <div id="line000057" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000057| exception&nbsp;InvalidArrayIndex&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;type&nbsp;value&nbsp;*)</div>
-      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| exception&nbsp;ArrayIndexOutOfBounds&nbsp;of&nbsp;string&nbsp;(*index*)</div>
-      <div id="line000059" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000059| &nbsp;</div>
-      <div id="line000060" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000060| (**&nbsp;indicates&nbsp;that&nbsp;a&nbsp;collection&nbsp;type&nbsp;was&nbsp;expected&nbsp;but&nbsp;another</div>
-      <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| type&nbsp;was&nbsp;seen&nbsp;instead</div>
-      <div id="line000062" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000062| @param&nbsp;field1&nbsp;the&nbsp;location&nbsp;of&nbsp;the&nbsp;error</div>
-      <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| @param&nbsp;field2&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;offending&nbsp;type</div>
-      <div id="line000064" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000064| *)</div>
-      <div id="line000065" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000065| exception&nbsp;NotACollectionType&nbsp;of&nbsp;string&nbsp;*&nbsp;string</div>
-      <div id="line000066" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000066| &nbsp;</div>
-      <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| exception&nbsp;LexerException&nbsp;of&nbsp;string&nbsp;*&nbsp;int&nbsp;*&nbsp;int</div>
-      <div id="line000068" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000068| &nbsp;</div>
-      <div id="line000069" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000069| exception&nbsp;InternalError&nbsp;of&nbsp;string</div>
+      <div id="line000050" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000050| (**&nbsp;indicates&nbsp;that&nbsp;a&nbsp;member&nbsp;expression&nbsp;is&nbsp;not&nbsp;applied&nbsp;to&nbsp;a&nbsp;map&nbsp;*)</div>
+      <div id="line000051" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000051| exception&nbsp;ELeftSideIsNotAMap&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;typename&nbsp;value&nbsp;*)</div>
+      <div id="line000052" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000052| &nbsp;</div>
+      <div id="line000053" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000053| (**&nbsp;indicates&nbsp;an&nbsp;attempt&nbsp;at&nbsp;an&nbsp;assignment&nbsp;to&nbsp;something&nbsp;that&nbsp;is&nbsp;a&nbsp;not&nbsp;a&nbsp;variable&nbsp;or&nbsp;map&nbsp;*)</div>
+      <div id="line000054" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000054| exception&nbsp;ELeftSideCannotBeAssigned</div>
+      <div id="line000055" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000055| &nbsp;</div>
+      <div id="line000056" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000056| (**&nbsp;indicates&nbsp;that&nbsp;the&nbsp;map&nbsp;member&nbsp;did&nbsp;not&nbsp;evaluate&nbsp;to&nbsp;a&nbsp;string&nbsp;or&nbsp;integer&nbsp;*)</div>
+      <div id="line000057" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000057| exception&nbsp;EInvalidMember&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;typename,value&nbsp;*)</div>
+      <div id="line000058" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000058| &nbsp;</div>
+      <div id="line000059" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000059| (**&nbsp;indicates&nbsp;that&nbsp;a&nbsp;reference&nbsp;was&nbsp;made&nbsp;to&nbsp;a&nbsp;map&nbsp;member&nbsp;that&nbsp;does&nbsp;not&nbsp;exist&nbsp;*)</div>
+      <div id="line000060" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000060| exception&nbsp;EUndefinedMapMember&nbsp;of&nbsp;string&nbsp;(*&nbsp;value&nbsp;*)</div>
+      <div id="line000061" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000061| &nbsp;</div>
+      <div id="line000062" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000062| (**&nbsp;indicates&nbsp;a&nbsp;non&nbsp;integer&nbsp;array&nbsp;index&nbsp;*)</div>
+      <div id="line000063" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000063| exception&nbsp;EInvalidArrayIndex&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;type&nbsp;value&nbsp;*)</div>
+      <div id="line000064" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000064| &nbsp;</div>
+      <div id="line000065" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000065| (**&nbsp;indicates&nbsp;an&nbsp;out&nbsp;of&nbsp;bounds&nbsp;index&nbsp;*)</div>
+      <div id="line000066" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000066| exception&nbsp;EArrayIndexOutOfBounds&nbsp;of&nbsp;string&nbsp;(*index*)</div>
+      <div id="line000067" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000067| &nbsp;</div>
+      <div id="line000068" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000068| (**&nbsp;indicates&nbsp;that&nbsp;the&nbsp;type&nbsp;in&nbsp;the&nbsp;assignment&nbsp;does&nbsp;not&nbsp;match&nbsp;the&nbsp;declare&nbsp;type&nbsp;*)</div>
+      <div id="line000069" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000069| exception&nbsp;ETypeMismatchInAssignment&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;name&nbsp;oldtype&nbsp;new&nbsp;type&nbsp;*)</div>
       <div id="line000070" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000070| &nbsp;</div>
-      <div id="line000071" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000071| exception&nbsp;DefaultCaseShouldBeLast</div>
-      <div id="line000072" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000072| &nbsp;</div>
-      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| exception&nbsp;UnexpectedUnboundVar&nbsp;of&nbsp;string&nbsp;(*name*)</div>
-      <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| &nbsp;</div>
-      <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| exception&nbsp;FatalExit&nbsp;of&nbsp;exn</div>
+      <div id="line000071" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000071| (**&nbsp;indicates&nbsp;that&nbsp;an&nbsp;incorrect&nbsp;number&nbsp;of&nbsp;arguments&nbsp;were&nbsp;passed&nbsp;to&nbsp;a&nbsp;function&nbsp;*)</div>
+      <div id="line000072" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000072| exception&nbsp;EMismatchedFunctionArgs&nbsp;of&nbsp;int&nbsp;*&nbsp;int&nbsp;(*&nbsp;expected&nbsp;actual&nbsp;*)</div>
+      <div id="line000073" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000073| &nbsp;</div>
+      <div id="line000074" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000074| (**&nbsp;indicates&nbsp;an&nbsp;attempt&nbsp;to&nbsp;apply&nbsp;a&nbsp;function&nbsp;to&nbsp;a&nbsp;non&nbsp;function&nbsp;*)</div>
+      <div id="line000075" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000075| exception&nbsp;ENotAFunction</div>
       <div id="line000076" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000076| &nbsp;</div>
-      <div id="line000077" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000077| exception&nbsp;UserException&nbsp;of&nbsp;variable_value</div>
-      <div id="line000078" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000078| &nbsp;</div>
-      <div id="line000079" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000079| exception&nbsp;InvalidMember&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;typename,value&nbsp;*)</div>
-      <div id="line000080" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000080| exception&nbsp;UndefinedMapMember&nbsp;of&nbsp;string&nbsp;(*&nbsp;value&nbsp;*)</div>
-      <div id="line000081" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000081| exception&nbsp;LeftSideIsNotAMap&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;typename&nbsp;value&nbsp;*)</div>
-      <div id="line000082" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000082| exception&nbsp;LeftSideCannotBeAssigned</div>
-      <div id="line000083" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000083| exception&nbsp;NotAFunction</div>
-      <div id="line000084" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000084| exception&nbsp;NotAnInteger&nbsp;of&nbsp;string</div>
+      <div id="line000077" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000077| (**&nbsp;indicates&nbsp;applying&nbsp;for&nbsp;each&nbsp;on&nbsp;a&nbsp;non&nbsp;collection&nbsp;type&nbsp;*)</div>
+      <div id="line000078" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000078| exception&nbsp;ENotACollectionType&nbsp;of&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;message,&nbsp;value&nbsp;*)</div>
+      <div id="line000079" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000079| &nbsp;</div>
+      <div id="line000080" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000080| (**&nbsp;indicates&nbsp;that&nbsp;the&nbsp;default&nbsp;case&nbsp;should&nbsp;be&nbsp;last&nbsp;*)</div>
+      <div id="line000081" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000081| exception&nbsp;EDefaultCaseShouldBeLast</div>
+      <div id="line000082" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000082| &nbsp;</div>
+      <div id="line000083" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000083| (**&nbsp;indicates&nbsp;a&nbsp;parsing&nbsp;error&nbsp;*)</div>
+      <div id="line000084" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000084| exception&nbsp;ParseException&nbsp;of&nbsp;string</div>
       <div id="line000085" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000085| &nbsp;</div>
-      <div id="line000086" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000086| exception&nbsp;AnalysisErrors</div>
-      <div id="line000087" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000087| &nbsp;</div>
-      <div id="line000088" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000088| exception&nbsp;InvalidComparaison&nbsp;of&nbsp;Ast.comparator&nbsp;*&nbsp;string&nbsp;*&nbsp;string&nbsp;(*&nbsp;comparator,&nbsp;typename&nbsp;*)</div>
-      <div id="line000089" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000089| &nbsp;</div>
-      <div id="line000090" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000090| let&nbsp;string_of_error&nbsp;ex&nbsp;=</div>
-      <div id="line000091" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000091| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;ex&nbsp;with</div>
+      <div id="line000086" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000086| let&nbsp;string_of_error&nbsp;ex&nbsp;=</div>
+      <div id="line000087" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000087| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;ex&nbsp;with</div>
+      <div id="line000088" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000088| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;InternalError&nbsp;msg&nbsp;-&gt;&nbsp;(*[14]*)&quot;INT-00&nbsp;internal&nbsp;error,&nbsp;interpreter&nbsp;is&nbsp;in&nbsp;inconsistent&nbsp;state:&nbsp;&quot;^msg</div>
+      <div id="line000089" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000089| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;LibraryError&nbsp;msg&nbsp;-&gt;&nbsp;(*[14]*)&quot;LIB-00&nbsp;library&nbsp;error:&nbsp;&quot;^msg</div>
       </div>
-      <div id="line000092" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000092| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ReferenceToUndefinedVariable(varname)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Reference&nbsp;to&nbsp;undefined&nbsp;variable&nbsp;&quot;&nbsp;^&nbsp;varname</div>
+      <div id="line000090" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000090| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;LexerException&nbsp;(msg,&nbsp;line,&nbsp;col)&nbsp;-&gt;&nbsp;(*[0]*)&quot;PRS-00&nbsp;parsing&nbsp;error:&nbsp;&quot;&nbsp;^&nbsp;msg&nbsp;^&nbsp;&quot;&nbsp;at&nbsp;line&nbsp;&quot;&nbsp;^</div>
+      <div id="fold000091">
+      <div id="line000091" class="lineNone"><a href="javascript:fold('fold000091');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000091| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_int&nbsp;line)&nbsp;^&nbsp;&quot;&nbsp;column&nbsp;&quot;&nbsp;^&nbsp;(string_of_int&nbsp;col)</div>
+      </div>
+      <div id="line000092" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000092| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ParseException&nbsp;msg&nbsp;-&gt;&nbsp;(*[0]*)&quot;PRS-01&nbsp;parsing&nbsp;error:&nbsp;&quot;&nbsp;^&nbsp;msg</div>
       <div id="fold000093">
-      <div id="line000093" class="lineNone"><a href="javascript:fold('fold000093');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000093| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ReferenceToUndefinedMapVariable(comp,&nbsp;varname)&nbsp;-&gt;</div>
+      <div id="line000093" class="lineAllVisited"><a href="javascript:fold('fold000093');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000093| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EIncompatibleTypes(type1,&nbsp;type2)&nbsp;-&gt;&nbsp;(*[6]*)&quot;EXP-00&nbsp;incompatible&nbsp;types&nbsp;&quot;&nbsp;^&nbsp;type1&nbsp;^&nbsp;&quot;&nbsp;and&nbsp;&quot;&nbsp;^&nbsp;type2</div>
+      <div id="line000094" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000094| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EInvalidCast(type1,&nbsp;type2)&nbsp;-&gt;(*[4]*)&quot;EXP-01&nbsp;cannot&nbsp;cast&nbsp;a&nbsp;&quot;&nbsp;^&nbsp;type1&nbsp;^&nbsp;&quot;&nbsp;to&nbsp;a&nbsp;&quot;&nbsp;^&nbsp;type2</div>
+      <div id="line000095" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000095| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EInvalidOperation(operator,&nbsp;type1)&nbsp;-&gt;&nbsp;(*[4]*)&quot;EXP-02&nbsp;invalid&nbsp;operation&nbsp;&quot;&nbsp;^&nbsp;operator&nbsp;^&nbsp;&quot;&nbsp;for&nbsp;&quot;&nbsp;^&nbsp;type1&nbsp;^&nbsp;&quot;s&quot;</div>
+      <div id="line000096" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000096| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EInvalidComparaison(operator,&nbsp;type1,&nbsp;type2)&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-03&nbsp;invalid&nbsp;comparaison&nbsp;&quot;&nbsp;^&nbsp;operator&nbsp;^&nbsp;&quot;&nbsp;for&nbsp;&quot;&nbsp;^</div>
+      <div id="line000097" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000097| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type1&nbsp;^&nbsp;&quot;&nbsp;and&nbsp;&quot;&nbsp;^&nbsp;type2</div>
+      <div id="line000098" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000098| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ELeftSideIsNotAMap&nbsp;(typename,&nbsp;value)&nbsp;-&gt;&nbsp;(*[8]*)&quot;EXP-04&nbsp;left&nbsp;side&nbsp;of&nbsp;member&nbsp;expression&nbsp;is&nbsp;not&nbsp;a&nbsp;map&nbsp;or&nbsp;array,&nbsp;but&nbsp;a&nbsp;&quot;&nbsp;^</div>
+      <div id="line000099" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000099| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typename&nbsp;^&nbsp;&quot;&nbsp;with&nbsp;value&nbsp;&quot;&nbsp;^&nbsp;value</div>
+      <div id="line000100" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000100| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ELeftSideCannotBeAssigned&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-05&nbsp;left&nbsp;side&nbsp;of&nbsp;assignment&nbsp;expression&nbsp;cannot&nbsp;be&nbsp;assigned&quot;</div>
+      <div id="line000101" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000101| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EInvalidMember&nbsp;(typename,&nbsp;value)&nbsp;-&gt;&nbsp;(*[4]*)&quot;EXP-06&nbsp;member&nbsp;expression&nbsp;did&nbsp;not&nbsp;evaluate&nbsp;to&nbsp;a&nbsp;string&nbsp;or&nbsp;integer,&nbsp;but&nbsp;to&nbsp;a&nbsp;&quot;&nbsp;^</div>
+      <div id="line000102" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000102| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typename&nbsp;^&nbsp;&quot;&nbsp;with&nbsp;value&nbsp;&quot;&nbsp;^&nbsp;value</div>
+      <div id="line000103" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000103| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EUndefinedMapMember(name)&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-07&nbsp;member&nbsp;expression&nbsp;&quot;&nbsp;^&nbsp;name&nbsp;^&nbsp;&quot;&nbsp;is&nbsp;undefined&quot;</div>
+      <div id="line000104" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000104| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EInvalidArrayIndex(typename,&nbsp;value)&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-08&nbsp;invalid&nbsp;array&nbsp;index&nbsp;of&nbsp;type&nbsp;&quot;&nbsp;^&nbsp;typename&nbsp;^&nbsp;&quot;&nbsp;with&nbsp;value&nbsp;&quot;&nbsp;^&nbsp;value</div>
+      <div id="line000105" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000105| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EArrayIndexOutOfBounds(value)&nbsp;-&gt;&nbsp;(*[4]*)&quot;EXP-09&nbsp;array&nbsp;index&nbsp;out&nbsp;of&nbsp;bounds:&nbsp;&quot;&nbsp;^&nbsp;value</div>
+      <div id="line000106" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000106| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ETypeMismatchInAssignment(name,&nbsp;shouldbe,&nbsp;is)&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-10&nbsp;type&nbsp;mismatch&nbsp;in&nbsp;assignment&nbsp;of&nbsp;&quot;&nbsp;^&nbsp;name&nbsp;^</div>
+      <div id="line000107" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000107| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&nbsp;declared&nbsp;as&nbsp;&quot;&nbsp;^&nbsp;shouldbe&nbsp;^&nbsp;&quot;,&nbsp;attempting&nbsp;to&nbsp;assign&nbsp;&quot;^is</div>
+      <div id="line000108" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000108| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EMismatchedFunctionArgs(expected,&nbsp;actual)&nbsp;-&gt;&nbsp;(*[6]*)&quot;EXP-11&nbsp;wrong&nbsp;number&nbsp;of&nbsp;arguments&nbsp;in&nbsp;function&nbsp;call,&nbsp;expected&nbsp;&quot;&nbsp;^</div>
+      <div id="line000109" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000109| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_int&nbsp;expected)&nbsp;^&nbsp;&quot;,&nbsp;got&nbsp;&quot;&nbsp;^&nbsp;(string_of_int&nbsp;actual)</div>
+      <div id="line000110" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000110| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ENotAFunction&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-12&nbsp;invalid&nbsp;function&nbsp;call&nbsp;on&nbsp;a&nbsp;non-function&nbsp;variable&quot;</div>
+      <div id="line000111" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000111| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ENotACollectionType&nbsp;(msg,&nbsp;typename)&nbsp;-&gt;&nbsp;(*[2]*)&quot;EXP-13&nbsp;expected&nbsp;a&nbsp;collection&nbsp;type&nbsp;for&nbsp;&quot;&nbsp;^&nbsp;msg&nbsp;^&nbsp;&quot;,&nbsp;but&nbsp;got&nbsp;a&nbsp;&quot;&nbsp;^</div>
+      <div id="line000112" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000112| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typename</div>
+      <div id="line000113" class="lineAllVisited"><img border="0" height="10" width="10"src="dash.png"/>000113| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EDefaultCaseShouldBeLast&nbsp;-&gt;&nbsp;(*[6]*)&quot;STM-00&nbsp;the&nbsp;default&nbsp;case&nbsp;in&nbsp;a&nbsp;switch&nbsp;statement&nbsp;should&nbsp;be&nbsp;the&nbsp;last&nbsp;case&quot;</div>
       </div>
-      <div id="line000094" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000094| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)&quot;Reference&nbsp;to&nbsp;undefined&nbsp;field&nbsp;&quot;&nbsp;^&nbsp;comp&nbsp;^&nbsp;&quot;&nbsp;variable&nbsp;in&nbsp;&quot;&nbsp;^&nbsp;varname</div>
-      <div id="line000095" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000095| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;NotAMap(comp,&nbsp;varname)&nbsp;-&gt;&nbsp;(*[0]*)comp&nbsp;^&nbsp;&quot;&nbsp;is&nbsp;not&nbsp;a&nbsp;map&nbsp;in&nbsp;access&nbsp;of&nbsp;map&nbsp;&quot;&nbsp;^&nbsp;varname</div>
-      <div id="fold000096">
-      <div id="line000096" class="lineNone"><a href="javascript:fold('fold000096');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000096| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;TypeMismatchInAssignment(name,&nbsp;old_type,&nbsp;new_type)&nbsp;-&gt;</div>
+      <div id="line000114" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000114| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;CFReturn&nbsp;_&nbsp;-&gt;&nbsp;(*[0]*)&quot;STM-01&nbsp;unexpected&nbsp;return&nbsp;statement&nbsp;outside&nbsp;of&nbsp;a&nbsp;function&nbsp;definition&quot;</div>
+      <div id="line000115" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000115| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;CFBreak&nbsp;-&gt;&nbsp;(*[0]*)&quot;STM-02&nbsp;unexpected&nbsp;break&nbsp;statement&nbsp;outside&nbsp;of&nbsp;a&nbsp;loop&quot;</div>
+      <div id="line000116" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000116| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;CFContinue&nbsp;-&gt;&nbsp;(*[0]*)&quot;STM-03&nbsp;unexpected&nbsp;continue&nbsp;statement&nbsp;outside&nbsp;of&nbsp;a&nbsp;loop&quot;</div>
+      <div id="line000117" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000117| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;CFUserException&nbsp;(_,&nbsp;value)&nbsp;-&gt;&nbsp;(*[0]*)&quot;USR-00&nbsp;unhandled&nbsp;user&nbsp;exception&nbsp;&quot;&nbsp;^&nbsp;value</div>
+      <div id="line000118" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000118| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Parsing.Parse_error&nbsp;-&gt;&nbsp;(*[0]*)&quot;&quot;</div>
+      <div id="fold000119">
+      <div id="line000119" class="lineAllVisited"><a href="javascript:fold('fold000119');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000119| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;e&nbsp;-&gt;&nbsp;(*[2]*)&quot;uncaught&nbsp;exception&nbsp;&quot;^(Printexc.to_string&nbsp;e)</div>
+      <div id="line000120" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000120| &nbsp;</div>
+      <div id="line000121" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000121| let&nbsp;display_error&nbsp;err&nbsp;cloc&nbsp;=</div>
       </div>
-      <div id="line000097" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000097| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)&quot;Cannot&nbsp;assign&nbsp;a&nbsp;&quot;^new_type^&quot;&nbsp;to&nbsp;variable&nbsp;&quot;^name^&quot;&nbsp;of&nbsp;type&nbsp;&quot;^old_type</div>
-      <div id="fold000098">
-      <div id="line000098" class="lineNone"><a href="javascript:fold('fold000098');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000098| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;TypeMismatchInMapAssignment(comp,&nbsp;name,&nbsp;old_type,&nbsp;new_type)&nbsp;-&gt;</div>
+      <div id="line000122" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000122| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;(file,&nbsp;line)&nbsp;=&nbsp;cloc</div>
+      <div id="fold000123">
+      <div id="line000123" class="lineNone"><a href="javascript:fold('fold000123');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000123| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;match&nbsp;string_of_error&nbsp;err&nbsp;with</div>
       </div>
-      <div id="line000099" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000099| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)&quot;Cannot&nbsp;assign&nbsp;a&nbsp;&quot;^new_type^&quot;&nbsp;to&nbsp;in&nbsp;&quot;^comp^&quot;&nbsp;of&nbsp;type&nbsp;&quot;^old_type^&quot;&nbsp;in&nbsp;map&nbsp;&quot;^name</div>
-      <div id="fold000100">
-      <div id="line000100" class="lineNone"><a href="javascript:fold('fold000100');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000100| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;MismatchedCallArgs&nbsp;-&gt;</div>
-      </div>
-      <div id="line000101" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000101| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)&quot;The&nbsp;number&nbsp;of&nbsp;arguments&nbsp;do&nbsp;not&nbsp;match&nbsp;the&nbsp;number&nbsp;of&nbsp;formal&nbsp;parameters&nbsp;in&nbsp;function&nbsp;call&nbsp;&quot;</div>
-      <div id="fold000102">
-      <div id="line000102" class="lineNone"><a href="javascript:fold('fold000102');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000102| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;VarArgsMustbeLast&nbsp;-&gt;</div>
-      </div>
-      <div id="line000103" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000103| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)&quot;In&nbsp;the&nbsp;definition&nbsp;of&nbsp;a&nbsp;function,&nbsp;a&nbsp;vararg&nbsp;parameter&nbsp;must&nbsp;be&nbsp;the&nbsp;last&nbsp;formal&nbsp;parameter&quot;</div>
-      <div id="fold000104">
-      <div id="line000104" class="lineAllVisited"><a href="javascript:fold('fold000104');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000104| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;LibraryError&nbsp;msg&nbsp;|&nbsp;InternalError&nbsp;msg&nbsp;|&nbsp;NotAnInteger&nbsp;msg&nbsp;-&gt;&nbsp;(*[30]*)msg</div>
-      </div>
-      <div id="line000105" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000105| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;InvalidArrayIndex(indtype,&nbsp;value)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Invalid&nbsp;array&nbsp;index&nbsp;of&nbsp;type&nbsp;&quot;^indtype^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^value</div>
-      <div id="line000106" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000106| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;ArrayIndexOutOfBounds&nbsp;index&nbsp;-&gt;&nbsp;(*[0]*)&quot;Array&nbsp;index&nbsp;out&nbsp;of&nbsp;bounds&nbsp;(&quot;^index^&quot;)&quot;</div>
-      <div id="line000107" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000107| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;NotACollectionType(where,&nbsp;typename)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Expected&nbsp;a&nbsp;collection&nbsp;type&nbsp;for&nbsp;&quot;^</div>
-      <div id="fold000108">
-      <div id="line000108" class="lineNone"><a href="javascript:fold('fold000108');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000108| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where^&quot;,&nbsp;received&nbsp;a&nbsp;&quot;^typename^&quot;&nbsp;instead&quot;</div>
-      </div>
-      <div id="line000109" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000109| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;DefaultCaseShouldBeLast&nbsp;-&gt;&nbsp;(*[0]*)&quot;Unexpected&nbsp;case&nbsp;statement&nbsp;found&nbsp;after&nbsp;a&nbsp;default&nbsp;statement&quot;</div>
-      <div id="line000110" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000110| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;UnexpectedUnboundVar&nbsp;name&nbsp;-&gt;&nbsp;(*[0]*)&quot;Unexpected&nbsp;unbound&nbsp;variable&nbsp;&quot;^name^</div>
-      <div id="fold000111">
-      <div id="line000111" class="lineNone"><a href="javascript:fold('fold000111');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000111| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;.&nbsp;Unbound&nbsp;variables&nbsp;can&nbsp;only&nbsp;be&nbsp;used&nbsp;in&nbsp;function&nbsp;calls.&quot;</div>
-      </div>
-      <div id="line000112" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000112| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;UserException(value)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Unhandled&nbsp;user&nbsp;exception&quot;</div>
-      <div id="line000113" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000113| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;InvalidMember(typename,&nbsp;value)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Invalid&nbsp;member&nbsp;of&nbsp;type&nbsp;&quot;^typename^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^value</div>
-      <div id="line000114" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000114| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;UndefinedMapMember(value)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Undefined&nbsp;map&nbsp;member&nbsp;&quot;^value</div>
-      <div id="line000115" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000115| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;LeftSideIsNotAMap(typename,&nbsp;value)&nbsp;-&gt;&nbsp;(*[0]*)&quot;Expected&nbsp;a&nbsp;collection&nbsp;type&nbsp;but&nbsp;found&nbsp;type&nbsp;&quot;^typename^&quot;&nbsp;with&nbsp;value&nbsp;&quot;^value</div>
-      <div id="line000116" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000116| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;LeftSideCannotBeAssigned&nbsp;-&gt;&nbsp;(*[0]*)&quot;Left&nbsp;side&nbsp;cannot&nbsp;be&nbsp;assigned&quot;</div>
-      <div id="fold000117">
-      <div id="line000117" class="lineAllVisited"><a href="javascript:fold('fold000117');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000117| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;e&nbsp;-&gt;&nbsp;(*[12]*)&quot;uncaught&nbsp;exception&nbsp;&quot;^(Printexc.to_string&nbsp;e)</div>
-      <div id="line000118" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000118| &nbsp;</div>
-      <div id="line000119" class="lineNone"><img border="0" height="10" width="10"src="dash.png"/>000119| let&nbsp;display_error&nbsp;err&nbsp;cloc&nbsp;=</div>
-      </div>
-      <div id="line000120" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000120| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*[0]*)let&nbsp;(file,&nbsp;line)&nbsp;=&nbsp;cloc</div>
-      <div id="line000121" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000121| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;(*[0]*)print_string&nbsp;(&quot;\nAt&nbsp;line&nbsp;&quot;&nbsp;^&nbsp;(string_of_int&nbsp;line)&nbsp;^&nbsp;&quot;&nbsp;in&nbsp;file&nbsp;&quot;&nbsp;^&nbsp;file&nbsp;^&nbsp;&quot;:\n\t&quot;&nbsp;^</div>
-      <div id="fold000122">
-      <div id="line000122" class="lineNone"><a href="javascript:fold('fold000122');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000122| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_error&nbsp;err)&nbsp;^&nbsp;&quot;\n&quot;&nbsp;)</div>
+      <div id="line000124" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000124| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&quot;&quot;&nbsp;-&gt;&nbsp;(*[0]*)()</div>
+      <div id="line000125" class="lineAllUnvisited"><img border="0" height="10" width="10"src="blank.png"/>000125| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;msg&nbsp;-&gt;&nbsp;(*[0]*)print_string&nbsp;(&quot;\nAt&nbsp;line&nbsp;&quot;&nbsp;^&nbsp;(string_of_int&nbsp;line)&nbsp;^&nbsp;&quot;&nbsp;in&nbsp;file&nbsp;&quot;&nbsp;^&nbsp;file&nbsp;^&nbsp;&quot;:\n\t&quot;&nbsp;^</div>
+      <div id="fold000126">
+      <div id="line000126" class="lineNone"><a href="javascript:fold('fold000126');"><img border="0" height="10" width="10" src="minus.png" title="fold code"/></a>000126| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;^&nbsp;&quot;\n&quot;&nbsp;)</div>
       </div>
     </code>
     <br/>
@@ -288,38 +282,42 @@
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000090');" title="jump to line 90"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000092');" title="jump to line 92"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000094');" title="jump to line 94"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000095');" title="jump to line 95"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000097');" title="jump to line 97"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000099');" title="jump to line 99"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000101');" title="jump to line 101"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000103');" title="jump to line 103"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000105');" title="jump to line 105"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000106');" title="jump to line 106"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000107');" title="jump to line 107"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000109');" title="jump to line 109"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000110');" title="jump to line 110"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000112');" title="jump to line 112"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000113');" title="jump to line 113"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000114');" title="jump to line 114"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000115');" title="jump to line 115"></td></tr>
         <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000116');" title="jump to line 116"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000117');" title="jump to line 117"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000118');" title="jump to line 118"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000120');" title="jump to line 120"></td></tr>
-        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000121');" title="jump to line 121"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000122');" title="jump to line 122"></td></tr>
+        <tr><td bgcolor="gray"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000124');" title="jump to line 124"></td></tr>
+        <tr><td bgcolor="red" style="cursor: pointer;" onclick="javascript:jump('line000125');" title="jump to line 125"></td></tr>
         <tr><td bgcolor="gray"></td></tr>
       </table>
     </div>
@@ -330,6 +328,6 @@
     &nbsp;&nbsp;&nbsp;<span class="lineMixed">some code</span>&nbsp;-&nbsp;line containing both visited and unvisited points<br/>
     <br/>
     <hr class="codeSep"/>
-    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-08-01 13:52:03</p>
+    <p class="footer">Generated by <a href="http://bisect.x9c.fr">Bisect 1.0-beta</a> on 2009-08-02 04:43:38</p>
   </body>
 </html>

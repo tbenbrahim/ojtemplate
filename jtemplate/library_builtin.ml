@@ -1,3 +1,19 @@
+(**
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Built in library implementation
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
+*)
+
 open Environment
 open Ast
 open Expression
@@ -64,9 +80,11 @@ let initialize env =
 			vararg = false;
 			code = fun env ->
 						let hashtbl = this_array_map env
-						in (match Hashtbl.find hashtbl "length" with
-							| RIntegerValue(len) -> raise (CFReturn(RIntegerValue(len)))
-							| _ -> raise (LibraryError "First parameter is not an array in call to Array.pop"))
+						in try (match Hashtbl.find hashtbl "length" with
+								| RIntegerValue(len) -> raise (CFReturn(RIntegerValue(len)))
+								| _ -> raise (LibraryError "First parameter is not an array in call to Array.length"))
+						with Not_found ->
+								raise (LibraryError "First parameter is not an array in call to Array.length")
 		};
 		{
 			name =["Map";"prototype";"remove"];

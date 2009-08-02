@@ -1,0 +1,58 @@
+var testSuite={
+    description: 'Expressions',
+    tests: 
+    [
+        {
+            description: 'floating point operations',
+            test: function(){
+            	return 1.2+2.5==3.7 && 1.2*1.2==1.44 && 3.5-1.2==2.3 && 0.5/.25==2
+            	 && 1.2/0==NaN;
+            }
+        },{
+            description: 'floating point modulo throws exception',
+            test: function(){
+            	try{
+            		let a=('a'.length/2.1)%2.1;
+            		return false;
+            	}catch(e){
+            		return true;
+            	}
+            }
+        },{
+            description: 'integer operations',
+            test: function(){
+            	return 2+3==5 && 2-3==-1 && 2*3==6 && 45/4==11 && 45%4==1 && 45/0==NaN && 45%0==NaN;
+            }
+        },{
+            description: 'invalid integer operations',
+            test: function(){
+            	try{
+            		let a='a'.length() && 1;
+            		return false;
+            	}catch(e){
+            		return true;
+            	}
+            }
+        },{
+            description: 'string operations',
+            test: function(){
+            	return 'a'+'b'=='ab' && 'a'+1=='a1' && 1+'a'=='1a';
+            }
+        },{
+        	description: 'mixed floating point/integer operations',
+        	test: function(){
+				return 1+1.2==2.2 && 1.2+1==2.2;
+        	}
+        },{
+        	description: 'not expression on non boolean throws exception',
+        	test: function(){
+        		try{
+        			let a=! 'a'.length();
+        			return false;
+        		}catch(e){
+        			return true;
+        		}	
+        	}
+        }
+	]
+};

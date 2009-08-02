@@ -1,4 +1,21 @@
 {
+
+(**
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Jtemplate lexer
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
+*)
+
 open RuntimeError
 open Parser
 open Ast
@@ -110,10 +127,10 @@ and single_quote_string s = parse
 | [^ '\''] as c  { single_quote_string (s ^ String.make 1 c) lexbuf }
 | eof  { syntax_exception "Unterminated string constant" lexbuf }
 and double_quote_string s = parse
-| '\n'  { incr_linenum lexbuf; single_quote_string (s ^ "\n") lexbuf }
+| '\n'  { incr_linenum lexbuf; double_quote_string (s ^ "\n") lexbuf }
 | '"'  { STRING(s) }
-| '\\' { single_quote_string (s ^ (escape_char lexbuf)) lexbuf }
-| [^ '"'] as c  { single_quote_string (s ^ String.make 1 c) lexbuf }
+| '\\' { double_quote_string (s ^ (escape_char lexbuf)) lexbuf }
+| [^ '"'] as c  { double_quote_string (s ^ String.make 1 c) lexbuf }
 | eof  { syntax_exception "Unterminated string constant" lexbuf }
 and escape_char =parse
 | '\\' {"\\"}

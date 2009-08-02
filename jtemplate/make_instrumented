@@ -137,10 +137,9 @@ build/jtemplate.cmo: build/runtimeError.cmo build/parser_util.cmo build/library.
 
 build/jtemplate-i: build/ast.cmo build/runtimeError.cmo build/expression.cmo build/environment.cmo \
 	build/interpreter.cmo build/parser.cmo build/lexer.cmo build/library_builtin.cmo build/library.cmo \
-	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/analysis.cmo build/jtemplate.cmo\
-	build/ast_info.cmo 
+	build/library_io.cmo build/library_string.cmo build/parser_util.cmo build/analysis.cmo build/jtemplate.cmo
 	ocamlc $(LINK_FLAGS) unix.cma build/ast.cmo build/runtimeError.cmo build/environment.cmo build/expression.cmo \
 	build/Interpreter.cmo build/library_builtin.cmo build/library_io.cmo build/library_string.cmo \
 	build/library.cmo build/filename_util.cmo build/parser.cmo build/lexer.cmo build/parser_util.cmo \
-	build/analysis.cmo build/ast_info.cmo build/jtemplate.cmo -o build/jtemplate-i
+	build/analysis.cmo build/jtemplate.cmo -o build/jtemplate-i
 

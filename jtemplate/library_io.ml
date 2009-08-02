@@ -1,3 +1,19 @@
+(**
+This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+I / O library implementation
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+
+*)
+
 open Environment
 open Ast
 open Expression
@@ -153,35 +169,35 @@ let initialize env =
 						| InChannel(ch, _) -> raise (LibraryError ("invalid handle in call to write. Handle "^handle^" was opened for reading "^filename))
 		};
 		{
-			name=["File";"readln"];
-			args=["handle"];
-			num_args=1;
-			vararg=false;
-			code= fun env ->
-					let handle = string_of_value (env.stackframes.(0).(1)) in
-					let (c, filename) = get_descriptor handle "readln" in
-					match c with
-					| OutChannel(ch) -> raise (EIOPassthrough ("invalid handle in call to readln. Handle "^handle^" was opened for writing "^filename))
-					| InChannel(ch, (_, true)) -> raise (EIOPassthrough ("End of file reached for handle "^handle^" in call to readln"))
-					| InChannel(ch, (data, false)) ->
-							( try
-								Hashtbl.replace descriptors handle (InChannel(ch, (try_read ch)), filename)
-							with
-							| EIOPassthrough(msg) -> raise (LibraryError msg)
-							| _ -> raise (LibraryError ("error reading file "^filename^" in readln")));
-							raise (CFReturn(RStringValue(data)))
+			name =["File";"readln"];
+			args =["handle"];
+			num_args = 1;
+			vararg = false;
+			code = fun env ->
+						let handle = string_of_value (env.stackframes.(0).(1)) in
+						let (c, filename) = get_descriptor handle "readln" in
+						match c with
+						| OutChannel(ch) -> raise (EIOPassthrough ("invalid handle in call to readln. Handle "^handle^" was opened for writing "^filename))
+						| InChannel(ch, (_, true)) -> raise (EIOPassthrough ("End of file reached for handle "^handle^" in call to readln"))
+						| InChannel(ch, (data, false)) ->
+								( try
+									Hashtbl.replace descriptors handle (InChannel(ch, (try_read ch)), filename)
+								with
+								| EIOPassthrough(msg) -> raise (LibraryError msg)
+								| _ -> raise (LibraryError ("error reading file "^filename^" in readln")));
+								raise (CFReturn(RStringValue(data)))
 		};
 		{
-			name=["File";"eof"];
-			args=["handle"];
-			num_args=1;
-			vararg=false;
-			code= fun env ->
-					let handle = string_of_value (env.stackframes.(0).(1)) in
-					let (c, filename) = get_descriptor handle "eof" in
-					match c with
-					| OutChannel(ch) -> raise (EIOPassthrough("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
-					| InChannel(ch, (_, eof)) -> raise (CFReturn(RBooleanValue(eof)))
+			name =["File";"eof"];
+			args =["handle"];
+			num_args = 1;
+			vararg = false;
+			code = fun env ->
+						let handle = string_of_value (env.stackframes.(0).(1)) in
+						let (c, filename) = get_descriptor handle "eof" in
+						match c with
+						| OutChannel(ch) -> raise (EIOPassthrough("invalid handle in call to eof. Handle "^handle^" was opened for writing "^filename))
+						| InChannel(ch, (_, eof)) -> raise (CFReturn(RBooleanValue(eof)))
 		};
 		{
 			name =["File";"exists"];
@@ -228,9 +244,10 @@ let initialize env =
 			code = fun env ->
 						let name = string_of_value (env.stackframes.(0).(1)) in
 						try
-							mkdir name 0o640;
+							mkdir name 0o777;
 							raise (CFReturn(RBooleanValue(true)))
 						with
+						| CFReturn _ as e -> raise e
 						| _ -> raise (CFReturn(RBooleanValue(false)))
 		};
 		{
@@ -244,6 +261,7 @@ let initialize env =
 							rmdir name;
 							raise (CFReturn(RBooleanValue(true)))
 						with
+						| CFReturn _ as e -> raise e
 						| _ -> raise (CFReturn(RBooleanValue(false)))
 		};
 		{
@@ -279,6 +297,6 @@ let initialize env =
 						raise (CFReturn(RBooleanValue((try
 											Sys.is_directory name
 										with
-										| _ -> raise (CFReturn(RVoid))))))
+										| _ -> raise (CFReturn(RBooleanValue(false)))))))
 		};
 		], env)

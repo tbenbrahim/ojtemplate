@@ -21,6 +21,15 @@ var main=function(){
     import 'suites/test_lib_string.jtp';
     results.push(runSuite(testSuite));
 
+    import 'suites/test_errors.jtp';
+    results.push(runSuite(testSuite));
+
+    import 'suites/test_expressions.jtp';
+    results.push(runSuite(testSuite));
+
+    import 'suites/test_io.jtp';
+    results.push(runSuite(testSuite));
+
     println();
     println('=======');
     println('SUMMARY:');

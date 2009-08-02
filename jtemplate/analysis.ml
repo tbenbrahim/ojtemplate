@@ -1,11 +1,11 @@
 (**
-This program is free software; you can redistribute it and/or modify
+This program is free software; you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; version 3 of the License.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 Create an optimized AST from the parsing phase AST
@@ -24,13 +24,14 @@ The second pass replaces all non function variables whose value have not been mo
 with a constant value, and evaluates operations on constants , eliminates assignment
 statements on constant values when the variable is not reassigned and not written
 
-@author Tony BenBrahim <tony.benbrahim at gmail.com >
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
 
 *)
 
 open Ast
 open Environment
 open Parser_util
+open RuntimeError
 
 (**
 Prints all errors in an analysis environment and raises FatalExit if there are errors
@@ -40,7 +41,7 @@ Prints all errors in an analysis environment and raises FatalExit if there are e
 *)
 let check_errors env =
 	List.fold_left (fun _ error -> print_string ("ERROR: "^error^"\n")) () (List.rev env.errors);
-	if List.length env.errors > 0 then raise (RuntimeError.FatalExit RuntimeError.AnalysisErrors)
+	if List.length env.errors > 0 then raise RuntimeError.FatalExit
 	else ()
 
 (**
@@ -65,7 +66,7 @@ let check_warnings env =
 						in match line with
 						| 0 -> env
 						| _ ->
-								let env = if varprop.read_after_declared = false then
+								let env = if varprop.read_after_declared = false && line!=0 then
 										add_warning env varprop.declaration_loc ("Variable "^(List.hd names)^" is never read.")
 									else
 										env
@@ -416,9 +417,9 @@ and analyze_variables env ast =
 								(try
 									(RValue(Expression.evaluate_op v1 v2 op), env)
 								with
-								| Expression.EInvalidOperation(_, t) ->
+								| EInvalidOperation(_, t) ->
 										(RBinaryOp(expr1, op, expr2), Environment.add_error env cloc ("invalid operation for "^t^" types"))
-								| Expression.EIncompatibleTypes(t1, t2) ->
+								| EIncompatibleTypes(t1, t2) ->
 										(RBinaryOp(expr1, op, expr2), Environment.add_error env cloc ("incompatible types "^t1^" and "^t2))
 								)
 						| _ -> (RBinaryOp(expr1, op, expr2), env))
@@ -430,7 +431,7 @@ and analyze_variables env ast =
 								(try
 									(RValue(Expression.compare v1 op v2), env)
 								with
-								| Expression.EInvalidComparaison(_, _, _) ->
+								| EInvalidComparaison(_, _, _) ->
 										(RCompOp(expr1, op, expr2), Environment.add_error env cloc ("invalid  comparaison"))
 								)
 						| _ -> (RCompOp(expr1, op, expr2), env))
@@ -573,8 +574,8 @@ and analyze_variables env ast =
 			in (RStatementBlock(ast), Environment.pop_scope newenv)
 	| Switch(expr, stmt_list, cloc) ->
 			let newenv = Environment.new_analysis_scope env
+			in let (expr, newenv) = resolve_expr newenv expr cloc
 			in let (ast, newenv) = analyze_variables_in_block newenv stmt_list
-			in let (expr, env) = resolve_expr env expr cloc
 			in (RSwitch(expr, ast, cloc), Environment.pop_scope newenv)
 	| TryCatch(stmt1, name, stmt2, cloc) ->
 			let newenv = Environment.new_analysis_scope env

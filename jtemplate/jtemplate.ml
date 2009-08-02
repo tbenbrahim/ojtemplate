@@ -22,7 +22,7 @@ open Filename_util
 open RuntimeError
 open Environment
 open Analysis
-open Ast_info
+(**open Ast_info*)
 
 let _ =
 	(**
@@ -42,12 +42,20 @@ let _ =
 	else
 		(
 			let filename = Sys.argv.(1) in
-			let ast = if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
+			let ast = try
+					if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
+				with ParseException(_) as ex ->
+						RuntimeError.display_error ex ("", 0);
+						exit(- 2)
 			in let (ast, env) =
 				try Analysis.analyze ast
-				with RuntimeError.FatalExit(_) -> exit(- 2)
+				with
+				| RuntimeError.FatalExit(_) -> exit(- 2)
+				| ex ->
+						RuntimeError.display_error ex ("", 0);
+						exit(- 2)
 			in
-			(**			AstInfo.print_ast ast;
+			(**AstInfo.print_ast ast;
 			print_name_info env;*)
 			let renv ={
 				heap = Array.make env.num_globals (- 1, RUndefined);
@@ -55,8 +63,8 @@ let _ =
 				closure_vars = None;
 				gnames = Array.of_list env.names;
 				current_line = ("", 0);
-				callstack =Stack.create ();
-				skip_callstack_pop=false;
+				callstack = Stack.create ();
+				skip_callstack_pop = false;
 			}
 			in let _ = Library.register_for_runtime env renv
 			in let _ = register_args argl renv
@@ -64,5 +72,10 @@ let _ =
 				Interpreter.interpret renv ast
 			with
 			| RuntimeError.FatalExit _ -> exit(- 1)
-			| ex -> RuntimeError.display_error ex renv.current_line
+			| ex ->
+					RuntimeError.display_error ex renv.current_line;
+					Stack.iter (fun loc -> let (file, line) = loc in
+									print_string ("\tCalled from " ^ file ^ " line " ^ (string_of_int line))) renv.callstack;
+					exit(- 1)
+			
 		)

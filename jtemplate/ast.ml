@@ -208,4 +208,5 @@ exception CFBreak
 
 exception CFContinue
 
-exception CFUserException of runtime_variable_value
+exception CFUserException of runtime_variable_value * string
+
