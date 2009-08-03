@@ -75,8 +75,8 @@ let float = (( (['0'-'9']+'.'['0'-'9']*) | (['0'-'9']*'.'['0'-'9']+) ) ('e'['+' 
 rule main = parse 
 | whitespace { main lexbuf }
 | text as token { TEXT(String.sub token 1 ((String.length token) - 1))}
-| digit+ as token { INT( int_of_string token)}
-| float as token { REAL(float_of_string token)}
+| digit+ as token { try  INT( int_of_string token) with _ -> OUTOFRANGENUMBER }
+| float as token { try REAL(float_of_string token) with _ -> OUTOFRANGENUMBER }
 | id as token { (map_id token )}
 | '\'' { single_quote_string "" lexbuf } 
 | '"' { double_quote_string "" lexbuf }
