@@ -1,0 +1,7 @@
+let UNLIMITED=2147483647; //1073741824
+
+let Model={
+	create: function(name){
+	}
+	
+};

@@ -1,0 +1,29 @@
+import 'ModelMaker.jtp';
+
+let model=Model.create('sample model');
+
+let customer=model.add('customers');
+customer.add('first name').type('string').maxLength(50).required();
+customer.add('last name').type('string').maxLength(50).required();
+
+let product=model.add('products');
+product.add('name').type('string').maxLength(100).required();
+product.add('description').type('string').maxLength(UNLIMITED).required();
+product.add('price').type('float').required();
+product.add('quantity on hand').type('integer').required();
+product.add('active').type('boolean');
+
+let orderLineItem=model.add('orderLineItem');
+orderLineItem.references(product).manyToOne();
+orderLineItem.add('quantity').type('integer').required();
+orderLineItem.add('unit price').type('float').required();
+
+let order=model.add('orders');
+order.references(customers).manyToOne().required();
+order.add('order date').type('date').required();
+order.references(orderLineItem).oneToMany();
+
+model.validate();
+model.generateTo('./mymodel/');
+
+
