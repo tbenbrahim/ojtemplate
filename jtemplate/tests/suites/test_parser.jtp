@@ -60,5 +60,12 @@ var testSuite = {
 			let a=!(true==false);
 			return true;
 		}
-	}  ]
+	},{
+        	description: 'unterminated comment',
+        	test: function(){
+				return 2==System.command('../_build/jtemplate.native suites/bad_samples/bad_unterminated_comment.jtp');
+        	}
+        }
+	
+	]
 };

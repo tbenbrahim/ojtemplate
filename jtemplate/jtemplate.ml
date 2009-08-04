@@ -61,15 +61,15 @@ let _ =
 				)
 		with ParseException(_) as ex ->
 				RuntimeError.display_error ex ("", 0);
-				exit(- 2)
+				exit(2)
 	(* analyze AST and create optimized runtime AST *)
 	in let (ast, env) =
 		try Analysis.analyze ast
 		with
-		| RuntimeError.FatalExit(_) -> exit(- 2)
+		| RuntimeError.FatalExit(_) -> exit(2)
 		| ex ->
 				RuntimeError.display_error ex ("", 0);
-				exit(- 2)
+				exit(2)
 	(* show parse tree if dictated by command line switch *)
 	in let _ = (if !show_parse_tree then
 				(AstInfo.print_ast ast; print_name_info env)
@@ -93,9 +93,9 @@ let _ =
 	in try
 		Interpreter.interpret renv ast
 	with
-	| RuntimeError.FatalExit _ -> exit(- 1)
+	| RuntimeError.FatalExit _ -> exit(1)
 	| ex ->
 			RuntimeError.display_error ex renv.current_line;
 			Stack.iter (fun loc -> let (file, line) = loc in
 							print_string ("\tCalled from " ^ file ^ " line " ^ (string_of_int line))) renv.callstack;
-			exit(- 1)
+			exit(1)

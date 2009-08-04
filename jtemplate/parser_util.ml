@@ -26,7 +26,7 @@ let get_ast lexbuf =
             (" at line " ^
               ((string_of_int line) ^
                 (" col " ^ ((string_of_int col) ^ "\n")))));
-        exit 0)
+        exit 2)
 
 let parse channel name =
   let lexbuf = Lexing.from_channel channel in
