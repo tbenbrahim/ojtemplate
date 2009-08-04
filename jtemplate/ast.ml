@@ -169,25 +169,22 @@ statement =
 
 and (** statements used in runtime AST *)
 runtime_statement =
-	| RForEach of variable_location * runtime_expression * runtime_statement
-	* (string * int)
-	| RFor of runtime_expression * runtime_expression * runtime_expression
-	* runtime_statement * (string * int)
+	| RForEach of variable_location * runtime_expression * runtime_statement	* (string * int)
+	| RFor of runtime_expression * runtime_expression * runtime_expression	* runtime_statement * (string * int)
 	| RExpressionStatement of runtime_expression * (string * int)
 	| RBreak of (string * int)
 	| RContinue of (string * int)
 	| RNoop
 	| RReturn of runtime_expression * (string * int)
-	| RIf of runtime_expression * runtime_statement * runtime_statement
-	* (string * int)
+	| RIf of runtime_expression * runtime_statement * runtime_statement	* (string * int)
 	| RStatementBlock of runtime_statement list
 	| RProgram of runtime_statement list
 	| RSwitch of runtime_expression * runtime_statement list * (string * int)
 	| RCase of runtime_expression option * (string * int)
-	| RTryCatch of runtime_statement * variable_location * runtime_statement
-	* (string * int)
+	| RTryCatch of runtime_statement * variable_location * runtime_statement	* (string * int)
 	| RTryFinally of runtime_statement * runtime_statement * (string * int)
 	| RThrow of runtime_expression * (string * int)
+	| RFastIterator of variable_location * int * int * int * runtime_statement * (string * int) 
 
 (**
 determines if a variable is a varag

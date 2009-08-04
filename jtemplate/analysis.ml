@@ -18,11 +18,13 @@ Pass 1:
 - evaluate operations on constants and replace with value in AST
 - determine if variables are initialized with a constant value (rather than an expression),
 if a variable is written after being declared and if it is ever read after being declared
+- determine if a function is inlineable
 
 Pass 2:
 The second pass replaces all non function variables whose value have not been modified
 with a constant value, and evaluates operations on constants , eliminates assignment
-statements on constant values when the variable is not reassigned and not written
+statements on constant values when the variable is not reassigned and not written,
+inline functions
 
 @author Tony BenBrahim < tony.benbrahim at gmail.com >
 
@@ -109,6 +111,7 @@ let print_name_info env =
 * - evaluate operations on constants and replace with value in AST
 * - determine if variables are initialized with a constant value (rather than an expression)
 * - determine if a variable is written after being declared and if it is ever read after being declared
+* - determine if a function is inlineable
 **********************************************************************************************
 *)
 
@@ -335,7 +338,7 @@ and analyze_variables env ast =
 					List.fold_left (fun r e -> find_in_expr r e)
 						(find_in_expr result e) elist
 		and process result = function
-			| RNoop | RContinue(_) | RCase(None, _) | RBreak(_) -> result
+			| RNoop | RContinue(_) | RCase(None, _) | RBreak(_) | RFastIterator _ -> result
 			| RStatementBlock(slist) -> loop result slist
 			| RTryCatch(s1, _, s2, _) | RTryFinally(s1, s2, _) ->
 					process (process result s1) s2
@@ -645,6 +648,7 @@ and analyze_variables env ast =
 * - replace all constant declarations with Noop
 * - replace all constant variables with their value
 * - replace all constant expressions with the computed value
+* - replace all calls to inlineable functions with an expression
 **********************************************************************************************
 *)
 
@@ -750,14 +754,27 @@ and pass2 env = function
 	| RThrow(expr, cloc) -> RThrow(replace_constant env [] expr, cloc)
 	| RCase(Some expr, cloc) -> RCase(Some (replace_constant env [] expr), cloc)
 	| RReturn(expr, cloc) -> RReturn(replace_constant env [] expr, cloc)
-	| RContinue(_) | RBreak(_) | RCase(None, _) | RNoop as stmt -> stmt
+	| RContinue(_) | RBreak(_) | RCase(None, _) | RNoop | RFastIterator _ as stmt -> stmt
 	| RExpressionStatement(expr, cloc) ->
 			(match replace_constant env [] expr with
 				| RValue(RUndefined) -> RNoop
 				| expr -> RExpressionStatement(expr, cloc))
 	| RFor(expr1, expr2, expr3, stmt, cloc) ->
-			RFor(replace_constant env [] expr1, replace_constant env [] expr2, replace_constant env [] expr3,
-				pass2 env stmt, cloc)
+			let expr1 = replace_constant env [] expr1
+			in let expr2 = replace_constant env [] expr2
+			in let expr3 = replace_constant env [] expr3
+			in let stmt = pass2 env stmt
+			in (match (expr1, expr2, expr3) with
+				| (RDeclaration(RVariable(vloc1), RValue(RIntegerValue(start))),
+				RCompOp(RVariable(vloc2), LessThan, RValue(RIntegerValue(max))),
+				RPostFixSum(RVariable(vloc3), inc)) when vloc1 = vloc2 && vloc1 = vloc3 ->
+						RFastIterator(vloc1, start , max , inc, stmt , cloc)
+				| (RDeclaration(RVariable(vloc1), RValue(RIntegerValue(start))),
+				RCompOp(RVariable(vloc2), LessThan, RValue(RIntegerValue(max))),
+				RAssignment(RVariable(vloc3), RBinaryOp(RVariable(vloc4), Plus, RValue(RIntegerValue(inc)))))
+				when vloc1 = vloc2 && vloc1 = vloc3 & vloc1 = vloc4 ->
+						RFastIterator(vloc1, start , max , inc, stmt , cloc)
+				| _ -> RFor(expr1, expr2 , expr3 , stmt , cloc))
 	| RIf(expr, stmt1, stmt2, cloc) -> RIf(replace_constant env [] expr, pass2 env stmt1, pass2 env stmt2, cloc)
 	| RTryFinally(stmt1, stmt2, cloc) -> RTryFinally(pass2 env stmt1, pass2 env stmt2, cloc)
 	| RTryCatch(stmt1, v, stmt2, cloc) -> RTryCatch(pass2 env stmt1, v, pass2 env stmt2, cloc)
