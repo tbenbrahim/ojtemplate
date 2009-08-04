@@ -198,7 +198,7 @@ var testSuite={
         	test: function(){
         		return typeof(1)=='integer' && typeof(1.2)=='float' && typeof('a')=='string' &&
         		  typeof(true)=='boolean' && typeof(Void)=='void' && typeof(function(){})=='function' &&
-        		  typeof([])=='array' && typeof({})=='map' && typeof(NaN)=='NaN' &&
+        		  typeof([])=='array' && typeof({})=='map' &&
         		  typeof(String.prototype.length)=='function';
         	}
         },{
