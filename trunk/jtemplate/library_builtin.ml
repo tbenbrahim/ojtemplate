@@ -181,8 +181,8 @@ let initialize env =
 			vararg = false;
 			code = fun env ->
 						match env.stackframes.(0).(1) with
-						| RIntegerValue(c) -> if c >= - 128 && c <= 127 then exit c else
-									raise (LibraryError("exitcode must be an integer between -128 and 127 in call to exit"))
+						| RIntegerValue(c) -> if c >= 0 && c <= 255 then exit c else
+									raise (LibraryError("exitcode must be an integer between 0 and 255 in call to exit"))
 						| _ -> raise (LibraryError("exitcode must be an integer in call to exit"))
 		};
 		{
