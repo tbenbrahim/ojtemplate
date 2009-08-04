@@ -69,7 +69,6 @@ variable_value =
 	| FunctionValue of string list * statement list
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
-	| NaN
 
 and (** variable values used in runtime AST *)
 runtime_variable_value =
@@ -84,7 +83,6 @@ runtime_variable_value =
 	RLibraryFunction of lib_function_def
 	| RMapValue of (string, runtime_variable_value) Hashtbl.t * map_subtype
 	| RVoid
-	| RNaN
 	| RUndefined
 
 and (**

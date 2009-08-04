@@ -318,9 +318,6 @@ and resolve_func_this env fexpr =
 				| RVoid ->
 						let (env, v) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(6, 6)), RValue(RStringValue("prototype"))), funcname))
 						in v
-				| RNaN ->
-						let (env, v) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(7, 7)), RValue(RStringValue("prototype"))), funcname))
-						in v
 				| RMapValue(_, ArraySubtype) ->
 						let (env, v) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(8, 8)), RValue(RStringValue("prototype"))), funcname))
 						in v

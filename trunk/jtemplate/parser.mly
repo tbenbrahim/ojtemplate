@@ -57,7 +57,7 @@ let extract_stmt_list=function
 %token FOREACH WHILE IF  FOR ELSE TEMPLATE INSTRUCTIONS FUNCTION CONTINUE BREAK
 %token RETURN IN ONCE WHEN VAR EOF LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token COMMA SEMICOLON COLON DOTDOTDOT DOT EQUALS NOT QUESTION PLUS MINUS TIMES
-%token DIVIDE MODULO AND OR VOID NAN SWITCH CASE DEFAULT PLUSEQUALS MINUSEQUALS
+%token DIVIDE MODULO AND OR VOID SWITCH CASE DEFAULT PLUSEQUALS MINUSEQUALS
 %token TIMESEQUALS DIVEQUALS MODEQUALS PLUSPLUS MINUSMINUS AT TRY CATCH THROW
 %token FINALLY PROTOTYPE OUTOFRANGENUMBER
 
@@ -157,7 +157,6 @@ atom_expr:
     | STRING                                  { Value(StringValue($1)) }
     | BOOLEAN                                 { Value(BooleanValue($1)) }
     | VOID                                    { Value(Void) }
-    | NAN                                     { Value(NaN) }
     | LBRACKET expr_list RBRACKET             { ArrayExpr($2) }
     | LBRACE prop_list RBRACE                 { MapExpr($2) }
     | ID                                      { Id($1) }

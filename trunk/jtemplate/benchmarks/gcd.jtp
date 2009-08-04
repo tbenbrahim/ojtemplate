@@ -3,6 +3,6 @@ var gcd=function(x,y){
 };
 
 var a=0;
-for (var i=0;i<10000;i++)
+for (var i=0;i<10000;i=i+1)
 	a=gcd(28388383,100101);
 println(a);

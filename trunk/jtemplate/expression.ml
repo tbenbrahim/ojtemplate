@@ -59,7 +59,6 @@ let rec string_of_value = function
 								s^prop^": "^(string_of_value v)^";") t "{")^"}"
 	| RFunctionValue(_, _, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
 	| RVoid -> "void"
-	| RNaN -> "NaN"
 	| RUndefined -> "undefined"
 
 (**
@@ -93,7 +92,6 @@ let value_type = function
 	| RMapValue(_, MapSubtype) -> MapType
 	| RMapValue(_, ArraySubtype _) -> ArrayType
 	| RVoid -> VoidType
-	| RNaN -> NaNType
 	| RUndefined -> UndefinedType
 
 (**
@@ -110,7 +108,6 @@ let string_of_value_type = function
 	| RMapValue(_, MapSubtype) -> "map"
 	| RFunctionValue(_, _, _, _, _, _, _)	| RLibraryFunction(_) -> "function"
 	| RVoid -> "void"
-	| RNaN -> "NaN"
 	| RUndefined -> "undefined"
 
 (** type to hold the result of casting two values to the same type *)
@@ -166,8 +163,8 @@ let evaluate_op value1 value2 operator =
 				| Plus -> RIntegerValue( i1 + i2 )
 				| Minus -> RIntegerValue( i1 - i2)
 				| Times -> RIntegerValue( i1 * i2)
-				| Divide -> (try RIntegerValue( i1 / i2) with Division_by_zero -> RNaN)
-				| Modulo -> (try RIntegerValue( i1 mod i2) with Division_by_zero -> RNaN)
+				| Divide -> RIntegerValue( i1 / i2) 
+				| Modulo -> RIntegerValue( i1 mod i2)
 				| _ -> raise (EInvalidOperation (string_of_operator operator,"integer"))
 			)
 	| (RBooleanValue(b1), RBooleanValue(b2)) ->
@@ -250,16 +247,6 @@ let rec compare v1 op v2 =
 							| Equal -> RBooleanValue(true)
 							| NotEqual -> RBooleanValue(false)
 							| _ -> raise (EInvalidComparaison(opname op, string_of_value_type v1, string_of_value_type v2)) )
-				| _ -> mismatched_compare v1 op v2 )
-	| RNaN ->
-			(match v2 with
-				| RNaN  -> (
-							match op with
-							| Equal -> RBooleanValue(true)
-							| NotEqual -> RBooleanValue(false)
-							| _ -> raise (EInvalidComparaison(opname op,
-												string_of_value_type v1,
-												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
 	| RFloatValue(f1) ->
 			(match v2 with
