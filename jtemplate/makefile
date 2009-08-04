@@ -7,7 +7,7 @@ coverage: build/jtemplate-i coverage-report
 
 coverage-report: 
 	rm -f bisect*.out
-	build/jtemplate-i tests/tests.jtp
+	build/jtemplate-i -parsetree tests/tests.jtp
 	bisect-report bisect0001.out -html coverage -title "Code coverage for the Jtemplate interpreter" bisect*.out
 	
 clean:

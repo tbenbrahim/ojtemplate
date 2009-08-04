@@ -26,56 +26,76 @@ open Ast_info
 
 let _ =
 	(**
-	Registers arguments in the runtime environment
+	Registers script arguments (arguments following the script file)
+	@param args a list of string arguments
+	@env runtime environment
+	@return unit
 	*)
-	let register_args len env =
-		let h = Hashtbl.create (len - 1)
+	let register_args args env =
+		let h = Hashtbl.create 1
 		in let rec loop = function
-			| 0 -> ()
-			| ind -> Hashtbl.add h (string_of_int (ind - 1)) (RStringValue(Sys.argv.(ind))); loop (ind - 1)
-		in loop (len - 1);
-		Hashtbl.add h "length" (RIntegerValue(len - 1));
-		Environment.set_value env (RMapValue(h, ArraySubtype)) (GlobalVar(0, 0))
-	in let argl = Array.length Sys.argv in
-	if argl < 2 then
-		prerr_string ("Usage: "^(Filename.basename Sys.argv.(0))^" scriptfile [args...]\n")
-	else
-		(
-			let filename = Sys.argv.(1) in
-			let ast = try
-					if filename ="-" then Parser_util.parse stdin "stdin" else Parser_util.parse_filename (resolve_filename (Unix.getcwd()) filename)
-				with ParseException(_) as ex ->
-						RuntimeError.display_error ex ("", 0);
-						exit(- 2)
-			in let (ast, env) =
-				try Analysis.analyze ast
-				with
-				| RuntimeError.FatalExit(_) -> exit(- 2)
-				| ex ->
-						RuntimeError.display_error ex ("", 0);
-						exit(- 2)
-			in
-			AstInfo.print_ast ast;
-			print_name_info env;
-			let renv ={
-				heap = Array.make env.num_globals (- 1, RUndefined);
-				stackframes = Array.make (env.max_depth + 1) [||];
-				closure_vars = None;
-				gnames = Array.of_list env.names;
-				current_line = ("", 0);
-				callstack = Stack.create ();
-				skip_callstack_pop = false;
-			}
-			in let _ = Library.register_for_runtime env renv
-			in let _ = register_args argl renv
-			in try
-				Interpreter.interpret renv ast
-			with
-			| RuntimeError.FatalExit _ -> exit(- 1)
-			| ex ->
-					RuntimeError.display_error ex renv.current_line;
-					Stack.iter (fun loc -> let (file, line) = loc in
-									print_string ("\tCalled from " ^ file ^ " line " ^ (string_of_int line))) renv.callstack;
-					exit(- 1)
-			
-		)
+			| (n,[]) -> 
+				Hashtbl.add h "length" (RIntegerValue(n));
+				Environment.set_value env (RMapValue(h, ArraySubtype)) (GlobalVar(0, 0))
+			| (ind,arg::tl) -> Hashtbl.add h (string_of_int ind) (RStringValue(arg)); loop (ind+1,tl)
+		in loop (0,args);
+	(* parse command line arguments *)
+	in let show_parse_tree = ref false and args_list = ref [] and print_version = ref false
+	in let _ = Arg.parse
+			[("-parsetree", Arg.Unit (fun () -> show_parse_tree := true), "print the parse tree and symbols before executing the program");
+			("-version", Arg.Unit (fun () -> print_version := true), "print the version and exit")
+			] (fun arg -> args_list:= (arg::!args_list)) ("jtemplate [-p] scriptfile [scriptargs...]" ^
+				"scriptfile the script file to execute, read from stdin if missing\n"^"scriptargs... optional script arguments, separated by a space")
+	in let _ = (if !print_version then (print_string "Jtemplate 0.8\n"; exit(0)) else ())
+	in let args = List.rev !args_list
+	in let filename = match args with
+		| [] -> "-"
+		| name:: tl -> name
+	(* generate parsing AST *)
+	in let ast = try
+			if filename ="-" then Parser_util.parse stdin "stdin" 
+			else (
+				let resolved_filename=resolve_filename (Unix.getcwd()) filename
+				in Unix.chdir (Filename.dirname resolved_filename);
+				Parser_util.parse_filename (resolved_filename)
+				)
+		with ParseException(_) as ex ->
+				RuntimeError.display_error ex ("", 0);
+				exit(- 2)
+	(* analyze AST and create optimized runtime AST *)
+	in let (ast, env) =
+		try Analysis.analyze ast
+		with
+		| RuntimeError.FatalExit(_) -> exit(- 2)
+		| ex ->
+				RuntimeError.display_error ex ("", 0);
+				exit(- 2)
+	(* show parse tree if dictated by command line switch *)
+	in let _ = (if !show_parse_tree then
+				(AstInfo.print_ast ast; print_name_info env)
+			else
+				())
+	in
+	(* create a runtime environment *)
+	let renv ={
+		heap = Array.make env.num_globals (- 1, RUndefined);
+		stackframes = Array.make (env.max_depth + 1) [||];
+		closure_vars = None;
+		gnames = Array.of_list env.names;
+		current_line = ("", 0);
+		callstack = Stack.create ();
+		skip_callstack_pop = false;
+	}
+	(* copy library definitions to runtimwe environment *)
+	in let _ = Library.register_for_runtime env renv
+	in let _ = register_args args renv
+	(* interpret runtime AST *)
+	in try
+		Interpreter.interpret renv ast
+	with
+	| RuntimeError.FatalExit _ -> exit(- 1)
+	| ex ->
+			RuntimeError.display_error ex renv.current_line;
+			Stack.iter (fun loc -> let (file, line) = loc in
+							print_string ("\tCalled from " ^ file ^ " line " ^ (string_of_int line))) renv.callstack;
+			exit(- 1)

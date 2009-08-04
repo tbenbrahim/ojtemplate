@@ -9,10 +9,10 @@ texts['fold000088'] = '<a href="javascript:fold(\'fold000088\');"><img border="0
 states['fold000088'] = false;
 texts['fold000133'] = '<a href="javascript:fold(\'fold000133\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 133 to line 183</i>';
 states['fold000133'] = false;
-texts['fold000187'] = '<a href="javascript:fold(\'fold000187\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 187 to line 244</i>';
+texts['fold000187'] = '<a href="javascript:fold(\'fold000187\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 187 to line 243</i>';
 states['fold000187'] = false;
-texts['fold000246'] = '<a href="javascript:fold(\'fold000246\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 246 to line 248</i>';
-states['fold000246'] = false;
+texts['fold000245'] = '<a href="javascript:fold(\'fold000245\');"><img border="0" height="10" width="10" src="plus.png" title="unfold code"/></a><i>&nbsp;&nbsp;code folded from line 245 to line 247</i>';
+states['fold000245'] = false;
 
 function fold(id) {
   tmp = document.all[id].innerHTML;
