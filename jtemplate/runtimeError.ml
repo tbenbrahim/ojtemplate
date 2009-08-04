@@ -110,6 +110,7 @@ let string_of_error ex =
 	| ENotAFunction -> "EXP-12 invalid function call on a non-function variable"
 	| ENotACollectionType (msg, typename) -> "EXP-13 expected a collection type for " ^ msg ^ ", but got a " ^
 			typename
+	| Division_by_zero -> "EXP-14 Division by zero"
 	| EDefaultCaseShouldBeLast -> "STM-00 the default case in a switch statement should be the last case"
 	| CFReturn _ -> "STM-01 unexpected return statement outside of a function definition"
 	| CFBreak -> "STM-02 unexpected break statement outside of a loop"

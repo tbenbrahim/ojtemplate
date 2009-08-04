@@ -119,7 +119,6 @@ struct
 						(prefix level) ^ ("Float " ^ ((string_of_float v) ^ "\n"))
 				| RMapValue( _, _) -> "" (* Not in AST *)
 				| RVoid -> (prefix level) ^"void\n"
-				| RNaN -> (prefix level) ^"NaN\n"
 				| RUndefined -> (prefix level) ^"Undefined\n"
 			
 			and statement_list level stmt_list =

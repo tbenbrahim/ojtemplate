@@ -1,4 +1,4 @@
-
+// Example 1
 let side=4;
 
 let square=function(x){
@@ -11,4 +11,17 @@ let printarea=function(x){
 
 printarea(side);
 
-printarea(side);
+// Example 2
+
+let add=function(x,y){
+	return x+y;
+};
+
+let printf=function(f,x,y){
+	println(f(x,y));
+};
+
+let a=1;
+let b=2;
+
+printf(add,a,b);

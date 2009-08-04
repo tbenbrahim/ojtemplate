@@ -363,7 +363,6 @@ and analyze_variables env ast =
 		| FloatValue(v) -> (RFloatValue(v), env)
 		| BooleanValue(v) -> (RBooleanValue(v), env)
 		| Void -> (RVoid, env)
-		| NaN -> (RNaN, env)
 		| MapValue(h, s) ->
 				(RMapValue(Hashtbl.fold (fun k v h ->
 										let (repl, env) = convert_value env cloc v
@@ -425,6 +424,7 @@ and analyze_variables env ast =
 								(try
 									(RValue(Expression.evaluate_op v1 v2 op), env)
 								with
+								| Division_by_zero -> (RBinaryOp(expr1, op, expr2), Environment.add_error env cloc "division by zero")
 								| EInvalidOperation(_, t) ->
 										(RBinaryOp(expr1, op, expr2), Environment.add_error env cloc ("invalid operation for "^t^" types"))
 								| EIncompatibleTypes(t1, t2) ->

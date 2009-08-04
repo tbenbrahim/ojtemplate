@@ -53,7 +53,6 @@ let map_id name=
     | "true" -> BOOLEAN(true)
     | "false" -> BOOLEAN(false)
     | "Void"  -> VOID
-    | "NaN" -> NAN 
     | "import" -> IMPORT(false)
     | "use" -> IMPORT(true)
     | "switch" -> SWITCH

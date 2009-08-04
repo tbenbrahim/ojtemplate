@@ -241,7 +241,6 @@ let initialize env =
 							| RMapValue(_, ArraySubtype) -> "array"
 							| RMapValue(_, MapSubtype) ->"map"
 							| RVoid ->"void"
-							| RNaN -> "NaN"
 							| RUndefined -> "undefined"
 						in raise (CFReturn (RStringValue s))
 		};

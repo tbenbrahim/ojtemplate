@@ -1,7 +1,7 @@
 <?php
 function fib($n)
 {
-	return $n >1 ?  fib($n - 1) + fib($n - 2) : $n==1 ? 1: 0;  
+	return $n >1 ?  fib($n - 1) + fib($n - 2) : $n;  
 }
 
 print_r (fib(32));

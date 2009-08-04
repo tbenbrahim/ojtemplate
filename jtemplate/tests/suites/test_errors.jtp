@@ -187,6 +187,16 @@ var testSuite={
                 	return e == 'STM-00 the default case in a switch statement should be the last case';
                 }
             }
+        },{
+        	description: 'division by zero',
+        	test: function(){
+        		try{
+        			println('a'.length()/0);
+        			return false;
+        		}catch(e){
+        			return e=='EXP-14 Division by zero';
+        		}
+        	}
         }
 	]
 };
