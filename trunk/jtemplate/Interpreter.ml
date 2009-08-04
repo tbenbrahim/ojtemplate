@@ -55,6 +55,23 @@ let rec interpret env = function
 				loop ()
 			with
 			| CFBreak -> ())
+	| RFastIterator (vloc, start, max, inc, stmt, cloc) ->
+			env.current_line <- cloc;
+			let rec loop ind =
+				let _ = Environment.set_value env (RIntegerValue(ind)) vloc
+				in if ind < max then
+					((try
+							interpret env stmt
+						with
+						| CFContinue -> ()
+						);
+						loop (ind + inc))
+				else
+					()
+			in (try
+				loop start
+			with
+			| CFBreak -> ())
 	| RForEach (vloc, expr, stmt, cloc) ->
 			env.current_line <- cloc;
 			let list =
@@ -164,13 +181,13 @@ and evaluate env = function
 	| RVariable(loc) -> (env, Environment.get_value env loc)
 	| RValue(v) ->
 			(match v with (* look for closure vars*)
-				| RFunctionValue(framesize, depth, argslen, has_varargs, statements, Some closure_vars,_) ->
+				| RFunctionValue(framesize, depth, argslen, has_varargs, statements, Some closure_vars, _) ->
 						let closure_vals = Hashtbl.create 10
 						in let _ = Hashtbl.fold(
 									fun k _ _ -> let (d, i) = k
 											in let (_, value) = evaluate env (RVariable(LocalVar(0, d, i)))
 											in Hashtbl.replace closure_vals (d, i) value) closure_vars ()
-						in (env, RFunctionValue(framesize, depth, argslen, has_varargs, statements, Some closure_vals,None))
+						in (env, RFunctionValue(framesize, depth, argslen, has_varargs, statements, Some closure_vals, None))
 				| _ -> (env, v))
 	| RPostFixSum(expr, inc) ->
 			let (env, v) = evaluate env expr
@@ -206,7 +223,7 @@ and evaluate env = function
 			in let (key, is_int) = evaluate_memb_expr_index env index
 			in (match left_map with
 				| RMapValue(h, ArraySubtype) ->
-						if (not is_int)  then
+						if (not is_int) then
 							raise (EInvalidArrayIndex("string", key))
 						else
 							(try
@@ -272,7 +289,7 @@ and resolve_func_this env fexpr =
 		| _ -> raise Not_found
 	in let find_func h name =
 		match Hashtbl.find h name with
-		| RFunctionValue(_, _, _, _, _, _,_) | RLibraryFunction(_) as v -> v
+		| RFunctionValue(_, _, _, _, _, _, _) | RLibraryFunction(_) as v -> v
 		| _ -> raise Not_found
 	in let rec find_map_func h = function
 		| "prototype":: tl -> find_map_func (find_prototype h) tl
@@ -295,7 +312,7 @@ and resolve_func_this env fexpr =
 				| RBooleanValue(_) ->
 						let (env, v) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(4, 4)), RValue(RStringValue("prototype"))), funcname))
 						in v
-				| RFunctionValue(_, _, _, _, _, _,_) | RLibraryFunction(_) ->
+				| RFunctionValue(_, _, _, _, _, _, _) | RLibraryFunction(_) ->
 						let (env, v) = evaluate env (RMemberExpr(RMemberExpr(RVariable(GlobalVar(5, 5)), RValue(RStringValue("prototype"))), funcname))
 						in v
 				| RVoid ->
@@ -334,7 +351,7 @@ Runs a function
 *)
 and run_function env value_list this func =
 	match func with
-	| RFunctionValue(framesize, depth, argslen, vararg, stmts, closure_vars,_) ->
+	| RFunctionValue(framesize, depth, argslen, vararg, stmts, closure_vars, _) ->
 			let old_frame = env.stackframes.(depth)
 			in let _ = env.stackframes.(depth) <- make_stackframe framesize argslen vararg value_list this
 			in let old_closure_vars = env.closure_vars

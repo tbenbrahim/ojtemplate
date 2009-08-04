@@ -179,6 +179,10 @@ struct
 							((expr_descriptionl (level + 1) expr2) ^
 								((expr_descriptionl (level + 1) expr3) ^
 									(statement_descriptionl (level + 1) stmt_list)))))
+			| RFastIterator(vloc, start, max, incr, stmt, env) ->
+					(prefix level)^ ("FastIterator "^" "^(string_of_int start)^" "
+						^(string_of_int max)^" "^(string_of_int incr)^" "
+						^(location_name vloc)^(statement_descriptionl (level + 1) stmt))
 			| RNoop -> (prefix level) ^ "Noop\n"
 			| RThrow(expr, env) -> (prefix level)^"Throw\n"^(expr_descriptionl (level + 1) expr)
 			| RCase(Some expr, env) -> (prefix level)^"Case\n"^(expr_descriptionl (level + 1) expr)

@@ -158,8 +158,7 @@ let evaluate_op value1 value2 operator =
 					| Times -> f1 *. f2
 					| Divide -> f1 /. f2
 					| _ -> raise (EInvalidOperation (string_of_operator operator,"float"))) in
-			if f = infinity || f = neg_infinity || f = nan then RNaN
-			else RFloatValue(f)
+			 RFloatValue(f)
 		)
 	in match (value1, value2) with
 	| (RIntegerValue(i1), RIntegerValue(i2)) ->
@@ -167,8 +166,8 @@ let evaluate_op value1 value2 operator =
 				| Plus -> RIntegerValue( i1 + i2 )
 				| Minus -> RIntegerValue( i1 - i2)
 				| Times -> RIntegerValue( i1 * i2)
-				| Divide -> if i2 <> 0 then RIntegerValue( i1 / i2) else RNaN
-				| Modulo -> if i2 <> 0 then RIntegerValue( i1 mod i2) else RNaN
+				| Divide -> (try RIntegerValue( i1 / i2) with Division_by_zero -> RNaN)
+				| Modulo -> (try RIntegerValue( i1 mod i2) with Division_by_zero -> RNaN)
 				| _ -> raise (EInvalidOperation (string_of_operator operator,"integer"))
 			)
 	| (RBooleanValue(b1), RBooleanValue(b2)) ->
@@ -177,12 +176,12 @@ let evaluate_op value1 value2 operator =
 				| Or -> RBooleanValue(b1 || b2)
 				| _ -> raise (EInvalidOperation (string_of_operator operator,"boolean"))
 			)
-	| (RStringValue(s1), RStringValue(s2)) -> string_op s1 s2
-	| (RStringValue(s1), v2) -> string_op s1 (string_of_value v2)
-	| (v1, RStringValue(s2)) -> string_op (string_of_value v1) s2
 	| (RFloatValue(f1), RFloatValue(f2)) -> float_op f1 f2
 	| (RFloatValue(f1), RIntegerValue(i2)) -> float_op f1 (float_of_int i2)
 	| (RIntegerValue(i1), RFloatValue(f2)) -> float_op (float_of_int i1) f2
+	| (RStringValue(s1), RStringValue(s2)) -> string_op s1 s2
+	| (RStringValue(s1), v2) -> string_op s1 (string_of_value v2)
+	| (v1, RStringValue(s2)) -> string_op (string_of_value v1) s2
 	| (value1, value2) -> raise (EIncompatibleTypes(string_of_value_type value1, string_of_value_type value2))
 
 (**
@@ -223,19 +222,6 @@ let rec compare v1 op v2 =
 				| RFloatValue(f2) -> compare (RFloatValue (float_of_int i1)) op v2
 				| RStringValue(s2) -> compare (RStringValue (string_of_int i1)) op v2
 				| _ -> mismatched_compare v1 op v2 )
-	| RFloatValue(f1) ->
-			(match v2 with
-				| RFloatValue(f2) ->
-						(match op with
-							| Equal -> RBooleanValue(f1 = f2)
-							| NotEqual -> RBooleanValue(f1 <> f2)
-							| LessThan -> RBooleanValue(f1 < f2)
-							| LessThanEqual -> RBooleanValue(f1 <= f2)
-							| GreaterThan -> RBooleanValue(f1 > f2)
-							| GreaterThanEqual -> RBooleanValue(f1 >= f2) )
-				| RIntegerValue(i2) -> compare v1 op (RFloatValue (float_of_int i2))
-				| RStringValue(s2) -> compare (RStringValue(string_of_float f1)) op v2
-				| _ -> mismatched_compare v1 op v2 )
 	| RStringValue(s1) ->
 			(match v2 with
 				| RStringValue(s2) ->
@@ -267,13 +253,26 @@ let rec compare v1 op v2 =
 				| _ -> mismatched_compare v1 op v2 )
 	| RNaN ->
 			(match v2 with
-				| RNaN -> (
+				| RNaN  -> (
 							match op with
 							| Equal -> RBooleanValue(true)
 							| NotEqual -> RBooleanValue(false)
 							| _ -> raise (EInvalidComparaison(opname op,
 												string_of_value_type v1,
 												string_of_value_type v2)) )
+				| _ -> mismatched_compare v1 op v2 )
+	| RFloatValue(f1) ->
+			(match v2 with
+				| RFloatValue(f2) ->
+						(match op with
+							| Equal -> RBooleanValue(f1 = f2)
+							| NotEqual -> RBooleanValue(f1 <> f2)
+							| LessThan -> RBooleanValue(f1 < f2)
+							| LessThanEqual -> RBooleanValue(f1 <= f2)
+							| GreaterThan -> RBooleanValue(f1 > f2)
+							| GreaterThanEqual -> RBooleanValue(f1 >= f2) )
+				| RIntegerValue(i2) -> compare v1 op (RFloatValue (float_of_int i2))
+				| RStringValue(s2) -> compare (RStringValue(string_of_float f1)) op v2
 				| _ -> mismatched_compare v1 op v2 )
 	| RMapValue(h1, ArraySubtype) ->
 			(match v2 with
@@ -295,7 +294,7 @@ let rec compare v1 op v2 =
 												string_of_value_type v1,
 												string_of_value_type v2)) )
 				| _ -> mismatched_compare v1 op v2 )
-	| RFunctionValue(size1, depth1, len1, varargs1, stmts1, clos1,inline1) ->
+	| RFunctionValue(size1, depth1, len1, varargs1, stmts1, clos1, inline1) ->
 			(match v2 with
 				| RFunctionValue(size2, depth2, len2, varargs2, stmts2, clos2, inline2) -> (
 							match op with
