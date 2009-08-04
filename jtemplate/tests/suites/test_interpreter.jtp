@@ -311,15 +311,7 @@ var testSuite={
         	test: function(){
         		let a=Void;
         		let b=Void;
-        		let c=NaN;
-        		return a==b && b!=c && a!=c && !(a!=b);
-        	}
-        },{
-        	description: 'compare NaN',
-        	test: function(){
-        		let a=NaN;
-        		let b=NaN;
-        		let c=Void;
+        		let c=1;
         		return a==b && b!=c && a!=c && !(a!=b);
         	}
         },{
@@ -377,7 +369,7 @@ var testSuite={
         	description: 'mismatched type compare',
         	test: function(){
         		return !(true==1) && !(true==1.) && true!=1. && !(true=='1') && true!='1'
-        			&& 1!=true && 1.!=true && '1'!=true && Void!=NaN && NaN!=Void
+        			&& 1!=true && 1.!=true && '1'!=true 
         			&& String.prototype.length!=true && function(){return 1;}!=true
         			&& {a:1}!=true && [1,2]!=true;
         	}

@@ -76,11 +76,8 @@ runtime_variable_value =
 	| RFloatValue of float
 	| RStringValue of string
 	| RBooleanValue of bool
-	| RFunctionValue of int * int * int * bool * runtime_statement list
-	* (((int * int), runtime_variable_value) Hashtbl.t)
-	option * runtime_expression option
-	|
-	RLibraryFunction of lib_function_def
+	| RFunctionValue of int * int * int * bool * runtime_statement list	* (((int * int), runtime_variable_value) Hashtbl.t)	option * runtime_expression option
+	|	RLibraryFunction of lib_function_def
 	| RMapValue of (string, runtime_variable_value) Hashtbl.t * map_subtype
 	| RVoid
 	| RUndefined
@@ -182,7 +179,7 @@ runtime_statement =
 	| RTryCatch of runtime_statement * variable_location * runtime_statement	* (string * int)
 	| RTryFinally of runtime_statement * runtime_statement * (string * int)
 	| RThrow of runtime_expression * (string * int)
-	| RFastIterator of variable_location * int * int * int * runtime_statement * (string * int) 
+	| RFastIterator of variable_location * int * int * int * runtime_statement * (string * int)
 
 (**
 determines if a variable is a varag
