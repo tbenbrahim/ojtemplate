@@ -71,6 +71,7 @@ let whitespace = ['\r' '\t' ' ']
 let text = '#'[^'\n']*
 let float = (( (['0'-'9']+'.'['0'-'9']*) | (['0'-'9']*'.'['0'-'9']+) ) ('e'['+' '-']?['0'-'9']+)? ) | (['0'-'9']+ ('e'['+' '-']?['0'-'9']+))
 
+(** main lexer *)
 rule main = parse 
 | whitespace { main lexbuf }
 | text as token { TEXT(String.sub token 1 ((String.length token) - 1))}
@@ -119,18 +120,21 @@ rule main = parse
 | '@' {AT}
 | _ as c { syntax_exception ("Invalid character "^String.make 1 c) lexbuf} 
 | eof { EOF } 
+(** Lexer for a single quoted string *)
 and single_quote_string s = parse
 | '\n'  { incr_linenum lexbuf; single_quote_string (s ^ "\n") lexbuf }
 | '\''  { STRING(s) }
 | '\\' { single_quote_string (s ^ (escape_char lexbuf)) lexbuf }
 | [^ '\''] as c  { single_quote_string (s ^ String.make 1 c) lexbuf }
 | eof  { syntax_exception "Unterminated string constant" lexbuf }
+(** Lexer for a double quoted string *)
 and double_quote_string s = parse
 | '\n'  { incr_linenum lexbuf; double_quote_string (s ^ "\n") lexbuf }
 | '"'  { STRING(s) }
 | '\\' { double_quote_string (s ^ (escape_char lexbuf)) lexbuf }
 | [^ '"'] as c  { double_quote_string (s ^ String.make 1 c) lexbuf }
 | eof  { syntax_exception "Unterminated string constant" lexbuf }
+(** Lexer for escape characters in strings *)
 and escape_char =parse
 | '\\' {"\\"}
 | 'n'  {"\n"}
@@ -139,6 +143,7 @@ and escape_char =parse
 | '"' {"\""}
 | 't'  {"\t"}
 | 'b'  {"\b"} 
+(** Lexer for a multiline comment *)
 and multiline_comment = parse
 | '\n' { incr_linenum lexbuf; multiline_comment lexbuf }
 | "*/" { main lexbuf }
