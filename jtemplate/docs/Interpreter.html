@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Filename_util.html">
+<link rel="next" href="Jtemplate.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Analysis" rel="Chapter" href="Analysis.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_info" rel="Chapter" href="Ast_info.html">
+<link title="Environment" rel="Chapter" href="Environment.html">
+<link title="Expression" rel="Chapter" href="Expression.html">
+<link title="Filename_util" rel="Chapter" href="Filename_util.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html">
+<link title="Jtemplate" rel="Chapter" href="Jtemplate.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Library" rel="Chapter" href="Library.html">
+<link title="Library_builtin" rel="Chapter" href="Library_builtin.html">
+<link title="Library_io" rel="Chapter" href="Library_io.html">
+<link title="Library_string" rel="Chapter" href="Library_string.html">
+<link title="Parser" rel="Chapter" href="Parser.html">
+<link title="Parser_util" rel="Chapter" href="Parser_util.html">
+<link title="RuntimeError" rel="Chapter" href="RuntimeError.html"><title>Interpreter</title>
+</head>
+<body>
+<div class="navbar"><a href="Filename_util.html">Previous</a>
+&nbsp;<a href="index.html">Up</a>
+&nbsp;<a href="Jtemplate.html">Next</a>
+</div>
+<center><h1>Module <a href="type_Interpreter.html">Interpreter</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> Interpreter: <code class="code">sig</code> <a href="Interpreter.html">..</a> <code class="code">end</code></pre>The Jtemplate interpreter<br>
+<b>Author(s):</b> Tony BenBrahim < tony.benbrahim at gmail.com ><br>
+<hr width="100%">
+<pre><span class="keyword">val</span> <a name="VALinterpret"></a><a href="code_VALInterpreter.interpret.html">interpret</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -> <a href="Ast.html#TYPEruntime_statement">Ast.runtime_statement</a> -> unit</code></pre><div class="info">
+Interpret a runtime AST<br>
+<b>Returns</b> unit<br>
+</div>
+<div class="param_info"><code class="code">env</code> : a runtime environment</div>
+<pre><span class="keyword">val</span> <a name="VALinterpret_stmts"></a><a href="code_VALInterpreter.interpret_stmts.html">interpret_stmts</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -> <a href="Ast.html#TYPEruntime_statement">Ast.runtime_statement</a> list -> unit</code></pre><div class="info">
+Interprets a list of statements<br>
+</div>
+<div class="param_info"><code class="code">env</code> : runtime environments</div>
+<pre><span class="keyword">val</span> <a name="VALevaluate"></a><a href="code_VALInterpreter.evaluate.html">evaluate</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -><br>       <a href="Ast.html#TYPEruntime_expression">Ast.runtime_expression</a> -> <a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> * <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Evaluates an expression<br>
+<b>Returns</b> a value<br>
+</div>
+<div class="param_info"><code class="code">env</code> : runtime environment</div>
+<pre><span class="keyword">val</span> <a name="VALresolve_func_this"></a><a href="code_VALInterpreter.resolve_func_this.html">resolve_func_this</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -><br>       <a href="Ast.html#TYPEruntime_expression">Ast.runtime_expression</a> -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> * <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Resolves a function call by an expression into a function and a this object<br>
+<b>Returns</b> a tuple of the this object and the function<br>
+</div>
+<div class="param_info"><code class="code">env</code> : runtime environment</div>
+<div class="param_info"><code class="code">fexpr</code> : the expression to analyze</div>
+<pre><span class="keyword">val</span> <a name="VALrun_function"></a><a href="code_VALInterpreter.run_function.html">run_function</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> list -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> * <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Runs a function<br>
+<b>Returns</b> a tuple of the environemt and return value<br>
+</div>
+<div class="param_info"><code class="code">env</code> : runtime environment</div>
+<div class="param_info"><code class="code">value_list</code> : list of values to pass as arguments</div>
+<div class="param_info"><code class="code">this</code> : this pointer</div>
+<div class="param_info"><code class="code">func</code> : function</div>
+<pre><span class="keyword">val</span> <a name="VALevaluate_memb_expr_index"></a><a href="code_VALInterpreter.evaluate_memb_expr_index.html">evaluate_memb_expr_index</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -> <a href="Ast.html#TYPEruntime_expression">Ast.runtime_expression</a> -> string * bool</code></pre><div class="info">
+Determines the value and type of expression for the last member of a member expression<br>
+<b>Returns</b> a tuple with the index of the expression and a boolean indicating
+whether it is an integer<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the runtime environment</div>
+<div class="param_info"><code class="code">index</code> : the expression to evaluate</div>
+<pre><span class="keyword">val</span> <a name="VALget_member_expr_map"></a><a href="code_VALInterpreter.get_member_expr_map.html">get_member_expr_map</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -><br>       <a href="Ast.html#TYPEruntime_expression">Ast.runtime_expression</a> -><br>       <a href="Ast.html#TYPEruntime_expression">Ast.runtime_expression</a> -><br>       (string, <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a>) Hashtbl.t * string</code></pre><div class="info">
+Returns the hashmap that corresponds to the member expression<br>
+<b>Returns</b> the hashmap that corresponds to the member expression<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the runtime environment</div>
+<div class="param_info"><code class="code">expr</code> : the member expression (without the last member)</div>
+<div class="param_info"><code class="code">index</code> : the index (the last member of the member expression)</div>
+<pre><span class="keyword">val</span> <a name="VALevaluate_expr_list"></a><a href="code_VALInterpreter.evaluate_expr_list.html">evaluate_expr_list</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -><br>       <a href="Ast.html#TYPEruntime_expression">Ast.runtime_expression</a> list -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> list</code></pre><div class="info">
+Evaluates a list of expressions<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the runtime environment</div>
+<div class="param_info"><code class="code">expr_list</code> : an expression list</div>
+</body></html>

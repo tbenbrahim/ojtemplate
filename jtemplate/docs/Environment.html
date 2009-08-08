@@ -1,0 +1,386 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ast_info.html">
+<link rel="next" href="Expression.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Analysis" rel="Chapter" href="Analysis.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_info" rel="Chapter" href="Ast_info.html">
+<link title="Environment" rel="Chapter" href="Environment.html">
+<link title="Expression" rel="Chapter" href="Expression.html">
+<link title="Filename_util" rel="Chapter" href="Filename_util.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html">
+<link title="Jtemplate" rel="Chapter" href="Jtemplate.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Library" rel="Chapter" href="Library.html">
+<link title="Library_builtin" rel="Chapter" href="Library_builtin.html">
+<link title="Library_io" rel="Chapter" href="Library_io.html">
+<link title="Library_string" rel="Chapter" href="Library_string.html">
+<link title="Parser" rel="Chapter" href="Parser.html">
+<link title="Parser_util" rel="Chapter" href="Parser_util.html">
+<link title="RuntimeError" rel="Chapter" href="RuntimeError.html"><title>Environment</title>
+</head>
+<body>
+<div class="navbar"><a href="Ast_info.html">Previous</a>
+&nbsp;<a href="index.html">Up</a>
+&nbsp;<a href="Expression.html">Next</a>
+</div>
+<center><h1>Module <a href="type_Environment.html">Environment</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> Environment: <code class="code">sig</code> <a href="Environment.html">..</a> <code class="code">end</code></pre>Operations on AST analysis and runtime environments.<br>
+<b>Author(s):</b> Tony BenBrahim < tony.benbrahim at gmail.com ><br>
+<hr width="100%">
+<pre><span class="keyword">module</span> <a href="Environment.StringMap.html">StringMap</a>: <code class="type">Map.Make</code><code class="code">(</code><code class="type">String</code><code class="code">)</code></pre><pre><span class="keyword">type</span> <a name="TYPEvar_info"></a><code class="type"></code>var_info = <code class="type">int * int</code> </pre>
+<div class="info">
+Variable information, tuple of index into scope and unique id<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPErec_varmap"></a><code class="type"></code>rec_varmap = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>variable_map&nbsp;: <code class="type"><a href="Environment.html#TYPEvar_info">var_info</a> StringMap.t</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >map of variable name to variable info</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>parent&nbsp;: <code class="type"><a href="Environment.html#TYPErec_varmap">rec_varmap</a> option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >parent scope variable map, or None if top level scope</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+<div class="info">
+represents variables map in a global or local scope, and reference to parent scope<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPEvar_prop"></a><code class="type"></code>var_prop = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>written_after_declared&nbsp;: <code class="type">bool</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >is the variable assigned after it is declared</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>read_after_declared&nbsp;: <code class="type">bool</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >is the variable read after declared</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>declaration_loc&nbsp;: <code class="type">string * int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >tuple of file where variable is declared and line number</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+<div class="info">
+Properties of variable locations<br>
+</div>
+
+<pre><span class="keyword">type</span> <a name="TYPElabel_pos"></a><code class="type"></code>label_pos = <code class="type">int * int * int * int</code> </pre>
+<div class="info">
+position of a label with within a template spec, tuple of start begin, start end,
+end begin, end ending<br>
+</div>
+
+<pre><span class="keyword">type</span> <a name="TYPEtemplate_spec_def"></a><code class="type"></code>template_spec_def = <code class="type"><a href="Ast.html#TYPEtemplate_spec">Ast.template_spec</a> list * (string, <a href="Environment.html#TYPElabel_pos">label_pos</a>) Hashtbl.t *<br>       (string * int)</code> </pre>
+<div class="info">
+definition of a template specidifcation, used during validity checking.
+tuple of sepecfication list and map of labels to label position<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPEanalysis_env"></a><code class="type"></code>analysis_env = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>globals&nbsp;: <code class="type"><a href="Environment.html#TYPErec_varmap">rec_varmap</a></code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >map of global variables</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>num_globals&nbsp;: <code class="type">int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >number of globals</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>locals&nbsp;: <code class="type"><a href="Environment.html#TYPErec_varmap">rec_varmap</a> list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >recursive list of stack frames</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>num_locals&nbsp;: <code class="type">int list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >number of locals in current stack frame</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sdepth&nbsp;: <code class="type">int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >current stack depth</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>max_depth&nbsp;: <code class="type">int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >maximum stack depth encountered</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>errors&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >list of errors found during analysis</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>warnings&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >list of warning generated during analysis</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>unique_id&nbsp;: <code class="type">int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >counter for next unique id</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>names&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >list of names encountered</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>varprops&nbsp;: <code class="type">(int, <a href="Environment.html#TYPEvar_prop">var_prop</a>) Hashtbl.t</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >properties of variables</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>imported&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >list of files already imported</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>templates&nbsp;: <code class="type">(string, <a href="Environment.html#TYPEtemplate_spec_def">template_spec_def</a>) Hashtbl.t</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >map of template names to template definitions</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>constants&nbsp;: <code class="type">(int, <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a>) Hashtbl.t</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >map of variables unique id to declared value</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+<div class="info">
+The analysis environment<br>
+</div>
+
+<pre><span class="keyword">val</span> <a name="VALnew_analysis_environment"></a><a href="code_VALEnvironment.new_analysis_environment.html">new_analysis_environment</a> : <code class="type">unit -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+returns a newly initialized analysis environment<br>
+<b>Returns</b> analysis_env<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALset_constant_value"></a><a href="code_VALEnvironment.set_constant_value.html">set_constant_value</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> int -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> unit</code></pre><div class="info">
+sets the declaration value for a variable<br>
+<b>Returns</b> unit<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">uid</code> : unique id of variable</div>
+<div class="param_info"><code class="code">value</code> : runtime value of variable</div>
+<pre><span class="keyword">val</span> <a name="VALget_constant_value"></a><a href="code_VALEnvironment.get_constant_value.html">get_constant_value</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> int -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+gets the constant value for a variable<br>
+<b>Returns</b> runtime value of variable<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">uid</code> : unique id of variable</div>
+<pre><span class="keyword">val</span> <a name="VALis_constant"></a><a href="code_VALEnvironment.is_constant.html">is_constant</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> int -> bool</code></pre><div class="info">
+returns whether the variable is a constant<br>
+<b>Returns</b> true if the variable is a constant<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">uid</code> : unique id of variable</div>
+<pre><span class="keyword">val</span> <a name="VALdeclare_variable"></a><a href="code_VALEnvironment.declare_variable.html">declare_variable</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       StringMap.key -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a> * int</code></pre><div class="info">
+declare a variable if it does not exist or create a new entry and return new index<br>
+<b>Returns</b> a tuple of the modified environment and uid<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">name</code> : name of variable to declare</div>
+<pre><span class="keyword">val</span> <a name="VALdeclare_variable_and_value"></a><a href="code_VALEnvironment.declare_variable_and_value.html">declare_variable_and_value</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       StringMap.key -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+declare a variable if it does not exist or create a new entry and return new index,
+then sets constant value<br>
+<b>Returns</b> the modified environment<br>
+</div>
+<div class="param_info"><code class="code">name</code> : name of variable to declare</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">value</code> : the value to initialize the variable with</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONVariable_not_found"></a>Variable_not_found <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+internal exception used during analysis<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALresolve_variable"></a><a href="code_VALEnvironment.resolve_variable.html">resolve_variable</a> : <code class="type">StringMap.key -><br>       <a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> <a href="Ast.html#TYPEvariable_location">Ast.variable_location</a></code></pre><div class="info">
+Find variable in analysis scope<br>
+<b>Raises</b> <code>Variable_not_found</code> when the variable is not found<br>
+<b>Returns</b> location<br>
+</div>
+<div class="param_info"><code class="code">name</code> : the variable name</div>
+<div class="param_info"><code class="code">env</code> : the analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALuid_from_loc"></a><a href="code_VALEnvironment.uid_from_loc.html">uid_from_loc</a> : <code class="type"><a href="Ast.html#TYPEvariable_location">Ast.variable_location</a> -> int</code></pre><div class="info">
+returns uid from location<br>
+<b>Returns</b> the unique id of the variable<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALresolve_variable_value"></a><a href="code_VALEnvironment.resolve_variable_value.html">resolve_variable_value</a> : <code class="type">StringMap.key -><br>       <a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> * <a href="Ast.html#TYPEvariable_location">Ast.variable_location</a></code></pre><div class="info">
+Find variable and value in analysis scope<br>
+<b>Raises</b> <code>Variable_not_found</code> when the variable is not found<br>
+<b>Returns</b> tuple of value and location<br>
+</div>
+<div class="param_info"><code class="code">name</code> : the variable name</div>
+<div class="param_info"><code class="code">env</code> : the analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALnew_analysis_scope"></a><a href="code_VALEnvironment.new_analysis_scope.html">new_analysis_scope</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+Setups a new scope within the same global or local scope<br>
+<b>Returns</b> a new analysis environment setup for the new scope<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALpop_scope"></a><a href="code_VALEnvironment.pop_scope.html">pop_scope</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+Pops the analysis scope<br>
+<b>Returns</b> a new environment with the last scope popped<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALnew_analysis_stackframe"></a><a href="code_VALEnvironment.new_analysis_stackframe.html">new_analysis_stackframe</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+Create a new stackframe<br>
+<b>Returns</b> a new analysis environment with a new stackframe<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALget_depth"></a><a href="code_VALEnvironment.get_depth.html">get_depth</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> int</code></pre><div class="info">
+Returns the depth of the current stack frame<br>
+<b>Returns</b> the depth of the current stack frame, 0 indexed<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALadd_error"></a><a href="code_VALEnvironment.add_error.html">add_error</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       string * int -> string -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+Add an error to the analysis environemnt<br>
+<b>Returns</b> an analysis environment with the error added<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the analysis environment</div>
+<div class="param_info"><code class="code">codeloc</code> : a filename, line number tuple</div>
+<div class="param_info"><code class="code">message</code> : the error message</div>
+<pre><span class="keyword">val</span> <a name="VALadd_warning"></a><a href="code_VALEnvironment.add_warning.html">add_warning</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       string * int -> string -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+Add a warning to the analysis environemnt<br>
+<b>Returns</b> an analysis environment with the warning added<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the analysis environment</div>
+<div class="param_info"><code class="code">codeloc</code> : a filename, line number tuple</div>
+<div class="param_info"><code class="code">message</code> : the warning message</div>
+<pre><span class="keyword">val</span> <a name="VALhas_errors"></a><a href="code_VALEnvironment.has_errors.html">has_errors</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> bool</code></pre><div class="info">
+Returns true if there are errors in the environment<br>
+<b>Returns</b> true if there are errors, false otherwise<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the analysis environment</div>
+<pre><span class="keyword">val</span> <a name="VALadd_import"></a><a href="code_VALEnvironment.add_import.html">add_import</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> string -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+adds an import to the list of imports<br>
+<b>Returns</b> the modified environment<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">filename</code> : the filename</div>
+<br><code><span class="keyword">type</span> <a name="TYPEvar_op_type"></a><code class="type"></code>var_op_type = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ReadOp</span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >variable is read</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">WriteOp</span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >variable is written</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DeclareOp</span> <span class="keyword">of</span> <code class="type">(string * int)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >variable is declared</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DeclareWriteOp</span> <span class="keyword">of</span> <code class="type">(string * int)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >variable is declared and written, used for function args</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+<div class="info">
+type of operation performed on variable<br>
+</div>
+
+<pre><span class="keyword">val</span> <a name="VALrecord_usage"></a><a href="code_VALEnvironment.record_usage.html">record_usage</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       <a href="Ast.html#TYPEvariable_location">Ast.variable_location</a> -> <a href="Environment.html#TYPEvar_op_type">var_op_type</a> -> unit</code></pre><div class="info">
+Records a variables property<br>
+<b>Returns</b> unit<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">loc</code> : variable location</div>
+<pre><span class="keyword">val</span> <a name="VALadd_template"></a><a href="code_VALEnvironment.add_template.html">add_template</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -><br>       string -><br>       <a href="Ast.html#TYPEtemplate_spec">Ast.template_spec</a> list -><br>       (string, <a href="Environment.html#TYPElabel_pos">label_pos</a>) Hashtbl.t -><br>       string * int -> <a href="Environment.html#TYPEanalysis_env">analysis_env</a></code></pre><div class="info">
+Adds a template to the environment<br>
+<b>Returns</b> a new environment
+*<br>
+</div>
+<div class="param_info"><code class="code">name</code> : template name</div>
+<div class="param_info"><code class="code">spec_list</code> : list of line specifications</div>
+<div class="param_info"><code class="code">labels</code> : label positions</div>
+<pre><span class="keyword">val</span> <a name="VALhas_import"></a><a href="code_VALEnvironment.has_import.html">has_import</a> : <code class="type"><a href="Environment.html#TYPEanalysis_env">analysis_env</a> -> string -> bool</code></pre><div class="info">
+checks if a file has already been imported<br>
+<b>Returns</b> true if already imported, false otherwise<br>
+</div>
+<div class="param_info"><code class="code">env</code> : analysis environment</div>
+<div class="param_info"><code class="code">filename</code> : the filename to check</div>
+<pre><span class="keyword">val</span> <a name="VALget_value"></a><a href="code_VALEnvironment.get_value.html">get_value</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -> <a href="Ast.html#TYPEvariable_location">Ast.variable_location</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Retrieves a value at a location<br>
+<b>Returns</b> the value at the selected location<br>
+</div>
+<div class="param_info"><code class="code">env</code> : a runtime environment</div>
+<pre><span class="keyword">val</span> <a name="VALset_value"></a><a href="code_VALEnvironment.set_value.html">set_value</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -><br>       <a href="Ast.html#TYPEvariable_location">Ast.variable_location</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Sets a value at a location<br>
+<b>Returns</b> the value that was set<br>
+</div>
+<div class="param_info"><code class="code">env</code> : a runtime environment</div>
+<div class="param_info"><code class="code">value</code> : the value to set</div>
+<pre><span class="keyword">val</span> <a name="VALget_loc_name"></a><a href="code_VALEnvironment.get_loc_name.html">get_loc_name</a> : <code class="type"><a href="Ast.html#TYPEruntime_env">Ast.runtime_env</a> -> <a href="Ast.html#TYPEvariable_location">Ast.variable_location</a> -> string</code></pre><div class="info">
+Returns the name of a location<br>
+<b>Returns</b> the name of the variable at location loc<br>
+</div>
+<div class="param_info"><code class="code">env</code> : the runtime environment</div>
+</body></html>

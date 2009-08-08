@@ -1,4 +1,10 @@
 (**
+Evaluation of binary operations and comparaison of values
+Various helper functions for expression evaluation
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+*)
+(*
 This program is free software; you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; version 3 of the License.
@@ -7,11 +13,6 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
-Evaluation of binary operations and comparaison of values
-Various helper functions for expression evaluation
-
-@author Tony BenBrahim < tony.benbrahim at gmail.com >
 
 *)
 
@@ -117,11 +118,21 @@ type cast_type =
 	| StringCast of string * string
 	| BoolCast of bool * bool
 
+(** cast a value to an integer 
+@param value the runtime value
+@return an integer representation of the value
+@raise EInvalidCast if the value cannot be cast
+*)
 let cast_to_integer value =
 	match value with
 	| RIntegerValue(i) -> i
 	| _ -> raise (EInvalidCast (string_of_value_type value,"integer"))
 
+(** cast a value to a float
+@param value the runtime value
+@return an float representation of the value
+@raise EInvalidCast if the value cannot be cast
+*)
 let cast_to_float value =
 	match value with
 	| RFloatValue(f) -> f
@@ -184,20 +195,15 @@ let evaluate_op value1 value2 operator =
 (**
 Implements comparaison of two values, according to the following semantics:
 
-Value 1 type Value 2 type Operator Result
--------------- -------------- ----------- -----------------------------------------------------------------------
-Integer Integer Any Comparison of integer values
-Float Float Any Comparison of float values
-Float Integer Any Comparison of float values
-String any type Float comparison of first value to second value,
-Integer with non string values converted to strings
-String
-Both types are Booleans,
-maps, arrays, functions,
-NaN or void == and != comparison of first value to second value,
-observing the semantics of equality described below.
-Different types not listed
-above == and != == always returns false != always returns true
+-Integer Integer Any Comparison of integer values
+-Float Float Any Comparison of float values
+-Float Integer Any Comparison of float values
+-String any type Float comparison of first value to second value,
+-Integer with non string values converted to strings
+-Both types are Booleans,== and != comparison of first value to second value
+-maps, arrays, functions,== and != comparison of first value to second value
+-NaN or void == and != comparison of first value to second value
+-Different types == always returns false != always returns true
 
 @param v1 the first value to compare
 @param op the comparaison operator

@@ -1,0 +1,912 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Analysis.html">
+<link rel="next" href="Ast_info.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Analysis" rel="Chapter" href="Analysis.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_info" rel="Chapter" href="Ast_info.html">
+<link title="Environment" rel="Chapter" href="Environment.html">
+<link title="Expression" rel="Chapter" href="Expression.html">
+<link title="Filename_util" rel="Chapter" href="Filename_util.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html">
+<link title="Jtemplate" rel="Chapter" href="Jtemplate.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Library" rel="Chapter" href="Library.html">
+<link title="Library_builtin" rel="Chapter" href="Library_builtin.html">
+<link title="Library_io" rel="Chapter" href="Library_io.html">
+<link title="Library_string" rel="Chapter" href="Library_string.html">
+<link title="Parser" rel="Chapter" href="Parser.html">
+<link title="Parser_util" rel="Chapter" href="Parser_util.html">
+<link title="RuntimeError" rel="Chapter" href="RuntimeError.html"><title>Ast</title>
+</head>
+<body>
+<div class="navbar"><a href="Analysis.html">Previous</a>
+&nbsp;<a href="index.html">Up</a>
+&nbsp;<a href="Ast_info.html">Next</a>
+</div>
+<center><h1>Module <a href="type_Ast.html">Ast</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> Ast: <code class="code">sig</code> <a href="Ast.html">..</a> <code class="code">end</code></pre>Definition of the parser generated AST and the runtime AST<br>
+<b>Author(s):</b> Tony BenBrahim < tony.benbrahim at gmail.com ><br>
+<hr width="100%">
+<br><code><span class="keyword">type</span> <a name="TYPEoperator"></a><code class="type"></code>operator = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Plus</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Minus</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Times</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Divide</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Modulo</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">And</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Or</span></code></td>
+
+</tr></table>
+
+<div class="info">
+binary operation operators<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPEcomparator"></a><code class="type"></code>comparator = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">LessThan</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">LessThanEqual</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Equal</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">GreaterThanEqual</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">GreaterThan</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">NotEqual</span></code></td>
+
+</tr></table>
+
+<div class="info">
+binary comparaison operators<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPEvariable_location"></a><code class="type"></code>variable_location = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">GlobalVar</span> <span class="keyword">of</span> <code class="type">int * int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">LocalVar</span> <span class="keyword">of</span> <code class="type">int * int * int</code></code></td>
+
+</tr></table>
+
+<div class="info">
+location for a variable in the runtime AST
+for globals, unique id * an index into the global variables array
+for locals, unique id * an index into the current stackframe * an index into the stack<br>
+</div>
+
+<pre><span class="keyword">type</span> <a name="TYPEreplacement"></a><code class="type"></code>replacement = <code class="type">string * <a href="Ast.html#TYPEexpression">expression</a></code> </pre>
+<div class="info">
+string replacement specification in a template instruction<br>
+</div>
+
+<pre><span class="keyword">type</span> <a name="TYPEreplacement_list"></a><code class="type"></code>replacement_list = <code class="type"><a href="Ast.html#TYPEreplacement">replacement</a> list</code> </pre>
+
+<br><code><span class="keyword">type</span> <a name="TYPEconditional_spec"></a><code class="type"></code>conditional_spec = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Once</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">When</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Loop</span> <span class="keyword">of</span> <code class="type">string * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">CondLoop</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * string * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">type</span> <a name="TYPEreplacement_spec"></a><code class="type"></code>replacement_spec = <code class="type">string * <a href="Ast.html#TYPEconditional_spec">conditional_spec</a> * <a href="Ast.html#TYPEreplacement_list">replacement_list</a></code> </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEtemplate_spec"></a><code class="type"></code>template_spec = <code class="type">string option * string</code> </pre>
+
+<br><code><span class="keyword">type</span> <a name="TYPEmap_subtype"></a><code class="type"></code>map_subtype = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MapSubtype</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ArraySubtype</span></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEvariable_value"></a><code class="type"></code>variable_value = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">IntegerValue</span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FloatValue</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">StringValue</span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">BooleanValue</span> <span class="keyword">of</span> <code class="type">bool</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FunctionValue</span> <span class="keyword">of</span> <code class="type">string list * <a href="Ast.html#TYPEstatement">statement</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MapValue</span> <span class="keyword">of</span> <code class="type">(string, <a href="Ast.html#TYPEvariable_value">variable_value</a>) Hashtbl.t * <a href="Ast.html#TYPEmap_subtype">map_subtype</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Void</span></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEruntime_variable_value"></a><code class="type"></code>runtime_variable_value = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RIntegerValue</span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RFloatValue</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RStringValue</span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RBooleanValue</span> <span class="keyword">of</span> <code class="type">bool</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RFunctionValue</span> <span class="keyword">of</span> <code class="type">int * int * int * bool * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a> list<br>        * (int * int, <a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a>) Hashtbl.t option<br>        * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a> option</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RLibraryFunction</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPElib_function_def">lib_function_def</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RMapValue</span> <span class="keyword">of</span> <code class="type">(string, <a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a>) Hashtbl.t * <a href="Ast.html#TYPEmap_subtype">map_subtype</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RVoid</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RUndefined</span></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEruntime_env"></a><code class="type"></code>runtime_env = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>heap&nbsp;: <code class="type">(int * <a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a>) array</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >heap, arary of tuple of uid and value</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>stackframes&nbsp;: <code class="type"><a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a> array array</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >array of stackframes</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span>closure_vars&nbsp;: <code class="type">(int * int, <a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a>) Hashtbl.t option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >map of closure variables</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>gnames&nbsp;: <code class="type">string array</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >array of global names, indexed by uid</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span>current_line&nbsp;: <code class="type">string * int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >file and line currently interpreted</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>callstack&nbsp;: <code class="type">(string * int) Stack.t</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >callstack</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span>skip_callstack_pop&nbsp;: <code class="type">bool</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >to indicate whether the call stack entry was skipped in a recursive call</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+
+<br><code><span class="keyword">type</span> <a name="TYPElib_function_def"></a><code class="type"></code>lib_function_def = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>name&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >namespace and name of function</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>args&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >list of arguments</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>num_args&nbsp;: <code class="type">int</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >number of arguments</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>vararg&nbsp;: <code class="type">bool</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >flag indicating whether the last argument is vararg</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>code&nbsp;: <code class="type"><a href="Ast.html#TYPEruntime_env">runtime_env</a> -> unit</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >function call to invoked the function</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEexpression"></a><code class="type"></code>expression = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Id</span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">VarArg</span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">BinaryOp</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEoperator">operator</a> * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">CompOp</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEcomparator">comparator</a> * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Not</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FunctionCall</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MapExpr</span> <span class="keyword">of</span> <code class="type">(string * <a href="Ast.html#TYPEexpression">expression</a>) list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ArrayExpr</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Value</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable_value">variable_value</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">UnboundVar</span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Assignment</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Declaration</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MemberExpr</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">PostFixSum</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">TernaryCond</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEruntime_expression"></a><code class="type"></code>runtime_expression = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RVariable</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable_location">variable_location</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RVarArg</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable_location">variable_location</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RBinaryOp</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEoperator">operator</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RCompOp</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEcomparator">comparator</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RNot</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RFunctionCall</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RMapExpr</span> <span class="keyword">of</span> <code class="type">(string * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a>) list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RArrayExpr</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RValue</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RAssignment</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RDeclaration</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RMemberExpr</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RPostFixSum</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RTernaryCond</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a></code></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEstatement"></a><code class="type"></code>statement = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ForEach</span> <span class="keyword">of</span> <code class="type">string * <a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEstatement">statement</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">For</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEstatement">statement</a><br>        * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ExpressionStatement</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Break</span> <span class="keyword">of</span> <code class="type">(string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Continue</span> <span class="keyword">of</span> <code class="type">(string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Noop</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Return</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">If</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEstatement">statement</a> * <a href="Ast.html#TYPEstatement">statement</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">TemplateDef</span> <span class="keyword">of</span> <code class="type">string * <a href="Ast.html#TYPEtemplate_spec">template_spec</a> list * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Instructions</span> <span class="keyword">of</span> <code class="type">string * string list * <a href="Ast.html#TYPEreplacement_spec">replacement_spec</a> list * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">StatementBlock</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement">statement</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Program</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement">statement</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Import</span> <span class="keyword">of</span> <code class="type">string * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Switch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * <a href="Ast.html#TYPEstatement">statement</a> list * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Case</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> option * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">TryCatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement">statement</a> * string * <a href="Ast.html#TYPEstatement">statement</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">TryFinally</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement">statement</a> * <a href="Ast.html#TYPEstatement">statement</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Throw</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a> * (string * int)</code></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEruntime_statement"></a><code class="type"></code>runtime_statement = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RForEach</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable_location">variable_location</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a><br>        * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RFor</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_expression">runtime_expression</a><br>        * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RExpressionStatement</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RBreak</span> <span class="keyword">of</span> <code class="type">(string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RContinue</span> <span class="keyword">of</span> <code class="type">(string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RNoop</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RReturn</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RIf</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a> * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a><br>        * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RStatementBlock</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_statement">runtime_statement</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RProgram</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_statement">runtime_statement</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RSwitch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a> list * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RCase</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> option * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RTryCatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_statement">runtime_statement</a> * <a href="Ast.html#TYPEvariable_location">variable_location</a> * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a><br>        * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RTryFinally</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_statement">runtime_statement</a> * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RThrow</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_expression">runtime_expression</a> * (string * int)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RFastIterator</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable_location">variable_location</a> * int * int * int * <a href="Ast.html#TYPEruntime_statement">runtime_statement</a><br>        * (string * int)</code></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALis_vararg"></a><a href="code_VALAst.is_vararg.html">is_vararg</a> : <code class="type">string -> bool</code></pre><div class="info">
+determines if a variable is a varag<br>
+<b>Returns</b> true if the variable is a vararg, false otherwise<br>
+</div>
+<div class="param_info"><code class="code">varname</code> : the variable name</div>
+<pre><span class="keyword">val</span> <a name="VALvararg_formalname"></a><a href="code_VALAst.vararg_formalname.html">vararg_formalname</a> : <code class="type">string -> string</code></pre><div class="info">
+retuns the name for a vararg<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONCFReturn"></a>CFReturn <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a></code></pre>
+<div class="info">
+control flow exception for return instruction<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONCFBreak"></a>CFBreak</pre>
+<div class="info">
+control flow exception for break instruction<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONCFContinue"></a>CFContinue</pre>
+<div class="info">
+control flow exception for continue instruction<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONCFUserException"></a>CFUserException <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEruntime_variable_value">runtime_variable_value</a> * string</code></pre>
+<div class="info">
+exception generated by interpreted throw exception<br>
+</div>
+</body></html>

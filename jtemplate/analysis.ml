@@ -1,13 +1,4 @@
 (**
-This program is free software; you can redistribute it and / or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 3 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
 Create an optimized AST from the parsing phase AST
 
 Pass 1:
@@ -26,9 +17,20 @@ with a constant value, and evaluates operations on constants , eliminates assign
 statements on constant values when the variable is not reassigned and not written,
 inline functions
 
-@author Tony BenBrahim < tony.benbrahim at gmail.com >
 
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
 *)
+
+(* This program is free software; you can redistribute it and / or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+*)
+
 
 open Ast
 open Environment
@@ -38,7 +40,7 @@ open RuntimeError
 (**
 Prints all errors in an analysis environment and raises FatalExit if there are errors
 @param env analysis environment
-@returns unit
+@return unit
 @raise FatalExit if there are errors in the environment
 *)
 let check_errors env =
@@ -49,7 +51,7 @@ let check_errors env =
 (**
 Generates additional warnings about unused variables, then prints all warnings
 @param env analysis environment
-@returns analysis environment with newly added warnings
+@return analysis environment with newly added warnings
 *)
 let check_warnings env =
 	(* check for unused templates *)
@@ -83,7 +85,7 @@ let check_warnings env =
 
 (**
 Prints information about names found during analysis
-@env analysis environment
+@param env analysis environment
 @return unit
 *)
 let print_name_info env =
@@ -102,17 +104,15 @@ let print_name_info env =
 	in ()
 
 (**
-**********************************************************************************************
-* FIRST PASS
-* - resolve all variable references, including closure variables
-* - process imports and add declarations to AST
-* - builds runtime AST
-* - convert template definitions / instructions
-* - evaluate operations on constants and replace with value in AST
-* - determine if variables are initialized with a constant value (rather than an expression)
-* - determine if a variable is written after being declared and if it is ever read after being declared
-* - determine if a function is inlineable
-**********************************************************************************************
+FIRST PASS
+- resolve all variable references, including closure variables
+- process imports and add declarations to AST
+- builds runtime AST
+- convert template definitions / instructions
+- evaluate operations on constants and replace with value in AST
+- determine if variables are initialized with a constant value (rather than an expression)
+- determine if a variable is written after being declared and if it is ever read after being declared
+- determine if a function is inlineable
 *)
 
 (**internal exception to signal an error in template processing. *)
@@ -159,7 +159,7 @@ let rec check_template_nesting template_spec =
 (**
 Generate a set of statements corresponding to a template instruction
 @param instruction instruction AST
-@env runtime environment
+@param env runtime environment
 @return a runtime statement for the instruction defining a function
 *)
 and generate_template_instr_function instruction env =
@@ -643,13 +643,11 @@ and analyze_variables env ast =
 			generate_template_instr_function (name, args, specs, cloc) env
 
 (**
-**********************************************************************************************
-* SECOND PASS
-* - replace all constant declarations with Noop
-* - replace all constant variables with their value
-* - replace all constant expressions with the computed value
-* - replace all calls to inlineable functions with an expression
-**********************************************************************************************
+SECOND PASS
+- replace all constant declarations with Noop
+- replace all constant variables with their value
+- replace all constant expressions with the computed value
+- replace all calls to inlineable functions with an expression
 *)
 
 (** replaces an expression from an inlined function with the corresponding

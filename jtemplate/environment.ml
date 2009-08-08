@@ -1,68 +1,67 @@
 (**
-This program is free software; you can redistribute it and / or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 3 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-Operations on AST analysis and runtime environments
+Operations on AST analysis and runtime environments.
 
 @author Tony BenBrahim < tony.benbrahim at gmail.com >
-
 *)
+
+(* This program is free software; you can redistribute it and / or modify  *)
+(* it under the terms of the GNU General Public License as published by    *)
+(* the Free Software Foundation; version 3 of the License. This program is *)
+(* distributed in the hope that it will be useful, but WITHOUT ANY         *)
+(* WARRANTY; without even the implied warranty of MERCHANTABILITY or       *)
+(* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License    *)
+(* for more details.                                                       *)
 
 open Ast
 
 module StringMap = Map.Make(String)
 
-(**
-@param field1 index into scope
-@param field2 unique id
-*)
-type var_info = (int * int)
+(** Variable information, tuple of index into scope and unique id *)
+type var_info = (int * int )
 
 (**
 represents variables map in a global or local scope, and reference to parent scope
 *)
 type rec_varmap ={
-	variable_map: var_info StringMap.t;
-	parent: rec_varmap option;
+	variable_map: var_info StringMap.t; (** map of variable name to variable info *)
+	parent: rec_varmap option; (** parent scope variable map, or None if top level scope *)
 }
 
 (**
 Properties of variable locations
 *)
 type var_prop ={
-	written_after_declared: bool;
-	read_after_declared: bool;
-	declaration_loc: string * int;
+	written_after_declared: bool; (** is the variable assigned after it is declared *)
+	read_after_declared: bool; (** is the variable read after declared *)
+	declaration_loc: string * int; (** tuple of file where variable is declared and line number*)
 }
 
+(** position of a label with within a template spec, tuple of start begin, start end,
+end begin, end ending *)
 type label_pos = int * int * int * int
 
-type template_spec_def = (template_spec list * (string , label_pos ) Hashtbl.t * (string * int))
+(** definition of a template specidifcation, used during validity checking.
+tuple of sepecfication list and map of labels to label position *)
+type template_spec_def = (template_spec list *	(string , label_pos ) Hashtbl.t * (string * int))
 
 (**
 The analysis environment
 *)
 type analysis_env ={
-	globals: rec_varmap;
-	num_globals: int;
-	locals: rec_varmap list; (* one item for each stackframe depth, head is current *)
-	num_locals: int list;
-	sdepth: int;
-	max_depth: int;
-	errors: string list;
-	warnings: string list;
-	unique_id: int;
-	names: string list;
-	varprops: (int, var_prop) Hashtbl.t;
-	imported: string list;
-	templates: (string, template_spec_def) Hashtbl.t;
-	constants: (int, runtime_variable_value) Hashtbl.t;
+	globals: rec_varmap; (** map of global variables *)
+	num_globals: int; (** number of globals *)
+	locals: rec_varmap list; (** recursive list of stack frames *)
+	num_locals: int list; (** number of locals in current stack frame *)
+	sdepth: int; (** current stack depth *)
+	max_depth: int; (** maximum stack depth encountered *)
+	errors: string list; (** list of errors found during analysis *)
+	warnings: string list; (** list of warning generated during analysis *)
+	unique_id: int; (** counter for next unique id *)
+	names: string list; (** list of names encountered *)
+	varprops: (int, var_prop) Hashtbl.t; (** properties of variables *)
+	imported: string list; (** list of files already imported *)
+	templates: (string, template_spec_def) Hashtbl.t; (** map of template names to template definitions *)
+	constants: (int, runtime_variable_value) Hashtbl.t; (** map of variables unique id to declared value *)
 }
 
 (**
@@ -116,7 +115,7 @@ let is_constant env uid =
 	let varprop = Hashtbl.find env.varprops uid
 	in let (_, line) = varprop.declaration_loc
 	in not varprop.written_after_declared && line!= 0
-	
+
 (**
 declare a variable if it does not exist or create a new entry and return new index
 @param name name of variable to declare
@@ -171,7 +170,7 @@ declare a variable if it does not exist or create a new entry and return new ind
 then sets constant value
 @param name name of variable to declare
 @param env analysis environment
-@param value
+@param value the value to initialize the variable with
 @return the modified environment
 *)
 let declare_variable_and_value name env value =
@@ -186,7 +185,7 @@ Find variable in analysis scope
 @param name the variable name
 @param env the analysis environment
 @return location
-@throws Variable_not_found when the variable is not found
+@raise Variable_not_found when the variable is not found
 *)
 let resolve_variable name env =
 	let rec find scopes =
@@ -219,7 +218,7 @@ let resolve_variable name env =
 (**
 returns uid from location
 @param loc the variable location
-@return uid
+@return the unique id of the variable
 *)
 let uid_from_loc = function
 	| GlobalVar(uid, _) -> uid
@@ -230,7 +229,7 @@ Find variable and value in analysis scope
 @param name the variable name
 @param env the analysis environment
 @return tuple of value and location
-@throws Variable_not_found when the variable is not found
+@raise Variable_not_found when the variable is not found
 *)
 let resolve_variable_value name env =
 	let loc = resolve_variable name env
@@ -457,16 +456,16 @@ let add_import env filename =
 type of operation performed on variable
 *)
 type var_op_type =
-	| ReadOp
-	| WriteOp
-	| DeclareOp of (string * int)
-	| DeclareWriteOp of (string * int)
+	| ReadOp  (** variable is read *)
+	| WriteOp (** variable is written *)
+	| DeclareOp of (string * int) (** variable is declared *)
+	| DeclareWriteOp of (string * int) (** variable is declared and written, used for function args *)
 
 (**
 Records a variables property
 @param env analysis environment
 @param loc variable location
-@param operation
+@param operation the operation on the variable
 @return unit
 *)
 let record_usage env loc op =

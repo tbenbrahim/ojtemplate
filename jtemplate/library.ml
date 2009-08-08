@@ -1,18 +1,15 @@
 (**
-This program is free software; you can redistribute it and / or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 3 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
 Registration of libraries
 
 @author Tony BenBrahim < tony.benbrahim at gmail.com >
-
 *)
+(* This program is free software; you can redistribute it and / or modify  *)
+(* it under the terms of the GNU General Public License as published by    *)
+(* the Free Software Foundation; version 3 of the License. This program is *)
+(* distributed in the hope that it will be useful, but WITHOUT ANY         *)
+(* WARRANTY; without even the implied warranty of MERCHANTABILITY or       *)
+(* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License    *)
+(* for more details.                                                       *)
 
 open Ast
 open Environment
@@ -26,10 +23,10 @@ let register_for_analysis env =
 	let env = Environment.declare_variable_and_value env "args" (RMapValue(Hashtbl.create 10, ArraySubtype))
 	in let env = Environment.declare_variable_and_value env "String" (RMapValue(Hashtbl.create 10, MapSubtype))
 	in let env = Environment.declare_variable_and_value env "Integer" (RMapValue(Hashtbl.create 10, MapSubtype))
-	in let h=Hashtbl.create 10 
-	in let _ =Hashtbl.add h "infinity" (RFloatValue(infinity))
-	in let _ =Hashtbl.add h "nan" (RFloatValue(nan))
-	in let _ =Hashtbl.add h "negativeInfinity" (RFloatValue(neg_infinity))
+	in let h = Hashtbl.create 10
+	in let _ = Hashtbl.add h "infinity" (RFloatValue(infinity))
+	in let _ = Hashtbl.add h "nan" (RFloatValue(nan))
+	in let _ = Hashtbl.add h "negativeInfinity" (RFloatValue(neg_infinity))
 	in let env = Environment.declare_variable_and_value env "Float" (RMapValue(h, MapSubtype))
 	in let env = Environment.declare_variable_and_value env "Boolean" (RMapValue(Hashtbl.create 10, MapSubtype))
 	in let env = Environment.declare_variable_and_value env "Function" (RMapValue(Hashtbl.create 10, MapSubtype))
@@ -98,4 +95,3 @@ let register_for_runtime env renv =
 		| None -> ()
 		| Some m -> process m
 	in process env.globals
-	
