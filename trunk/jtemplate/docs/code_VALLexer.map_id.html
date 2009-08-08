@@ -1,0 +1,57 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Analysis" rel="Chapter" href="Analysis.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_info" rel="Chapter" href="Ast_info.html">
+<link title="Environment" rel="Chapter" href="Environment.html">
+<link title="Expression" rel="Chapter" href="Expression.html">
+<link title="Filename_util" rel="Chapter" href="Filename_util.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html">
+<link title="Jtemplate" rel="Chapter" href="Jtemplate.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Library" rel="Chapter" href="Library.html">
+<link title="Library_builtin" rel="Chapter" href="Library_builtin.html">
+<link title="Library_io" rel="Chapter" href="Library_io.html">
+<link title="Library_string" rel="Chapter" href="Library_string.html">
+<link title="Parser" rel="Chapter" href="Parser.html">
+<link title="Parser_util" rel="Chapter" href="Parser_util.html">
+<link title="RuntimeError" rel="Chapter" href="RuntimeError.html"><title>Lexer.map_id</title>
+</head>
+<body>
+<code class="code"><span class="keyword">let</span>&nbsp;map_id&nbsp;name=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;name&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"foreach"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FOREACH</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"in"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IN</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"while"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">WHILE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"function"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FUNCTION</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"if"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IF</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"else"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ELSE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"template"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">TEMPLATE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"instructions"</span>&nbsp;<span class="keywordsign">-&gt;</span><span class="constructor">INSTRUCTIONS</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"continue"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">CONTINUE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"break"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BREAK</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"return"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">RETURN</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"for"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FOR</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"once"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ONCE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"when"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">WHEN</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"var"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">VAR</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"let"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">VAR</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"true"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BOOLEAN</span>(<span class="keyword">true</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"false"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BOOLEAN</span>(<span class="keyword">false</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"Void"</span>&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">VOID</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"import"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IMPORT</span>(<span class="keyword">false</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"use"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">IMPORT</span>(<span class="keyword">true</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"switch"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">SWITCH</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"case"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">CASE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"default"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">DEFAULT</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"try"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">TRY</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"catch"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">CATCH</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"finally"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FINALLY</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"throw"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">THROW</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;<span class="constructor">ID</span>(name)</code></body></html>

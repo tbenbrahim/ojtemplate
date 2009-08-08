@@ -1,4 +1,9 @@
 (**
+This module defines runtime errors that are reported to the user
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+*)
+(*
 This program is free software; you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; version 3 of the License.
@@ -7,11 +12,6 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
-This module defines runtime errors that are reported to the user
-
-@author Tony BenBrahim < tony.benbrahim at gmail.com >
-
 *)
 
 open Ast
@@ -83,6 +83,11 @@ exception EDefaultCaseShouldBeLast
 (** indicates a parsing error *)
 exception ParseException of string
 
+(**
+Returns an error message for an exception
+@param ex exception
+@return error message
+*)
 let string_of_error ex =
 	match ex with
 	| InternalError msg -> "INT-00 internal error, interpreter is in inconsistent state: "^msg
@@ -119,6 +124,11 @@ let string_of_error ex =
 	| Parsing.Parse_error -> ""
 	| e -> "uncaught exception "^(Printexc.to_string e)
 
+(**
+Displays an error to stdout
+@param err exception
+@param cloc tuple of file, line where error occured
+*)
 let display_error err cloc =
 	let (file, line) = cloc
 	in match string_of_error err with

@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Environment.html">
+<link rel="next" href="Filename_util.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Analysis" rel="Chapter" href="Analysis.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_info" rel="Chapter" href="Ast_info.html">
+<link title="Environment" rel="Chapter" href="Environment.html">
+<link title="Expression" rel="Chapter" href="Expression.html">
+<link title="Filename_util" rel="Chapter" href="Filename_util.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html">
+<link title="Jtemplate" rel="Chapter" href="Jtemplate.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Library" rel="Chapter" href="Library.html">
+<link title="Library_builtin" rel="Chapter" href="Library_builtin.html">
+<link title="Library_io" rel="Chapter" href="Library_io.html">
+<link title="Library_string" rel="Chapter" href="Library_string.html">
+<link title="Parser" rel="Chapter" href="Parser.html">
+<link title="Parser_util" rel="Chapter" href="Parser_util.html">
+<link title="RuntimeError" rel="Chapter" href="RuntimeError.html"><title>Expression</title>
+</head>
+<body>
+<div class="navbar"><a href="Environment.html">Previous</a>
+&nbsp;<a href="index.html">Up</a>
+&nbsp;<a href="Filename_util.html">Next</a>
+</div>
+<center><h1>Module <a href="type_Expression.html">Expression</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> Expression: <code class="code">sig</code> <a href="Expression.html">..</a> <code class="code">end</code></pre>Evaluation of binary operations and comparaison of values
+Various helper functions for expression evaluation<br>
+<b>Author(s):</b> Tony BenBrahim < tony.benbrahim at gmail.com ><br>
+<hr width="100%">
+<pre><span class="keyword">val</span> <a name="VALlist_of_array"></a><a href="code_VALExpression.list_of_array.html">list_of_array</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> list</code></pre><div class="info">
+Converts a MapValue array to a list of values<br>
+<b>Returns</b> a list of values<br>
+</div>
+<div class="param_info"><code class="code">arr</code> : array</div>
+<pre><span class="keyword">val</span> <a name="VALstring_of_value"></a><a href="code_VALExpression.string_of_value.html">string_of_value</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> string</code></pre><div class="info">
+Converts a value to a string<br>
+<b>Returns</b> a string representing the value<br>
+</div>
+<br><code><span class="keyword">type</span> <a name="TYPEvaluetype"></a><code class="type"></code>valuetype = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">IntegerType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FloatType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">BooleanType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">StringType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FunctionType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">LibraryCallType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MapType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ArrayType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">VoidType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">NaNType</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">UndefinedType</span></code></td>
+
+</tr></table>
+
+<div class="info">
+enumeration of a value's possible types<br>
+</div>
+
+<pre><span class="keyword">val</span> <a name="VALvalue_type"></a><a href="code_VALExpression.value_type.html">value_type</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Expression.html#TYPEvaluetype">valuetype</a></code></pre><div class="info">
+Returns a value's type<br>
+<b>Returns</b> the value's type<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALstring_of_value_type"></a><a href="code_VALExpression.string_of_value_type.html">string_of_value_type</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> string</code></pre><div class="info">
+returns a string name for a value's type<br>
+<b>Returns</b> string name for the value's type<br>
+</div>
+<br><code><span class="keyword">type</span> <a name="TYPEcast_type"></a><code class="type"></code>cast_type = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">IntegerCast</span> <span class="keyword">of</span> <code class="type">int * int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FloatCast</span> <span class="keyword">of</span> <code class="type">float * float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">StringCast</span> <span class="keyword">of</span> <code class="type">string * string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">BoolCast</span> <span class="keyword">of</span> <code class="type">bool * bool</code></code></td>
+
+</tr></table>
+
+<div class="info">
+type to hold the result of casting two values to the same type<br>
+</div>
+
+<pre><span class="keyword">val</span> <a name="VALcast_to_integer"></a><a href="code_VALExpression.cast_to_integer.html">cast_to_integer</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> int</code></pre><div class="info">
+cast a value to an integer<br>
+<b>Raises</b> <code>EInvalidCast</code> if the value cannot be cast<br>
+<b>Returns</b> an integer representation of the value<br>
+</div>
+<div class="param_info"><code class="code">value</code> : the runtime value</div>
+<pre><span class="keyword">val</span> <a name="VALcast_to_float"></a><a href="code_VALExpression.cast_to_float.html">cast_to_float</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> float</code></pre><div class="info">
+cast a value to a float<br>
+<b>Raises</b> <code>EInvalidCast</code> if the value cannot be cast<br>
+<b>Returns</b> an float representation of the value<br>
+</div>
+<div class="param_info"><code class="code">value</code> : the runtime value</div>
+<pre><span class="keyword">val</span> <a name="VALevaluate_op"></a><a href="code_VALExpression.evaluate_op.html">evaluate_op</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Ast.html#TYPEoperator">Ast.operator</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Evaluate the operation<br>
+<b>Returns</b> the value that results from the operation<br>
+</div>
+<div class="param_info"><code class="code">value1</code> : the first value</div>
+<div class="param_info"><code class="code">value2</code> : the second value</div>
+<div class="param_info"><code class="code">operator</code> : the operator</div>
+<pre><span class="keyword">val</span> <a name="VALcompare"></a><a href="code_VALExpression.compare.html">compare</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -><br>       <a href="Ast.html#TYPEcomparator">Ast.comparator</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Implements comparaison of two values, according to the following semantics:
+<p>
+
+-Integer Integer Any Comparison of integer values
+-Float Float Any Comparison of float values
+-Float Integer Any Comparison of float values
+-String any type Float comparison of first value to second value,
+-Integer with non string values converted to strings
+-Both types are Booleans,== and != comparison of first value to second value
+-maps, arrays, functions,== and != comparison of first value to second value
+-NaN or void == and != comparison of first value to second value
+-Different types == always returns false != always returns true<br>
+<b>Returns</b> a boolean value type<br>
+</div>
+<div class="param_info"><code class="code">v1</code> : the first value to compare</div>
+<div class="param_info"><code class="code">op</code> : the comparaison operator</div>
+<div class="param_info"><code class="code">v2</code> : the second value to compare</div>
+<pre><span class="keyword">val</span> <a name="VALopname"></a><a href="code_VALExpression.opname.html">opname</a> : <code class="type"><a href="Ast.html#TYPEcomparator">Ast.comparator</a> -> string</code></pre><pre><span class="keyword">val</span> <a name="VALhashtbl_equal"></a><a href="code_VALExpression.hashtbl_equal.html">hashtbl_equal</a> : <code class="type">(string, <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a>) Hashtbl.t -><br>       (string, <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a>) Hashtbl.t -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALmismatched_compare"></a><a href="code_VALExpression.mismatched_compare.html">mismatched_compare</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -><br>       <a href="Ast.html#TYPEcomparator">Ast.comparator</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><pre><span class="keyword">val</span> <a name="VALmake_stackframe"></a><a href="code_VALExpression.make_stackframe.html">make_stackframe</a> : <code class="type">int -><br>       int -><br>       bool -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> list -><br>       <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> array</code></pre><div class="info">
+Makes a stack frame from the supplied value list<br>
+<b>Returns</b> a stack frame (an array of values)<br>
+</div>
+<div class="param_info"><code class="code">size</code> : size of stack frame</div>
+<div class="param_info"><code class="code">vararg</code> : true if the last argument is a vararg, false otherwise</div>
+<div class="param_info"><code class="code">value_list</code> : list of values to add to the stack frame</div>
+<div class="param_info"><code class="code">this</code> : the value of this</div>
+<pre><span class="keyword">val</span> <a name="VALarray_of_value_list"></a><a href="code_VALExpression.array_of_value_list.html">array_of_value_list</a> : <code class="type"><a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a> list -> <a href="Ast.html#TYPEruntime_variable_value">Ast.runtime_variable_value</a></code></pre><div class="info">
+Creates an Array from a list of values<br>
+<b>Returns</b> a MapValue with the array<br>
+</div>
+<div class="param_info"><code class="code">value_list</code> : a list of values</div>
+</body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Parser_util.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Analysis" rel="Chapter" href="Analysis.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_info" rel="Chapter" href="Ast_info.html">
+<link title="Environment" rel="Chapter" href="Environment.html">
+<link title="Expression" rel="Chapter" href="Expression.html">
+<link title="Filename_util" rel="Chapter" href="Filename_util.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html">
+<link title="Jtemplate" rel="Chapter" href="Jtemplate.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Library" rel="Chapter" href="Library.html">
+<link title="Library_builtin" rel="Chapter" href="Library_builtin.html">
+<link title="Library_io" rel="Chapter" href="Library_io.html">
+<link title="Library_string" rel="Chapter" href="Library_string.html">
+<link title="Parser" rel="Chapter" href="Parser.html">
+<link title="Parser_util" rel="Chapter" href="Parser_util.html">
+<link title="RuntimeError" rel="Chapter" href="RuntimeError.html"><title>RuntimeError</title>
+</head>
+<body>
+<div class="navbar"><a href="Parser_util.html">Previous</a>
+&nbsp;<a href="index.html">Up</a>
+&nbsp;</div>
+<center><h1>Module <a href="type_RuntimeError.html">RuntimeError</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> RuntimeError: <code class="code">sig</code> <a href="RuntimeError.html">..</a> <code class="code">end</code></pre>This module defines runtime errors that are reported to the user<br>
+<b>Author(s):</b> Tony BenBrahim < tony.benbrahim at gmail.com ><br>
+<hr width="100%">
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONInternalError"></a>InternalError <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+this error represents an unexpected condition, caused by a programming
+error in the interpreter implementation<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONLibraryError"></a>LibraryError <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+this error is a generic error thrown by library routines to indicate an
+error condition, such as the incorrect type of a passed in argument<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONLexerException"></a>LexerException <span class="keyword">of</span> <code class="type">string * int * int</code></pre>
+<div class="info">
+this error is caused by an abnormal error caused by the lexer, such as an
+unterminated string *<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONFatalExit"></a>FatalExit</pre>
+<div class="info">
+marker exception to note that the program should exit, error has already
+been reported during analysis<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEIncompatibleTypes"></a>EIncompatibleTypes <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates that an assignment was attempted on two incompatible types<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEInvalidCast"></a>EInvalidCast <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates that the value is not of the expected type<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEInvalidOperation"></a>EInvalidOperation <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates that an invalid operation was attempted on the specified types<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEInvalidComparaison"></a>EInvalidComparaison <span class="keyword">of</span> <code class="type">string * string * string</code></pre>
+<div class="info">
+indicates that an invalid comparaison was attempted on the given types<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONELeftSideIsNotAMap"></a>ELeftSideIsNotAMap <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates that a member expression is not applied to a map<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONELeftSideIsNotAMap"></a>ELeftSideIsNotAMap <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates that a member expression is not applied to a map<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONELeftSideCannotBeAssigned"></a>ELeftSideCannotBeAssigned</pre>
+<div class="info">
+indicates an attempt at an assignment to something that is a not a variable or map<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEInvalidMember"></a>EInvalidMember <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates that the map member did not evaluate to a string or integer<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEUndefinedMapMember"></a>EUndefinedMapMember <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+indicates that a reference was made to a map member that does not exist<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEInvalidArrayIndex"></a>EInvalidArrayIndex <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates a non integer array index<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEArrayIndexOutOfBounds"></a>EArrayIndexOutOfBounds <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+indicates an out of bounds index<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONETypeMismatchInAssignment"></a>ETypeMismatchInAssignment <span class="keyword">of</span> <code class="type">string * string * string</code></pre>
+<div class="info">
+indicates that the type in the assignment does not match the declare type<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEMismatchedFunctionArgs"></a>EMismatchedFunctionArgs <span class="keyword">of</span> <code class="type">int * int</code></pre>
+<div class="info">
+indicates that an incorrect number of arguments were passed to a function<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONENotAFunction"></a>ENotAFunction</pre>
+<div class="info">
+indicates an attempt to apply a function to a non function<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONENotACollectionType"></a>ENotACollectionType <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info">
+indicates applying for each on a non collection type<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONEDefaultCaseShouldBeLast"></a>EDefaultCaseShouldBeLast</pre>
+<div class="info">
+indicates that the default case should be last<br>
+</div>
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONParseException"></a>ParseException <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+indicates a parsing error<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALstring_of_error"></a><a href="code_VALRuntimeError.string_of_error.html">string_of_error</a> : <code class="type">exn -> string</code></pre><div class="info">
+Returns an error message for an exception<br>
+<b>Returns</b> error message<br>
+</div>
+<div class="param_info"><code class="code">ex</code> : exception</div>
+<pre><span class="keyword">val</span> <a name="VALdisplay_error"></a><a href="code_VALRuntimeError.display_error.html">display_error</a> : <code class="type">exn -> string * int -> unit</code></pre><div class="info">
+Displays an error to stdout<br>
+</div>
+<div class="param_info"><code class="code">err</code> : exception</div>
+<div class="param_info"><code class="code">cloc</code> : tuple of file, line where error occured</div>
+</body></html>

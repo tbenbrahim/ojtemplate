@@ -1,4 +1,9 @@
 (**
+The Jtemplate interpreter
+
+@author Tony BenBrahim < tony.benbrahim at gmail.com >
+*)
+(*
 This program is free software; you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; version 3 of the License.
@@ -7,11 +12,6 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
-The Jtemplate interpreter
-
-@author Tony BenBrahim < tony.benbrahim at gmail.com >
-
 *)
 
 open Ast
@@ -341,9 +341,9 @@ and resolve_func_this env fexpr =
 (**
 Runs a function
 @param env runtime environment
-@value_list list of values to pass as arguments
-@this this pointer
-@func function
+@param value_list list of values to pass as arguments
+@param this this pointer
+@param func function
 @return a tuple of the environemt and return value
 *)
 and run_function env value_list this func =
@@ -430,7 +430,7 @@ and evaluate_memb_expr_index env index =
 	)
 (**
 Returns the hashmap that corresponds to the member expression
-@env the runtime environment
+@param env the runtime environment
 @param expr the member expression (without the last member)
 @param index the index (the last member of the member expression)
 @return the hashmap that corresponds to the member expression
