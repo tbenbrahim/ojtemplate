@@ -3,16 +3,13 @@ Definition of the parser generated AST and the runtime AST
 
 @author Tony BenBrahim < tony.benbrahim at gmail.com >
 *)
-(*
-This program is free software; you can redistribute it and / or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 3 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-s*)
+(* This program is free software; you can redistribute it and / or modify  *)
+(* it under the terms of the GNU General Public License as published by    *)
+(* the Free Software Foundation; version 3 of the License. This program is *)
+(* distributed in the hope that it will be useful, but WITHOUT ANY         *)
+(* WARRANTY; without even the implied warranty of MERCHANTABILITY or       *)
+(* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License    *)
+(* for more details. s                                                     *)
 
 (** binary operation operators *)
 type operator = | Plus | Minus | Times | Divide | Modulo | And | Or
@@ -38,31 +35,31 @@ type variable_location =
 type replacement =
 	(string * expression)
 
-and (** list of replacements for a template instructions *)
-replacement_list =
+(** list of replacements for a template instructions *)
+and replacement_list =
 	replacement list
 
-and (** conditional replacement criteria for a template instruction *)
-conditional_spec =
+(** conditional replacement criteria for a template instruction *)
+and conditional_spec =
 	| Once
 	| When of expression
 	| Loop of string * expression
 	| CondLoop of expression * string * expression
 
-and (** a single instruction in a set of template instructions *)
-replacement_spec =
+(** a single instruction in a set of template instructions *)
+and replacement_spec =
 	(string * conditional_spec * replacement_list)
 
-and (** definition for a line in a template definition *)
-template_spec =
+(** definition for a line in a template definition *)
+and template_spec =
 	((string option) * string)
 
-and (** type of map variable, either a dictionary or an array *)
-map_subtype =
+(** type of map variable, either a dictionary or an array *)
+and map_subtype =
 	| MapSubtype | ArraySubtype
 
-and (** variable values used in parsing AST *)
-variable_value =
+(** variable values used in parsing AST *)
+and variable_value =
 	| IntegerValue of int
 	| FloatValue of float
 	| StringValue of string
@@ -71,8 +68,8 @@ variable_value =
 	| MapValue of (string, variable_value) Hashtbl.t * map_subtype
 	| Void
 
-and (** variable values used in runtime AST *)
-runtime_variable_value =
+(** variable values used in runtime AST *)
+and runtime_variable_value =
 	| RIntegerValue of int
 	| RFloatValue of float
 	| RStringValue of string
@@ -83,14 +80,14 @@ runtime_variable_value =
 	| RVoid
 	| RUndefined
 
-and (**
+(**
 The runtime environment.
 consists of a heap for globals and an array of stackframes to support nested functions
 *)
-runtime_env =
+and runtime_env =
 	{ heap : (int * runtime_variable_value) array; (** heap, arary of tuple of uid and value *)
 		stackframes : (runtime_variable_value array) array; (** array of stackframes *)
-		mutable closure_vars : 
+		mutable closure_vars :
 		(((int * int), runtime_variable_value) Hashtbl.t) option; (** map of closure variables *)
 		gnames : string array; (** array of global names, indexed by uid *)
 		mutable current_line : (string * int);  (** file and line currently interpreted *)
@@ -98,19 +95,19 @@ runtime_env =
 		mutable skip_callstack_pop: bool; (** to indicate whether the call stack entry was skipped in a recursive call *)
 	}
 
-and (**
+(**
 Definition for a library function
 *)
-lib_function_def =
+and lib_function_def =
 	{ name : string list; (** namespace and name of function *)
-	  args : string list; (** list of arguments *)
+		args : string list; (** list of arguments *)
 		num_args : int; (** number of arguments *)
 		vararg : bool; (** flag indicating whether the last argument is vararg *)
 		code : runtime_env -> unit (** function call to invoked the function *)
 	}
 
-and (** expressions used in parsing AST *)
-expression =
+(** expressions used in parsing AST *)
+and expression =
 	| Id of string
 	| VarArg of string
 	| BinaryOp of expression * operator * expression
@@ -127,8 +124,8 @@ expression =
 	| PostFixSum of expression * int
 	| TernaryCond of expression * expression * expression
 
-and (** expressions used in runtime AST *)
-runtime_expression =
+(** expressions used in runtime AST *)
+and runtime_expression =
 	| RVariable of variable_location
 	| RVarArg of variable_location
 	| RBinaryOp of runtime_expression * operator * runtime_expression
@@ -142,11 +139,10 @@ runtime_expression =
 	| RDeclaration of runtime_expression * runtime_expression
 	| RMemberExpr of runtime_expression * runtime_expression
 	| RPostFixSum of runtime_expression * int
-	| RTernaryCond of runtime_expression * runtime_expression
-	* runtime_expression
+	| RTernaryCond of runtime_expression * runtime_expression	* runtime_expression
 
-and (** statements used in parsing AST *)
-statement =
+(** statements used in parsing AST *)
+and statement =
 	| ForEach of string * expression * statement * (string * int)
 	| For of expression * expression * expression * statement * (string * int)
 	| ExpressionStatement of expression * (string * int)
@@ -167,8 +163,8 @@ statement =
 	| TryFinally of statement * statement * (string * int)
 	| Throw of expression * (string * int)
 
-and (** statements used in runtime AST *)
-runtime_statement =
+(** statements used in runtime AST *)
+and runtime_statement =
 	| RForEach of variable_location * runtime_expression * runtime_statement	* (string * int)
 	| RFor of runtime_expression * runtime_expression * runtime_expression	* runtime_statement * (string * int)
 	| RExpressionStatement of runtime_expression * (string * int)

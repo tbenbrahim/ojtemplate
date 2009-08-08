@@ -169,6 +169,9 @@ string replacement specification in a template instruction<br>
 </div>
 
 <pre><span class="keyword">type</span> <a name="TYPEreplacement_list"></a><code class="type"></code>replacement_list = <code class="type"><a href="Ast.html#TYPEreplacement">replacement</a> list</code> </pre>
+<div class="info">
+list of replacements for a template instructions<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEconditional_spec"></a><code class="type"></code>conditional_spec = </code><table class="typetable">
 <tr>
@@ -200,10 +203,19 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+conditional replacement criteria for a template instruction<br>
+</div>
 
 <pre><span class="keyword">type</span> <a name="TYPEreplacement_spec"></a><code class="type"></code>replacement_spec = <code class="type">string * <a href="Ast.html#TYPEconditional_spec">conditional_spec</a> * <a href="Ast.html#TYPEreplacement_list">replacement_list</a></code> </pre>
+<div class="info">
+a single instruction in a set of template instructions<br>
+</div>
 
 <pre><span class="keyword">type</span> <a name="TYPEtemplate_spec"></a><code class="type"></code>template_spec = <code class="type">string option * string</code> </pre>
+<div class="info">
+definition for a line in a template definition<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEmap_subtype"></a><code class="type"></code>map_subtype = </code><table class="typetable">
 <tr>
@@ -221,6 +233,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+type of map variable, either a dictionary or an array<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEvariable_value"></a><code class="type"></code>variable_value = </code><table class="typetable">
 <tr>
@@ -273,6 +288,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+variable values used in parsing AST<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEruntime_variable_value"></a><code class="type"></code>runtime_variable_value = </code><table class="typetable">
 <tr>
@@ -339,6 +357,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+variable values used in runtime AST<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEruntime_env"></a><code class="type"></code>runtime_env = {</code><table class="typetable">
 <tr>
@@ -392,6 +413,10 @@ string replacement specification in a template instruction<br>
 </tr></table>
 }
 
+<div class="info">
+The runtime environment.
+consists of a heap for globals and an array of stackframes to support nested functions<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPElib_function_def"></a><code class="type"></code>lib_function_def = {</code><table class="typetable">
 <tr>
@@ -431,6 +456,9 @@ string replacement specification in a template instruction<br>
 </tr></table>
 }
 
+<div class="info">
+Definition for a library function<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEexpression"></a><code class="type"></code>expression = </code><table class="typetable">
 <tr>
@@ -539,6 +567,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+expressions used in parsing AST<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEruntime_expression"></a><code class="type"></code>runtime_expression = </code><table class="typetable">
 <tr>
@@ -640,6 +671,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+expressions used in runtime AST<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEstatement"></a><code class="type"></code>statement = </code><table class="typetable">
 <tr>
@@ -769,6 +803,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+statements used in parsing AST<br>
+</div>
 
 <br><code><span class="keyword">type</span> <a name="TYPEruntime_statement"></a><code class="type"></code>runtime_statement = </code><table class="typetable">
 <tr>
@@ -884,6 +921,9 @@ string replacement specification in a template instruction<br>
 
 </tr></table>
 
+<div class="info">
+statements used in runtime AST<br>
+</div>
 
 <pre><span class="keyword">val</span> <a name="VALis_vararg"></a><a href="code_VALAst.is_vararg.html">is_vararg</a> : <code class="type">string -> bool</code></pre><div class="info">
 determines if a variable is a varag<br>

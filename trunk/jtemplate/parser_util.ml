@@ -13,19 +13,6 @@ Routines to parse a file
 
 open RuntimeError
 
-let get_ast lexbuf =
-	let _ = Parsing.set_trace false in
-	try Parser.program Lexer.main lexbuf
-	with
-	| RuntimeError.LexerException (msg, line, col) ->
-			(print_string
-					(msg ^
-						(" at line " ^
-							((string_of_int line) ^
-								(" col " ^ ((string_of_int col) ^ "\n")))));
-				exit 2)
-
-
 (**
 Parse a channel
 @param chanel the channel to read the program from
@@ -33,7 +20,18 @@ Parse a channel
 @return the parse AST
 *)
 let parse channel name =
-	let lexbuf = Lexing.from_channel channel in
+	let get_ast lexbuf =
+		let _ = Parsing.set_trace false in
+		try Parser.program Lexer.main lexbuf
+		with
+		| RuntimeError.LexerException (msg, line, col) ->
+				(print_string
+						(msg ^
+							(" at line " ^
+								((string_of_int line) ^
+									(" col " ^ ((string_of_int col) ^ "\n")))));
+					exit 2)
+	in let lexbuf = Lexing.from_channel channel in
 	let pos = lexbuf.Lexing.lex_curr_p in
 	let _ =
 		lexbuf.Lexing.lex_curr_p <-
@@ -42,7 +40,7 @@ let parse channel name =
 
 (**
 Parse a filename
-@param  filename to parse
+@param filename to parse
 @return the parse AST
 *)
 let parse_filename filename =

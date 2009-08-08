@@ -17,8 +17,10 @@ open Expression
 open RuntimeError
 open Unix
 
+(** internal error raised to indicate a inconsistent usage of a handle *)
 exception EIOPassthrough of string
 
+(** type of I/O channel *)
 type channelType = OutChannel of out_channel | InChannel of in_channel * (string * bool)
 
 (**
