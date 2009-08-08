@@ -393,6 +393,7 @@ and analyze_variables env ast =
 				in let (stmt_list, env) = analyze_variables_in_block env stmt_list
 				in let closure_vars = get_closure_vars stmt_list (Environment.get_depth env)
 				in let inline_expr = match (stmt_list, closure_vars) with
+					| (RReturn(RValue(RFunctionValue(_,_,_,_,_,Some h,_)),_)::[],_) -> None
 					| (RReturn(expr, _)::[], None) | (RExpressionStatement(expr, _)::[], None) -> Some expr
 					| ([], None) -> Some (RValue(RVoid))
 					| _ -> None
