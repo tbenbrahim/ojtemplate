@@ -15,7 +15,7 @@ Pass 2:
 The second pass replaces all non function variables whose value have not been modified
 with a constant value, and evaluates operations on constants , eliminates assignment
 statements on constant values when the variable is not reassigned and not written,
-inline functions
+inlines functions
 
 
 @author Tony BenBrahim < tony.benbrahim at gmail.com >
