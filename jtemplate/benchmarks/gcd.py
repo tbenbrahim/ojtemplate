@@ -1,9 +1,9 @@
 def gcd(a,b):
-	if a > b:
-		return gcd(a-b,b)
-	else:
-		if a<b :
+	if a<b :
 			return gcd(a,b-a)
+	else:
+		if a > b:
+			return gcd(a-b,b)
 		else :
 			return a
 
