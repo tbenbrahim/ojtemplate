@@ -1,0 +1,9 @@
+let addMany=function(args...){
+	let result=0;
+	foreach(arg in args){
+		result=result+arg;
+	}
+	return result;
+};
+
+println(addMany(1,2,3,4,5));

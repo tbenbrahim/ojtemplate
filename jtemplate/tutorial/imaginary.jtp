@@ -1,0 +1,16 @@
+let Imaginary={
+	add: function(i1,i2){
+		return {real: i1.real+i2.real, i: i1.i+i2.i};
+	},
+	subtract: function(i1,i2){
+		return {real: i1.real-i2.real, i: i1.i-i2.i};
+	},
+	toString: function(i1){
+		return '(' + i1.real + ','+ i1.i +'i)';	
+	}
+};
+
+let a={real: 12, i: 1};
+let b={real: 7, i: -2};
+println(Imaginary.toString(Imaginary.add(a,b)));
+	

@@ -1,0 +1,11 @@
+let side=4;
+
+let square=function(x){
+	return x*x;
+};
+
+let printArea=function(x){
+	println(square(x));
+};
+
+printArea(side);

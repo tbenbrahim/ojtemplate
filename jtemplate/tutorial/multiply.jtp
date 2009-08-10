@@ -1,0 +1,31 @@
+//sample included in multiply.jtp
+
+//left pads a string to length len with character char
+let String.prototype.lpad=function(len,char){
+	while(this.length()<len)
+		this=char+this;
+	return this;
+};
+
+//left pads an integer to length len with character char
+let Integer.prototype={};
+let Integer.prototype.lpad=function(len,char){
+	return (this+'').lpad(len,char);
+};
+
+
+for (let row=0;row<10;++row){
+	switch(row){
+		case 0:
+			print('   ');
+			for (let col=1;col<10;++col)
+				print(col.lpad(3,' '));
+			break;
+		default:
+			print((row+'').lpad(3,' '));
+			for (let col=1;col<10;++col)
+				print((col*row).lpad(3,' '));
+			break;
+	}
+	println();
+}

@@ -1,0 +1,20 @@
+let Imaginary={
+	prototype: {
+		create: function (r,i){
+			return {real: r, i: i, prototype: Imaginary};
+		},
+		add: function(i2){
+			return {real: this.real+i2.real, i: this.i+i2.i, prototype: Imaginary};
+		},
+		subtract: function(i2){
+			return {real: this.real-i2.real, i: this.i-i2.i, prototype: Imaginary};
+		},
+		toString: function(){
+			return '(' + this.real + ','+ this.i +'i)';	
+		}
+	}
+};
+
+let a=Imaginary.create(12,1);
+let b=Imaginary.create(7,-2);
+println(a.toString(),' + ',b.toString(),' = ',a.add(b).toString());

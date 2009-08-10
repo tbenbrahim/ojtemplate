@@ -87,7 +87,8 @@ let register_for_runtime env renv =
 		StringMap.fold(fun k v _ ->
 						let (ind, uid) = v
 						in try
-							let value = get_constant_value env uid
+							let value = (
+								try get_constant_value env uid with _ -> RUndefined)
 							in renv.heap.(ind) <- (uid, value)
 						with Not_found -> ()
 			) rmap.variable_map ();

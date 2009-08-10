@@ -57,7 +57,7 @@ let rec interpret env = function
 			| CFBreak -> ())
 	| RFastIterator (vloc, start, max, inc, stmt, cloc) ->
 			env.current_line <- cloc;
-			let rec loop ind =
+			let rec loopfast ind =
 				let _ = Environment.set_value env (RIntegerValue(ind)) vloc
 				in if ind < max then
 					((try
@@ -65,11 +65,11 @@ let rec interpret env = function
 						with
 						| CFContinue -> ()
 						);
-						loop (ind + inc))
+						loopfast (ind + inc))
 				else
 					()
 			in (try
-				loop start
+				loopfast start
 			with
 			| CFBreak -> ())
 	| RForEach (vloc, expr, stmt, cloc) ->
