@@ -1,0 +1,27 @@
+//sample included in arraymath.jtp
+
+let Array.prototype.map=function(f){
+	let result=[];
+	foreach(el in this)
+		result.push(f(el));
+	return result;
+};
+
+let Array.prototype.reduce=function(f, acc){
+	let result=acc;
+	foreach(el in this)
+		result=f(el,result);
+	return result;
+};
+
+let arr=[3,4,54,32];
+let square=function(x){return x*x;};
+let sum=function(x,y){return x+y;};
+
+let ss=arr.map(square).reduce(sum,0);
+
+println("The sum of the squares of ", arr, " is ", ss, '.');
+
+let avg=arr.reduce(sum,0)/(1.0*arr.length());
+
+println("The average of ", arr, " is ", avg, '.');

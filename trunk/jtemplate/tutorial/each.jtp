@@ -1,0 +1,14 @@
+let each=function(func,array){
+	foreach(element in array){
+		func(element);
+	}
+};
+
+let a=[1,2,3,"abc"];
+
+let printSpace=function(s){
+	print(s,' ');
+};
+
+each(printSpace,a);
+println();

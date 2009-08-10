@@ -67,9 +67,9 @@ let _ =
 		try Analysis.analyze ast
 		with
 		| RuntimeError.FatalExit(_) -> exit(2)
-		| ex ->
+		(**| ex ->
 				RuntimeError.display_error ex ("", 0);
-				exit(2)
+				exit(2)*)
 	(* show parse tree if dictated by command line switch *)
 	in let _ = (if !show_parse_tree then
 				(Ast_info.print_ast ast; print_name_info env)

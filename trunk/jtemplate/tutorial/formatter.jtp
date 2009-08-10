@@ -1,0 +1,22 @@
+//left pads a string to length len with character char
+let String.prototype.lpad=function(len,char){
+	while(this.length()<len)
+		this=char+this;
+	return this;
+};
+
+let String.formatter=function(columns){
+	return function(args...){
+		let result='';
+		for (let i=0;i<args.length;++i){
+			result+=args[i].lpad(columns[i],' ');
+		}
+		return result;
+	};
+};
+
+let format=String.formatter([10,5,3]);
+println(format('i','x','y'));
+//println(format('---','---','---'));
+//for(let i=0;i<10;++1)
+//	println(format(i,Integer.random(100),Integer.random(100)));

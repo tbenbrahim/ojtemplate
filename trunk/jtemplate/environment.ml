@@ -87,6 +87,17 @@ let new_analysis_environment () =
 	}
 
 (**
+gets the constant value for a variable
+@param env analysis environment
+@param uid unique id of variable
+@return runtime value of variable
+*)
+let get_constant_value env uid =
+	try
+		Hashtbl.find env.constants uid
+	with
+		| Not_found -> raise (RuntimeError.InternalError ("Unable to get constant "^(string_of_int uid)))
+(**
 sets the declaration value for a variable
 @param env analysis environment
 @param uid unique id of variable
@@ -96,14 +107,7 @@ sets the declaration value for a variable
 let set_constant_value env uid value =
 	Hashtbl.replace env.constants uid value
 
-(**
-gets the constant value for a variable
-@param env analysis environment
-@param uid unique id of variable
-@return runtime value of variable
-*)
-let get_constant_value env uid =
-	Hashtbl.find env.constants uid
+
 
 (**
 returns whether the variable is a constant
