@@ -498,6 +498,7 @@ and analyze_variables env ast =
 						| (RVariable(loc), RValue(value)) ->
 								let uid = uid_from_loc loc
 								in Environment.set_constant_value env uid value
+						| (RVariable(loc), _) -> record_usage env loc WriteOp
 						| _ -> ()
 					in (RDeclaration(expr1, expr2), env)
 			| TernaryCond(e1, e2, e3) ->
