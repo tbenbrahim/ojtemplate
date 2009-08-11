@@ -197,47 +197,29 @@ let initialize env =
 			num_args = 2;
 			vararg = false;
 			code = fun env ->
-						let rec make_array result = function
-							| [] -> Array.of_list(List.rev result)
-							| v:: tl -> make_array ((string_of_value v):: result) tl
+						let replaceAll s substr repl =
+							let ssl = String.length substr in
+							let rec loop str =
+								match indexOf str substr with
+								| - 1 -> str
+								| i -> loop ((String.sub str 0 i)^ repl ^
+												(String.sub str (i + ssl)
+														(String.length str - ssl - i)))
+							in loop s
 						in let string = string_of_value env.stackframes.(0).(0)
-						in let substrings = make_array [] ( list_of_array env.stackframes.(0).(1))
-						in let values = make_array [] (list_of_array env.stackframes.(0).(2))
+						in let substrings = Array.of_list ( list_of_array env.stackframes.(0).(1))
+						in let values = Array.of_list (list_of_array env.stackframes.(0).(2))
 						in let len = Array.length substrings
 						in if len!= Array.length values then
 							raise (LibraryError "substrings and values arrays should have the same length in String.prototype.mreplace")
 						else
-							let rec loop_replacements result ind =
+							let rec loop_replacements ind result=
 								if ind = len then
 									result
 								else
-									let substring = substrings.(ind)
-									in let len = String.length substring
-									in let rec loop_string string result offset =
-										match indexOf string substring with
-										| - 1 -> result
-										| pos ->
-												if pos + len!= String.length string then
-													loop_string (String.sub string (pos + len) ((String.length string) - pos - len) ) (pos + offset:: result) (offset + pos + len)
-												else
-													loop_string "" (pos + offset:: result) (offset + pos + len)
-									in let positions = loop_string string [] 0
-									in loop_replacements ((values.(ind), len, positions) :: result) (ind + 1)
-							in let replacements = loop_replacements [] 0
-							in let replace str i ssl repl =
-								(String.sub str 0 i)^ repl ^ (String.sub str (i + ssl) (String.length str - ssl - i))
-							in let rec loop_values result_string offset = function
-								| [] -> result_string
-								| repl:: tl ->
-										let (value, len, positions) = repl
-										in let delta = String.length value - len
-										in let rec loop_repl result_string offset = function
-											| [] -> (offset, result_string)
-											| pos:: tl ->
-													loop_repl (replace result_string pos len value) (offset + delta) tl
-										in let (offset, result_string) = loop_repl result_string offset positions
-										in loop_values result_string offset tl
-							in let result = loop_values string 0 replacements
-							in raise (CFReturn(RStringValue(result)))
+									let substring = string_of_value substrings.(ind)
+									in let repl = string_of_value values.(ind)
+									in loop_replacements (ind + 1) (replaceAll result substring repl)
+							in raise (CFReturn(RStringValue(loop_replacements 0 string)))
 		};
 		], env)
