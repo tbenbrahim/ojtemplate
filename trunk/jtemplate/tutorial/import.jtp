@@ -1,0 +1,11 @@
+//sample included in tutorial.import.jtp
+
+import 'array.jtp';
+
+let array=[1,2,3,4,5,6];
+
+println('The sum of the squares of the even numbers in ', array, ' is ',
+	array.filter(function(n){return n%2==0;})
+	     .map(function(n){return n*n;})
+	     .reduce(function(n,a){return n+a;},0)
+);

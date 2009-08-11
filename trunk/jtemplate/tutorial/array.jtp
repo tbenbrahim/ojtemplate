@@ -1,0 +1,23 @@
+//sample included in array.jtp
+
+let Array.prototype.map=function(f){
+	let result=[];
+	foreach(el in this)
+		result.push(f(el));
+	return result;
+};
+
+let Array.prototype.reduce=function(f, acc){
+	let result=acc;
+	foreach(el in this)
+		result=f(el,result);
+	return result;
+};
+
+let Array.prototype.filter=function(f){
+	let result=[];
+	foreach(el in this)
+		if (f(el))
+			result.push(el);
+	return result;
+};

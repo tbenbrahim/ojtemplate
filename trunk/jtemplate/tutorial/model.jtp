@@ -1,0 +1,156 @@
+//sample included in tutorial/model.jtp
+
+let Property={
+	CARDINALITY_NONE: 0,
+	CARDINALITY_ONE_TO_ONE: 1,
+	CARDINALITY_ONE_TO_MANY: 2,
+	CARDINALITY_MANY_TO_ONE: 3,
+	CARDINALITY_MANY_TO_MANY: 4,
+	
+	stringToCardinality: function(s){
+		switch(s){
+		case '1-1': return 1;
+		case '1-*': return 2;
+		case '*-1': return 3;
+		case '*-*': return 4;
+		default: throw("Unknown cardinality "+s);			
+		}
+	},
+	
+	prototype: {
+		type: function(type){
+			this.type=type;
+			return this;
+		},
+		maxLength: function(len){
+			this.maxLength=len;
+			return this;
+		},
+		references: function(entity, cardinality){
+			this.cardinality=Property.stringToCardinality(cardinality);
+			if (entity.prototype!=Entity){
+				throw(entity+' is not an entity');
+			}
+			let this.references=entity;
+			return this;
+		},
+		required: function(){
+			this.required=true;
+			return this;
+		},
+		javaType: function(){
+			if(this.references==void){
+				switch(this.type){
+					case 'string': return 'String';
+					case 'integer': return 'int';
+					case 'float': return 'double';
+					case 'date': return 'Date';
+					default: return 'XXX';
+				}
+			}else{
+				switch(this.cardinality){
+					case 0: throw("cardinality not specified for property "+this.name);
+					case 1:
+					case 3:
+						 return this.references.name.toFirstUpper();
+					case 2:
+					case 4: 
+						return "List<"+this.references.name.toFirstUpper()+">";
+				}
+			}
+		}
+	}
+};
+
+let Entity={
+	prototype: {
+		add: function(name){
+			let prop= {
+				prototype: Property,
+				entity: this,
+				name: name,
+				type: 'string',
+				maxLength: 100,
+				references: void,
+				cardinality: Property.CARDINALITY_NONE,
+				required: false
+			};
+			this.properties.push(prop);
+			return prop;
+		}
+	}
+};
+
+let Model={
+	prototype: {
+		create: function(applicationName){
+			return {
+				prototype: Model,
+				name: applicationName,
+				entities: []
+			};
+		},
+		add: function(name){
+			let entity={
+				prototype: Entity,
+				model: this,
+				name: name,
+				properties: []
+			};
+			this.entities.push(entity);
+			return entity;
+		}
+	}
+};
+
+template javaBean{
+	package			#package packageName;
+					#
+	class			#public class className{
+					#
+	fields			#	private type propName;
+					#
+	constructor		#	public className(){
+	constructor		#	}
+					#
+	getter			#	public type getPropName(){
+	getter			#		return propName();
+	getter			#	}
+	getter			#
+	setter			#	public void setPropName(type propName){
+	setter			#		this.propName=propName;
+	setter			#	}
+	setter			#
+	class			#}
+}
+
+instructions for javaBean(package, entity){
+	package once: packageName=package;
+	class once: className=entity.name.toFirstUpper();
+	fields foreach(prop in entity.properties): type=prop.javaType(), propName=prop.name;
+	constructor once: className=entity.name.toFirstUpper();
+	getter foreach(prop in entity.properties): 
+		type=prop.javaType(),PropName=prop.name.toFirstUpper(), propName=prop.name;
+	setter foreach(prop in entity.properties): 
+		type=prop.javaType(),PropName=prop.name.toFirstUpper(), propName=prop.name;
+}
+
+let model=Model.create('Order application');
+
+let customer=model.add('customer');
+customer.add('lastName').type('string').maxLength(50).required();
+customer.add('firstName').type('string').maxLength(50).required();
+
+let item=model.add('item');
+item.add('name').type('string').maxLength(100).required();
+item.add('price').type('float').required();
+item.add('quantity').type('integer').required();
+
+let order=model.add('order');
+order.add('orderDate').type('date').required();
+order.add('customer').references(customer,'*-1').required();
+order.add('items').references(item,'*-*').required();
+
+let package='edu.columbia.w4115.demo';
+foreach(entity in model.entities)
+	println(javaBean(package,entity));
