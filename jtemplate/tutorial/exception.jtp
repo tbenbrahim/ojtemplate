@@ -1,0 +1,19 @@
+
+let inputNumber=function(){
+	let result=readln().parseInt();
+	if (result==void)
+		throw("Not a number");
+	return result;
+};
+
+while(true){
+	try{
+		print("Input a number: ");
+		let n1=inputNumber();
+		println("The square of ",n1," is ",n1*n1,".");
+		break;
+	}catch(e){
+		print("That's not a number. ");
+	}
+}
+

@@ -1,0 +1,35 @@
+let Array.prototype.map=function(f){
+	let result=[];
+	foreach(el in this)
+		result.push(f(el));
+	return result;
+};
+
+let Array.prototype.filter=function(f){
+	let result=[];
+	foreach(el in this)
+		if (f(el))
+			result.push(el);
+	return result;
+};
+
+let employees=[
+	{name: 'John', startYear: 1998},
+	{name: 'Mary', startYear: 2008},
+	{name: 'David', startYear: 1999},
+	{name: 'Pedro', startYear: 2002},
+	{name: 'Al', startYear: 2002},
+	{name: 'Jane', startYear: 1997}
+];
+
+let employedBefore=function(year){
+	return function(employee){
+		return employee.startYear<year;
+	};
+};
+
+let year=2000;
+
+println('The employees employed before ', year, ' are ',
+	employees.filter(employedBefore(2000)).map(function(emp){return emp.name;}), '.');
+

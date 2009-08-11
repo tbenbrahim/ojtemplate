@@ -1,0 +1,26 @@
+//sample include in partial.jtp
+
+let toDelimited=function(delimiter,last, array){
+	let result='';
+	let lastIndex=arr.length()-1;
+	for(let i=0;i<=lastIndex;++i){
+		switch(i){
+		case 0:
+			result+=array[i];
+			break;
+		case lastIndex:
+			result+=last+array[i];
+			break;
+		default:
+			result+=delimiter+array[i];
+			break;
+		}
+	}
+	return result;
+};
+
+let prettyPrint=toDelimited(', ',' and ', @array);
+
+let arr=[12.3, 'abc', 42];
+
+println('The values in ',arr,' are ',prettyPrint(arr), '.');

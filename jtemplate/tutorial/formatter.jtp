@@ -1,3 +1,5 @@
+//sample included in tutorial/formatter.jtp
+
 //left pads a string to length len with character char
 let String.prototype.lpad=function(len,char){
 	while(this.length()<len)
@@ -8,15 +10,15 @@ let String.prototype.lpad=function(len,char){
 let String.formatter=function(columns){
 	return function(args...){
 		let result='';
-		for (let i=0;i<args.length;++i){
-			result+=args[i].lpad(columns[i],' ');
+		for (let i=0;i<args.length();++i){
+			result+=(args[i]+'').lpad(columns[i],' ');
 		}
 		return result;
 	};
 };
 
-let format=String.formatter([10,5,3]);
-println(format('i','x','y'));
-//println(format('---','---','---'));
-//for(let i=0;i<10;++1)
-//	println(format(i,Integer.random(100),Integer.random(100)));
+let format=String.formatter([10,5,5]);
+println(format('n','x','y'));
+println(format('---','---','---'));
+for(let i=0;i<10;++i)
+	println(format(i+1,Integer.random(100),Integer.random(100)));
