@@ -123,7 +123,7 @@ var testSuite={
             },{
             	description: 'mreplace()',
             	test: function(){
-            		return 'foo bar foo bar'.mreplace(['foo','bar'],['bar','foo'])=='bar foo bar foo';
+            		return 'test 123'.mreplace(['test','123'],['TEST','456'])=='TEST 456';
             	}
             },{
             	description: 'non-string this throws exception',
